@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluidSimulation1", "FluidSimulation1\FluidSimulation1\FluidSimulation1.csproj", "{49F0498B-BA1A-4DF9-9A01-F9C4B10F4863}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "FluidSimulation1Content", "FluidSimulation1\FluidSimulation1Content\FluidSimulation1Content.contentproj", "{472FFADD-62BE-4091-BCA7-4C5E9688C5E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49F0498B-BA1A-4DF9-9A01-F9C4B10F4863}.Debug|x86.ActiveCfg = Debug|x86
+		{49F0498B-BA1A-4DF9-9A01-F9C4B10F4863}.Debug|x86.Build.0 = Debug|x86
+		{49F0498B-BA1A-4DF9-9A01-F9C4B10F4863}.Release|x86.ActiveCfg = Release|x86
+		{49F0498B-BA1A-4DF9-9A01-F9C4B10F4863}.Release|x86.Build.0 = Release|x86
+		{472FFADD-62BE-4091-BCA7-4C5E9688C5E3}.Debug|x86.ActiveCfg = Debug|x86
+		{472FFADD-62BE-4091-BCA7-4C5E9688C5E3}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

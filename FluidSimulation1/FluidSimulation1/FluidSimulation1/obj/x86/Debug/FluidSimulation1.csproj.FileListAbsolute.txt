@@ -1,0 +1,6 @@
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\FluidSimulation1.exe
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\FluidSimulation1.pdb
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\obj\x86\Debug\FluidSimulation1.exe
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\obj\x86\Debug\FluidSimulation1.pdb
