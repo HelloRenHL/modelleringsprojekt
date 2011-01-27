@@ -7,8 +7,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\ploj.xnb</Output>
-      <Time>2011-01-25T13:47:38.0219737+01:00</Time>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\ploj.xnb</Output>
+      <Time>2011-01-27T15:08:32.0706511+01:00</Time>
     </Item>
     <Item>
       <Source>verdana.spritefont</Source>
@@ -16,8 +16,8 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\verdana.xnb</Output>
-      <Time>2011-01-25T14:19:45.6663069+01:00</Time>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\verdana.xnb</Output>
+      <Time>2011-01-27T15:08:32.0726512+01:00</Time>
     </Item>
     <Item>
       <Source>models\sphere.FBX</Source>
@@ -25,19 +25,12 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
-      <Output>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\sphere.xnb</Output>
-      <Time>2011-01-25T16:10:58.7990922+01:00</Time>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\sphere.xnb</Output>
+      <Time>2011-01-27T15:08:32.0626507+01:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\models\sphere_0.xml</Key>
-        <Value>2011-01-25T16:21:58.1138029+01:00</Value>
+        <Value>2011-01-27T15:44:00.0893668+01:00</Value>
       </Dependency>
-    </Item>
-    <Item>
-      <Source>models\sphere.FBX</Source>
-      <Importer>FbxImporter</Importer>
-      <Options>IntermediateFile, DontCacheImportedData</Options>
-      <Output>obj\x86\Debug\models\sphere_0.xml</Output>
-      <Time>2011-01-25T16:10:58.7990922+01:00</Time>
     </Item>
     <Item>
       <Source>models\teapot.FBX</Source>
@@ -45,19 +38,26 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
       <Options>None</Options>
-      <Output>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot.xnb</Output>
-      <Time>2011-01-25T16:37:38.7956068+01:00</Time>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot.xnb</Output>
+      <Time>2011-01-27T15:08:32.0646508+01:00</Time>
       <Dependency>
         <Key>obj\x86\Debug\models\teapot_0.xml</Key>
-        <Value>2011-01-25T16:38:44.7413787+01:00</Value>
+        <Value>2011-01-27T15:44:00.2933785+01:00</Value>
       </Dependency>
+    </Item>
+    <Item>
+      <Source>models\sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Debug\models\sphere_0.xml</Output>
+      <Time>2011-01-27T15:08:32.0626507+01:00</Time>
     </Item>
     <Item>
       <Source>models\teapot.FBX</Source>
       <Importer>FbxImporter</Importer>
       <Options>IntermediateFile, DontCacheImportedData</Options>
       <Output>obj\x86\Debug\models\teapot_0.xml</Output>
-      <Time>2011-01-25T16:37:38.7956068+01:00</Time>
+      <Time>2011-01-27T15:08:32.0646508+01:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -65,39 +65,39 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\</RootDirectory>
-      <LoggerRootDirectory>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\</LoggerRootDirectory>
-      <IntermediateDirectory>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\</RootDirectory>
+      <LoggerRootDirectory>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\</LoggerRootDirectory>
+      <IntermediateDirectory>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
-        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Key>C:\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
         <Value>2010-08-23T13:41:18+02:00</Value>
       </Assembly>
       <Assembly>
         <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2011-01-24T12:51:25.6079582+01:00</Value>
+        <Value>2011-01-18T16:17:13.1406409+01:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

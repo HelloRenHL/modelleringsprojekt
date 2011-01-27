@@ -16,7 +16,7 @@ namespace FluidSimulation1
         SpriteBatch spriteBatch;
 
         public static Fluid myFluid;
-        public static Camera Camera;
+        static Camera camera;
 
         Texture2D texture;
         SpriteFont verdana;
@@ -26,8 +26,12 @@ namespace FluidSimulation1
         int frames = 0;
         float elapsedTime = 0;
 
-        Vector3 gravity = new Vector3(0, -9.82f, 0) * 0.001f;
+        Vector3 gravity = new Vector3(0, -9.82f, 0) * 0.5f;
         List<ModelObject> teapots = new List<ModelObject>();
+
+        InputHandler inputHandler = new InputHandler();
+
+        const int NUMBER_OF_TEAPOTS = 100;
 
         public Game1()
         {
@@ -35,12 +39,30 @@ namespace FluidSimulation1
             Content.RootDirectory = "Content";
 
             myFluid = new Fluid(200);
-            Camera = new Camera();
+            camera = new Camera();
 
-            aspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
+            camera.Position = new Vector3(0, 100.0f, 2500.0f);
 
             IsMouseVisible = true;
         }
+
+        Random r = new Random();
+
+        public void InitializeTeapots()
+        {
+
+            teapots.Clear();
+
+            int min = -100;
+            int max = 100;
+
+            for (int i = 0; i < NUMBER_OF_TEAPOTS; i++)
+            {
+                teapots.Add(new ModelObject(teapot) { Position = new Vector3(r.Next(min, max), 0, r.Next(min, max)), Acceleration = gravity, Velocity = new Vector3(r.Next(min, max), r.Next(min, max), r.Next(min, max)) * 0.66f });
+
+            }
+        }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -67,16 +89,9 @@ namespace FluidSimulation1
             teapot = Content.Load<Model>(@"models\teapot");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
-            
-            Random r = new Random();
 
-            for (int i = 0; i < 100; i++)
-            {
-                teapots.Add(new ModelObject(teapot) { Position = new Vector3(r.Next(), 0, r.Next()) * .0000000030f, Acceleration = gravity + new Vector3(r.Next(), r.Next(), r.Next()) * 0.0000000001f, Velocity = -2*gravity });
-                
-            }
 
-            Debug.WriteLine(r.Next());
+            InitializeTeapots();
 
             // TODO: use this.Content to load your game content here
         }
@@ -111,31 +126,43 @@ namespace FluidSimulation1
             }
 
 
+            inputHandler.Update();
+
+            HandleInput();
+
             fps = frames / elapsedTime;
 
             //Fluid.Update(gameTime);
 
-            // TODO: Add your update logic here
-
-            //if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            //{
-            //    modelPosition.Y+=25;
-            //}
-            //else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            //{
-            //    modelPosition.Y -= 25;
-            //}
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                modelRotation += MathHelper.ToRadians(5);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                modelRotation-=MathHelper.ToRadians(5);
-            }
+            camera.Update();
 
             base.Update(gameTime);
+        }
+
+        private void HandleInput()
+        {
+            if (inputHandler.IsKeyPressed(Keys.R))
+            {
+                InitializeTeapots();
+            }
+
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Up))
+            {
+                camera.Position.Z -= 10.0f;
+            }
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Down))
+            {
+                camera.Position.Z += 10.0f;
+            }
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Right))
+            {
+                camera.Position.X += 5.0f;
+            }
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Left))
+            {
+                camera.Position.X -= 5.0f;
+            }
+
         }
 
         /// <summary>
@@ -144,7 +171,7 @@ namespace FluidSimulation1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Bisque);
+            GraphicsDevice.Clear(Color.Blue);
 
             // TODO: Add your drawing code here
             //Fluid.Draw(gameTime);
@@ -155,49 +182,36 @@ namespace FluidSimulation1
             //spriteBatch.End();
             //DrawModel(teapot);
 
+
+
             foreach (ModelObject mo in teapots)
             {
-                DrawModel(mo);
+                DrawModel(mo.Model, mo.World);
             }
 
             base.Draw(gameTime);
         }
 
-        // Set the position of the model in world space, and set the rotation.
-        //Vector3 modelPosition = Vector3.Zero;
-        float modelRotation = 0.0f;
-
-        // Set the position of the camera in world space, for our view matrix.
-        Vector3 cameraPosition = new Vector3(0.0f, 50.0f, 500.0f);
-        private float aspectRatio;
-
-        protected void DrawModel(ModelObject myModel)
+        /// <summary>
+        /// Simple model drawing method. The interesting part here is that
+        /// the view and projection matrices are taken from the camera object.
+        /// </summary>        
+        private void DrawModel(Model model, Matrix world)
         {
-            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
+            Matrix[] transforms = new Matrix[model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(transforms);
 
-            // Copy any parent transforms.
-            Matrix[] transforms = new Matrix[myModel.Model.Bones.Count];
-            myModel.Model.CopyAbsoluteBoneTransformsTo(transforms);
-            myModel.Model.Root.Transform = Matrix.CreateTranslation(myModel.Position);
-
-            // Draw the model. A model can have multiple meshes, so loop.
-            foreach (ModelMesh mesh in myModel.Model.Meshes)
+            foreach (ModelMesh mesh in model.Meshes)
             {
-                
-                // This is where the mesh orientation is set, as well 
-                // as our camera and projection.
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    effect.World = transforms[mesh.ParentBone.Index] *
-                        Matrix.CreateRotationY(modelRotation);
-                    effect.View = Matrix.CreateLookAt(cameraPosition,
-                        Vector3.Zero, Vector3.Up);
-                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(
-                        MathHelper.ToRadians(90.0f), aspectRatio,
-                        1.0f, 10000.0f);
+                    effect.World = transforms[mesh.ParentBone.Index] * world;
+
+                    // Use the matrices provided by the chase camera
+                    effect.View = camera.View;
+                    effect.Projection = camera.Projection;
                 }
-                // Draw the mesh, using the effects set above.
                 mesh.Draw();
             }
         }

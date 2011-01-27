@@ -14,3 +14,7 @@ R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\Fl
 R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\verdana.xnb
 R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\sphere.xnb
 R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\ploj.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\verdana.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\sphere.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot.xnb

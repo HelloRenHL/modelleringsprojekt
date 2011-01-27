@@ -46,5 +46,14 @@ namespace FluidSimulation1
         {
             return CurrentKeyboardState.IsKeyDown(key) && LastKeyboardState.IsKeyUp(key);
         }
+
+        public void Update()
+        {
+            this.LastKeyboardState = CurrentKeyboardState;
+            this.CurrentKeyboardState = Keyboard.GetState();
+
+            this.LastMouseState = CurrentMouseState;
+            this.CurrentMouseState = Mouse.GetState();
+        }
     }
 }
