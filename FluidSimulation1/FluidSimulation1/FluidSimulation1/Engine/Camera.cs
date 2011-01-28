@@ -5,7 +5,7 @@ namespace FluidSimulation1
     public class Camera
     {
         public Vector3 Position = Vector3.Zero;
-        public float FieldOfView = MathHelper.ToRadians(110);
+        public float FieldOfView = MathHelper.ToRadians(90);
 
         public Matrix Projection;
         public Matrix View;

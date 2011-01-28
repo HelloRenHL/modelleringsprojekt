@@ -26,43 +26,26 @@ namespace FluidSimulation1
         int frames = 0;
         float elapsedTime = 0;
 
-        Vector3 gravity = new Vector3(0, -9.82f, 0) * 0.5f;
-        List<ModelObject> teapots = new List<ModelObject>();
-
         InputHandler inputHandler = new InputHandler();
 
-        const int NUMBER_OF_TEAPOTS = 100;
+        public static Random Random = new Random();
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            myFluid = new Fluid(200);
+            myFluid = new Fluid(100);
             camera = new Camera();
 
-            camera.Position = new Vector3(0, 100.0f, 2500.0f);
+            camera.AspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
+
+            float cameraDistance = 2.0f;
+
+            camera.Position = new Vector3(0, cameraDistance, cameraDistance);
 
             IsMouseVisible = true;
         }
-
-        Random r = new Random();
-
-        public void InitializeTeapots()
-        {
-
-            teapots.Clear();
-
-            int min = -100;
-            int max = 100;
-
-            for (int i = 0; i < NUMBER_OF_TEAPOTS; i++)
-            {
-                teapots.Add(new ModelObject(teapot) { Position = new Vector3(r.Next(min, max), 0, r.Next(min, max)), Acceleration = gravity, Velocity = new Vector3(r.Next(min, max), r.Next(min, max), r.Next(min, max)) * 0.66f });
-
-            }
-        }
-
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -85,15 +68,10 @@ namespace FluidSimulation1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            sphere = Content.Load<Model>(@"models\sphere");
+            sphere = Content.Load<Model>(@"models\smaller_sphere");
             teapot = Content.Load<Model>(@"models\teapot");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
-
-
-            InitializeTeapots();
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -120,21 +98,15 @@ namespace FluidSimulation1
 
             frames++;
 
-            foreach (ModelObject mo in teapots)
-            {
-                mo.Update();
-            }
-
-
             inputHandler.Update();
 
             HandleInput();
 
             fps = frames / elapsedTime;
 
-            //Fluid.Update(gameTime);
-
             camera.Update();
+
+            myFluid.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -143,24 +115,24 @@ namespace FluidSimulation1
         {
             if (inputHandler.IsKeyPressed(Keys.R))
             {
-                InitializeTeapots();
+                myFluid.InitializeParticles();
             }
 
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Up))
             {
-                camera.Position.Z -= 10.0f;
+                camera.Position.Z--;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Down))
             {
-                camera.Position.Z += 10.0f;
+                camera.Position.Z++;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Right))
             {
-                camera.Position.X += 5.0f;
+                camera.Position.X++;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Left))
             {
-                camera.Position.X -= 5.0f;
+                camera.Position.X--;
             }
 
         }
@@ -173,20 +145,9 @@ namespace FluidSimulation1
         {
             GraphicsDevice.Clear(Color.Blue);
 
-            // TODO: Add your drawing code here
-            //Fluid.Draw(gameTime);
-
-            //spriteBatch.Begin();
-            //spriteBatch.Draw(texture, Vector2.Zero, Color.White);
-            //spriteBatch.DrawString(verdana, fps.ToString(), Vector2.Zero, Color.Black);
-            //spriteBatch.End();
-            //DrawModel(teapot);
-
-
-
-            foreach (ModelObject mo in teapots)
+            foreach (Particle p in myFluid.Particles)
             {
-                DrawModel(mo.Model, mo.World);
+                DrawModel(sphere, Matrix.CreateTranslation(p.Position));
             }
 
             base.Draw(gameTime);

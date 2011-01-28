@@ -115,7 +115,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Sim\AxisAlignedBoundingBox.cs" />
     <Compile Include="Sim\Fluid.cs" />
-    <Compile Include="Sim\FluidParticle.cs" />
+    <Compile Include="Sim\FluidHash.cs" />
     <Compile Include="Sim\Particle.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -59,6 +59,46 @@
       <Output>obj\x86\Debug\models\teapot_0.xml</Output>
       <Time>2011-01-27T15:08:32.0646508+01:00</Time>
     </Item>
+    <Item>
+      <Source>models\small_sphere.FBX</Source>
+      <Name>models\small_sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\small_sphere.xnb</Output>
+      <Time>2011-01-28T03:29:54.3028893+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Debug\models\small_sphere_0.xml</Key>
+        <Value>2011-01-28T03:32:49.796927+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\smaller_sphere.FBX</Source>
+      <Name>models\smaller_sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\smaller_sphere.xnb</Output>
+      <Time>2011-01-28T03:32:19.1131719+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Debug\models\smaller_sphere_0.xml</Key>
+        <Value>2011-01-28T03:32:49.9149337+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\small_sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Debug\models\small_sphere_0.xml</Output>
+      <Time>2011-01-28T03:29:54.3028893+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\smaller_sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Debug\models\smaller_sphere_0.xml</Output>
+      <Time>2011-01-28T03:32:19.1131719+01:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
