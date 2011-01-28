@@ -7,10 +7,10 @@ namespace FluidSimulation1
 {
     public struct NeighbourPair
     {
-        public Particle A;
-        public Particle B;
+        public FluidParticle A;
+        public FluidParticle B;
 
-        public NeighbourPair(Particle a, Particle b)
+        public NeighbourPair(FluidParticle a, FluidParticle b)
         {
             A = a;
             B = b;
@@ -31,10 +31,10 @@ namespace FluidSimulation1
 
         List<NeighbourPair> Neighbours = new List<NeighbourPair>();
 
-        public List<Particle> Particles = new List<Particle>();
-        float Wpoly6Zero;
+        public List<FluidParticle> Particles = new List<FluidParticle>();
+        float Poly6Zero;
 
-        Vector3 Gravity = new Vector3(0, -1.0f, 0) * 196.2f;
+        public Vector3 Gravity = Vector3.Down * 196.2f;
 
         float h;
         float h2;
@@ -45,7 +45,7 @@ namespace FluidSimulation1
 
         public Fluid(int maxParticles)
         {
-            h = 0.15f;
+            h = 0.15f; //0.15f
             h2 = h * h;
             h6 = (float)Math.Pow(h, 6);
             h9 = (float)Math.Pow(h, 9);
@@ -58,11 +58,11 @@ namespace FluidSimulation1
             MaxParticles = maxParticles;
             activeParticles = maxParticles;
 
-            Wpoly6Zero = Wpoly6(Vector3.Zero);
+            Poly6Zero = SmoothKernel.Poly6(Vector3.Zero, h9, h2);
 
             for (int i = 0; i < maxParticles; i++)
             {
-                Particles.Add(new Particle());
+                Particles.Add(new FluidParticle());
             }
 
             InitializeParticles();
@@ -93,21 +93,14 @@ namespace FluidSimulation1
             this.FluidHash.GatherNeighbors(Neighbours);
         }
 
-        public float Wpoly6(Vector3 rv)
-        {
-            return 315 / (64 * MathHelper.Pi * h9) * (float)Math.Pow(h2 - rv.LengthSquared(), 3);
-        }
-
         private void ComputeDensity()
         {
             for (int i = 0; i < Neighbours.Count; i++)
             {
-                Particle a = Neighbours[i].A;
-                Particle b = Neighbours[i].B;
+                FluidParticle a = Neighbours[i].A;
+                FluidParticle b = Neighbours[i].B;
 
-                Vector3 distance = a.Position - b.Position;
-
-                float density = a.Mass * this.Wpoly6(distance);
+                float density = a.Mass * SmoothKernel.Poly6(a.Position - b.Position, h9, h2);
 
                 // Eq. 3 ifrån Müller03
                 a.Density += density;
@@ -128,76 +121,153 @@ namespace FluidSimulation1
         {
             for (int i = 0; i < Particles.Count; i++)
             {
-                Particles[i].Force += this.Gravity * Particles[i].Mass;
+                Particles[i].Force += this.Gravity * Particles[i].Mass; // / Particles[i].Density
             }
 
             for (int i = 0; i < Neighbours.Count; i++)
             {
-                Particle a = Neighbours[i].A;
-                Particle b = Neighbours[i].B;
+                FluidParticle a = Neighbours[i].A;
+                FluidParticle b = Neighbours[i].B;
 
-                float r = (a.Position - b.Position).Length();
+                Vector3 rv = a.Position - b.Position;
+                float r = rv.Length();
 
-                if (r > 0.10f)
+                if (r < 0.1f)
+                    continue;
+
+                float r2 = r * r;
+
+                // Force due to the fluid pressure gradient
+                #region Pressure
+                //Eq. 10 Müller03
+                Vector3 pressureForce = -b.Mass * (a.Pressure + b.Pressure) / (2 * b.Density) * SmoothKernel.SpikyGradient(rv, r, r2, h, h2, h6);
+                #endregion
+
+                // Force due to the viscosity of the fluid
+                #region Viscosity
+
+                Vector3 viscosityForce = Vector3.Zero;
+
+                // Eq. 14 Müller03
+                viscosityForce = Viscosity * b.Mass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(r, h, h6); // <- Får allt att hacka
+
+                #endregion
+
+                // Müller03 model surface tension forces even thou it is not present in the Navier-Stokes equations (Eq. 7)
+                #region Surface Tension
+
+                // Müller03: "Evaluating n/|n| at locations where |n| is small causes numerical problems. We only evaluate the force if |n| exceeds a certain threshold
+                Vector3 surfaceTensionForce = Vector3.Zero;
+
+                float threshold = 0.05f;
+
+                float colorFieldLaplacian = a.Mass / a.Density * SmoothKernel.Poly6Laplacian(r2, h2, h9);
+                Vector3 n = a.Mass / a.Density * SmoothKernel.Poly6Gradient(rv, r2, h2, h9); // <- The gradient field of the smoothed color field
+                
+                if (n.Length() > threshold)
                 {
-                    float r2 = r * r;
-
-                    // Force due to the fluid pressure gradient
-                    #region Pressure
-                    // Derivative of Eq. 21 Müller03 (Spiky Kernel)
-                    Vector3 pressureKernelGradient = 45.0f / (MathHelper.Pi * h6) * ((h2 + r2) / r - 2 * h) * (a.Position - b.Position);
-
-                    //Eq. 10 Müller03
-                    Vector3 pressureForce = -b.Mass * (a.Pressure + b.Pressure) / (2 * b.Density) * pressureKernelGradient;
-                    #endregion
-
-                    // Force due to the viscosity of the fluid
-                    #region Viscosity
-
-                    Vector3 viscosityForce = Vector3.Zero;
-
-                    // This is the gradient of the kernel presented in Eq. 22 Müller03
-                    float viscosityKernelLaplacian = 45.0f / (MathHelper.Pi * h6) * (h - r);
-
-                    // Eq. 14 Müller03
-                    viscosityForce = Viscosity * b.Mass * (b.Velocity - a.Velocity) / b.Density * viscosityKernelLaplacian; // <- Får allt att hacka
-
-                    #endregion
-
-                    // Müller03 model surface tension forces even thou it is not present in the Navier-Stokes equations (Eq. 7)
-                    #region Surface Tension
-
-                    float surfaceTensionKernelLaplacian = 945.0f / (32.0f * MathHelper.Pi * h9) * (h2 - r2) * (7 * r2 - 3 * h2);
-                    float colorFieldLaplacian = a.Mass / a.Density * surfaceTensionKernelLaplacian;
-
-                    Vector3 surfaceTensionKernelGradient = 945.0f / (32.0f * MathHelper.Pi * h9) * (h2 - r2) * (h2 - r2) * (a.Position - b.Position);
-                    Vector3 n = a.Mass / a.Density * surfaceTensionKernelGradient; // <- The gradient field of the smoothed color field
-
-                    Vector3 surfaceTensionForce = -SurfaceTension * colorFieldLaplacian * n / n.Length();
-
-                    #endregion
-
-                    a.Force += pressureForce + surfaceTensionForce + viscosityForce;
-                    b.Force -= pressureForce + surfaceTensionForce + viscosityForce;
+                    surfaceTensionForce = -SurfaceTension * colorFieldLaplacian * n / n.Length();
                 }
+
+                #endregion
+
+                a.Force += pressureForce + viscosityForce + surfaceTensionForce;
+                b.Force -= pressureForce + viscosityForce + surfaceTensionForce;
             }
         }
 
         // Funkade skitdåligt?
-        /*private void UpdateParticles(float timeStep)
+        private void UpdateParticles(float timeStep)
         {
             //the simulation stores position, velocity, velocity half stepped and acceleration for each fluid particle
             for (int i = 0; i < Particles.Count; i++)
             {
                 //compute v(t + 1/2dt)
-                Vector3 velocityHalfNext = Particles[i].VelocityHalf + timeStep * Particles[i].Force;
-                
+                Vector3 velocityHalfNext = Particles[i].VelocityHalf + timeStep * (Particles[i].Force / Particles[i].Density);
+
                 //compute r(t + dt)
                 Particles[i].Position += timeStep * velocityHalfNext;
 
                 //compute v(t)
                 Particles[i].Velocity = 0.5f * (velocityHalfNext + Particles[i].VelocityHalf);
                 Particles[i].VelocityHalf = velocityHalfNext;
+            }
+        }
+
+        /*public void test()
+        {
+            if (timeStep != 0f)
+            {
+                for (int i = 0; i < this.m_numActiveParticles; i++)
+                {
+                    FluidParticle particle1 = this.m_particles[i];
+                    particle1.velocity += (Vector3)(this.m_particles[i].force * (timeStep * this.m_particles[i].densityReciprocal));
+                    FluidParticle particle7 = this.m_particles[i];
+                    particle7.position += (Vector3)(this.m_particles[i].velocity * timeStep);
+                    FluidParticle particle8 = this.m_particles[i];
+                    particle8.life += timeStep;
+                }
+                int count = this.m_obstacles.Count;
+                for (int j = 0; j < count; j++)
+                {
+                    this.m_obstacles[j].HandleCollisions(ref this.m_particles);
+                }
+                for (int k = 0; k < this.m_numActiveParticles; k++)
+                {
+                    this.m_particles[k].force = (Vector3)(this.m_gravityDirection * this.m_gravityForce);
+                    this.m_particles[k].density = this.m_particles[k].mass * this.Wpoly6Zero;
+                }
+                this.FindNeighbors();
+                for (int m = 0; m < this.m_neighborList.Count; m++)
+                {
+                    FluidParticle a = this.m_neighborList.Data[m].a;
+                    FluidParticle b = this.m_neighborList.Data[m].b;
+                    Vector3 rv = a.position - b.position;
+                    float num6 = this.Wpoly6(rv);
+                    a.density += b.mass * num6;
+                    b.density += a.mass * num6;
+                }
+                if (this.m_isColorMixing)
+                {
+                    for (int num7 = 0; num7 < this.m_neighborList.Count; num7++)
+                    {
+                        FluidParticle particle3 = this.m_neighborList.Data[num7].a;
+                        FluidParticle particle4 = this.m_neighborList.Data[num7].b;
+                        float num8 = this.Wpoly6(particle3.position - particle4.position) / 2000f;
+                        Vector4 vector2 = (Vector4)((particle3.color + particle4.color) * 0.5f);
+                        particle3.color = Vector4.Lerp(particle3.color, vector2, num8);
+                        particle4.color = Vector4.Lerp(particle4.color, vector2, num8);
+                    }
+                }
+                for (int n = 0; n < this.m_numActiveParticles; n++)
+                {
+                    this.m_particles[n].densityReciprocal = 1f / this.m_particles[n].density;
+                    this.m_particles[n].surfaceNormal = this.m_particles[n].mass * this.m_particles[n].densityReciprocal;
+                    this.m_particles[n].pressure = 0.2f * (this.m_particles[n].density - 1000f);
+                }
+                float viscosity = this.m_viscosity;
+                float surfaceTension = this.m_surfaceTension;
+                for (int num12 = 0; num12 < this.m_neighborList.Count; num12++)
+                {
+                    FluidParticle particle5 = this.m_neighborList.Data[num12].a;
+                    FluidParticle particle6 = this.m_neighborList.Data[num12].b;
+                    if (particle5.position != particle6.position)
+                    {
+                        Vector3 vector5;
+                        Vector3 vector6;
+                        float num13;
+                        Vector3 vector3 = new Vector3(0f);
+                        Vector3 vector4 = particle5.position - particle6.position;
+                        this.GetGradientNormalAndLaplacian(ref vector4, out vector5, out vector6, out num13);
+                        float num14 = (particle5.pressure + particle6.pressure) * 0.5f;
+                        vector3 -= (Vector3)(vector5 * num14);
+                        Vector3 vector7 = particle6.velocity - particle5.velocity;
+                        vector3 += (Vector3)(vector7 * (num13 * viscosity));
+                        vector3 += (Vector3)(vector6 * (num13 * surfaceTension));
+                        particle5.force += (Vector3)(vector3 * particle6.surfaceNormal);
+                        particle6.force -= (Vector3)(vector3 * particle5.surfaceNormal);
+                    }
+                }
             }
         }*/
 
@@ -212,7 +282,7 @@ namespace FluidSimulation1
                 {
                     Particles[i].Force = Vector3.Zero;
                     //Particles[i].Density = 0;
-                    Particles[i].Density = Particles[i].Mass * this.Wpoly6Zero;
+                    Particles[i].Density = Particles[i].Mass * this.Poly6Zero;
                     Particles[i].Pressure = 0;
                 }
 
@@ -229,7 +299,7 @@ namespace FluidSimulation1
                 ComputeAllForces();
 
                 // Update Position and Velocity of each Fluid Particle According to Leap-Frog Scheme
-                // UpdateParticles(timeStep);
+                //UpdateParticles(timeStep);
 
                 for (int i = 0; i < Particles.Count; i++)
                 {

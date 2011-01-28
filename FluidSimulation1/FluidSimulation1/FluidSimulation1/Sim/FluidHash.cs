@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace FluidSimulation1
 {
     public class FluidHash
     {
-        public List<Particle>[] Entry;
+        public List<FluidParticle>[] Entry;
         private int numberOfEntries;
 
         AxisAlignedBoundingBox AxisAlignedBoundingBox;
@@ -34,10 +35,10 @@ namespace FluidSimulation1
 
             // Create the list that holds each cells particles
             this.numberOfEntries = this.cellSizeX * this.cellSizeY * this.cellSizeZ;
-            this.Entry = new List<Particle>[this.numberOfEntries];
+            this.Entry = new List<FluidParticle>[this.numberOfEntries];
             for (int i = 0; i < this.numberOfEntries; i++)
             {
-                this.Entry[i] = new List<Particle>(64);
+                this.Entry[i] = new List<FluidParticle>(64);
             }
         }
 
@@ -52,7 +53,7 @@ namespace FluidSimulation1
         }
 
 
-        private void GatherCellNeighbors2(Particle part, int x1, int y1, int z1, List<NeighbourPair> neighbors)
+        private void GatherCellNeighbors2(FluidParticle part, int x1, int y1, int z1, List<NeighbourPair> neighbors)
         {
             x1 = Math.Abs(x1) % this.cellSizeX;
             y1 = Math.Abs(y1) % this.cellSizeY;
@@ -60,7 +61,7 @@ namespace FluidSimulation1
 
             int index = (((z1 * this.cellSizeY) + y1) * this.cellSizeX) + x1;
 
-            foreach (Particle particle in this.Entry[index])
+            foreach (FluidParticle particle in this.Entry[index])
             {
                 Vector3 vector = part.Position - particle.Position;
 
@@ -72,11 +73,11 @@ namespace FluidSimulation1
         }
 
 
-        private void SelfGatherCellNeighbors(Particle part, int index, int index0, List<NeighbourPair> neighbors)
+        private void SelfGatherCellNeighbors(FluidParticle part, int index, int index0, List<NeighbourPair> neighbors)
         {
             for (int i = index + 1; i < this.Entry[index0].Count; i++)
             {
-                Particle b = this.Entry[index0][i];
+                FluidParticle b = this.Entry[index0][i];
                 Vector3 vector = part.Position - b.Position;
 
                 if (vector.LengthSquared() < this.h2)
@@ -97,7 +98,7 @@ namespace FluidSimulation1
 
             int counter = 0;
 
-            foreach (Particle particle in this.Entry[index])
+            foreach (FluidParticle particle in this.Entry[index])
             {
                 this.SelfGatherCellNeighbors(particle, counter, index, neighbors);
 
@@ -128,8 +129,10 @@ namespace FluidSimulation1
             }
         }
 
-        public void AddParticle(Particle p)
+        public void AddParticle(FluidParticle p)
         {
+            //Debug.Write(p.Position.ToString());
+
             int x = (int)((p.Position.X - this.AxisAlignedBoundingBox.Min.X) / this.h);
             int y = (int)((p.Position.Y - this.AxisAlignedBoundingBox.Min.Y) / this.h);
             int z = (int)((p.Position.Z - this.AxisAlignedBoundingBox.Min.Z) / this.h);

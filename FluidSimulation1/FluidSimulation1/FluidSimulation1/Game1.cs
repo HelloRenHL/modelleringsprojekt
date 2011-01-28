@@ -35,7 +35,7 @@ namespace FluidSimulation1
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            myFluid = new Fluid(100);
+            myFluid = new Fluid(1000);
             camera = new Camera();
 
             camera.AspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
@@ -118,21 +118,33 @@ namespace FluidSimulation1
                 myFluid.InitializeParticles();
             }
 
+            float cameraSpeed = 0.01f;
+
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Up))
             {
-                camera.Position.Z--;
+                camera.Position.Z -= cameraSpeed;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Down))
             {
-                camera.Position.Z++;
+                camera.Position.Z += cameraSpeed;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Right))
             {
-                camera.Position.X++;
+                camera.Position.X += cameraSpeed;
             }
             if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.Left))
             {
-                camera.Position.X--;
+                camera.Position.X -= cameraSpeed;
+            }
+
+            if (inputHandler.IsKeyPressed(Keys.D))
+            {
+                myFluid.Gravity = Vector3.Transform(myFluid.Gravity, Matrix.CreateRotationZ(MathHelper.ToRadians(90)));
+            }
+
+            if (inputHandler.IsKeyPressed(Keys.A))
+            {
+                myFluid.Gravity = Vector3.Transform(myFluid.Gravity, Matrix.CreateRotationZ(MathHelper.ToRadians(-90)));
             }
 
         }
@@ -145,7 +157,7 @@ namespace FluidSimulation1
         {
             GraphicsDevice.Clear(Color.Blue);
 
-            foreach (Particle p in myFluid.Particles)
+            foreach (FluidParticle p in myFluid.Particles)
             {
                 DrawModel(sphere, Matrix.CreateTranslation(p.Position));
             }
