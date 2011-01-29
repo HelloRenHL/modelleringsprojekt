@@ -30,12 +30,14 @@ namespace FluidSimulation1
 
         public static Random Random = new Random();
 
+        FpsComponent fpsCounter;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            myFluid = new Fluid(1000);
+            myFluid = new Fluid(500);
             camera = new Camera();
 
             camera.AspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
@@ -43,6 +45,10 @@ namespace FluidSimulation1
             float cameraDistance = 2.0f;
 
             camera.Position = new Vector3(0, cameraDistance, cameraDistance);
+
+            fpsCounter = new FpsComponent(this);
+
+            Components.Add(fpsCounter);
 
             IsMouseVisible = true;
         }
@@ -136,6 +142,14 @@ namespace FluidSimulation1
             {
                 camera.Position.X -= cameraSpeed;
             }
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.W))
+            {
+                camera.Position.Y += cameraSpeed;
+            }
+            if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.S))
+            {
+                camera.Position.Y -= cameraSpeed;
+            }
 
             if (inputHandler.IsKeyPressed(Keys.D))
             {
@@ -157,12 +171,28 @@ namespace FluidSimulation1
         {
             GraphicsDevice.Clear(Color.Blue);
 
+            ResetRenderStates();
+
             foreach (FluidParticle p in myFluid.Particles)
             {
                 DrawModel(sphere, Matrix.CreateTranslation(p.Position));
             }
 
+            spriteBatch.Begin();
+            spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds, new Vector2(20, 40) + Vector2.One, Color.Black);
+            spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds, new Vector2(20, 40), Color.White);
+
+            spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60) + Vector2.One, Color.Black);
+            spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60), Color.White);
+            spriteBatch.End();
+
             base.Draw(gameTime);
+        }
+
+        private void ResetRenderStates()
+        {
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
 
         /// <summary>

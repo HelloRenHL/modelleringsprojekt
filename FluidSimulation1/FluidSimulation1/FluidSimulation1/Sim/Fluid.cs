@@ -21,13 +21,12 @@ namespace FluidSimulation1
     {
         public static Random Random = new Random();
         public int MaxParticles;
-        public int ActiveParticles;
         public float Viscosity = 10f;
         public float SurfaceTension = 12.5f;
 
         public FluidHash FluidHash;
 
-        private int activeParticles;
+        public int ActiveParticles;
 
         List<NeighbourPair> Neighbours = new List<NeighbourPair>();
 
@@ -37,18 +36,12 @@ namespace FluidSimulation1
         public Vector3 Gravity = Vector3.Down * 196.2f;
 
         float h;
-        float h2;
-        float h6;
-        float h9;
 
         AxisAlignedBoundingBox bounds;
 
         public Fluid(int maxParticles)
         {
-            h = 0.15f; //0.15f
-            h2 = h * h;
-            h6 = (float)Math.Pow(h, 6);
-            h9 = (float)Math.Pow(h, 9);
+            h = 0.15f;
 
             bounds = new AxisAlignedBoundingBox();
             bounds.Set(-Vector3.One, Vector3.One);
@@ -56,9 +49,9 @@ namespace FluidSimulation1
             FluidHash = new FluidHash(bounds, h);
 
             MaxParticles = maxParticles;
-            activeParticles = maxParticles;
+            ActiveParticles = maxParticles;
 
-            Poly6Zero = SmoothKernel.Poly6(Vector3.Zero, h9, h2);
+            Poly6Zero = SmoothKernel.Poly6(Vector3.Zero, h);
 
             for (int i = 0; i < maxParticles; i++)
             {
@@ -70,7 +63,7 @@ namespace FluidSimulation1
 
         public void InitializeParticles()
         {
-            for (int i = 0; i < activeParticles; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
                 Particles[i].Position = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble()) * 2f - Vector3.One;
                 Particles[i].Velocity = Vector3.Zero;
@@ -81,10 +74,12 @@ namespace FluidSimulation1
             }
         }
 
+        public Stopwatch StopWatch = new Stopwatch();
+
         private void FindNeighbors()
         {
             this.FluidHash.Clear();
-            for (int i = 0; i < this.activeParticles; i++)
+            for (int i = 0; i < this.ActiveParticles; i++)
             {
                 this.FluidHash.AddParticle(this.Particles[i]);
             }
@@ -100,7 +95,7 @@ namespace FluidSimulation1
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
 
-                float density = a.Mass * SmoothKernel.Poly6(a.Position - b.Position, h9, h2);
+                float density = a.Mass * SmoothKernel.Poly6(b.Position - a.Position, h);
 
                 // Eq. 3 ifrån Müller03
                 a.Density += density;
@@ -113,7 +108,7 @@ namespace FluidSimulation1
             for (int i = 0; i < Particles.Count; i++)
             {
                 // Eq. 12 ifrån Müller03
-                Particles[i].Pressure = 0.2f * (Particles[i].Density - 1000f);
+                Particles[i].Pressure = 0.2f * (Particles[i].Density - 1000f); //<- ???
             }
         }
 
@@ -131,16 +126,14 @@ namespace FluidSimulation1
 
                 Vector3 rv = a.Position - b.Position;
                 float r = rv.Length();
-
-                if (r < 0.1f)
-                    continue;
-
                 float r2 = r * r;
 
                 // Force due to the fluid pressure gradient
                 #region Pressure
+
                 //Eq. 10 Müller03
-                Vector3 pressureForce = -b.Mass * (a.Pressure + b.Pressure) / (2 * b.Density) * SmoothKernel.SpikyGradient(rv, r, r2, h, h2, h6);
+                Vector3 pressureForce = -b.Mass / b.Density * (a.Pressure + b.Pressure) / 2.0f * -SmoothKernel.SpikyGradient(rv, h); //La in ett minus här (-Smoothed...)
+
                 #endregion
 
                 // Force due to the viscosity of the fluid
@@ -149,7 +142,7 @@ namespace FluidSimulation1
                 Vector3 viscosityForce = Vector3.Zero;
 
                 // Eq. 14 Müller03
-                viscosityForce = Viscosity * b.Mass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(r, h, h6); // <- Får allt att hacka
+                viscosityForce = Viscosity * b.Mass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(rv, h);
 
                 #endregion
 
@@ -161,8 +154,8 @@ namespace FluidSimulation1
 
                 float threshold = 0.05f;
 
-                float colorFieldLaplacian = a.Mass / a.Density * SmoothKernel.Poly6Laplacian(r2, h2, h9);
-                Vector3 n = a.Mass / a.Density * SmoothKernel.Poly6Gradient(rv, r2, h2, h9); // <- The gradient field of the smoothed color field
+                float colorFieldLaplacian = a.Mass / a.Density * SmoothKernel.Poly6Laplacian(rv, h);
+                Vector3 n = a.Mass / a.Density * SmoothKernel.Poly6Gradient(rv, h); // <- The gradient field of the smoothed color field
                 
                 if (n.Length() > threshold)
                 {
@@ -171,8 +164,14 @@ namespace FluidSimulation1
 
                 #endregion
 
-                a.Force += pressureForce + viscosityForce + surfaceTensionForce;
-                b.Force -= pressureForce + viscosityForce + surfaceTensionForce;
+                a.Force += surfaceTensionForce;
+                b.Force -= surfaceTensionForce;
+
+                a.Force += viscosityForce;
+                b.Force -= viscosityForce;
+
+                a.Force += pressureForce; // <-- Tror det är nåt fel på den här :'(
+                b.Force -= pressureForce;
             }
         }
 
@@ -200,23 +199,26 @@ namespace FluidSimulation1
             {
                 for (int i = 0; i < this.m_numActiveParticles; i++)
                 {
-                    FluidParticle particle1 = this.m_particles[i];
-                    particle1.velocity += (Vector3)(this.m_particles[i].force * (timeStep * this.m_particles[i].densityReciprocal));
-                    FluidParticle particle7 = this.m_particles[i];
-                    particle7.position += (Vector3)(this.m_particles[i].velocity * timeStep);
-                    FluidParticle particle8 = this.m_particles[i];
-                    particle8.life += timeStep;
+                    m_particles[i].velocity += (Vector3)(this.m_particles[i].force * (timeStep * this.m_particles[i].densityReciprocal));
+                    m_particles[i].position += (Vector3)(this.m_particles[i].velocity * timeStep);
+                    m_particles[i].life += timeStep;
                 }
+         * 
+         * 
                 int count = this.m_obstacles.Count;
                 for (int j = 0; j < count; j++)
                 {
                     this.m_obstacles[j].HandleCollisions(ref this.m_particles);
                 }
+         * 
+         * 
                 for (int k = 0; k < this.m_numActiveParticles; k++)
                 {
                     this.m_particles[k].force = (Vector3)(this.m_gravityDirection * this.m_gravityForce);
                     this.m_particles[k].density = this.m_particles[k].mass * this.Wpoly6Zero;
                 }
+         * 
+         * 
                 this.FindNeighbors();
                 for (int m = 0; m < this.m_neighborList.Count; m++)
                 {
@@ -227,6 +229,8 @@ namespace FluidSimulation1
                     a.density += b.mass * num6;
                     b.density += a.mass * num6;
                 }
+         * 
+         * 
                 if (this.m_isColorMixing)
                 {
                     for (int num7 = 0; num7 < this.m_neighborList.Count; num7++)
@@ -239,33 +243,39 @@ namespace FluidSimulation1
                         particle4.color = Vector4.Lerp(particle4.color, vector2, num8);
                     }
                 }
+         * 
+         * 
                 for (int n = 0; n < this.m_numActiveParticles; n++)
                 {
-                    this.m_particles[n].densityReciprocal = 1f / this.m_particles[n].density;
-                    this.m_particles[n].surfaceNormal = this.m_particles[n].mass * this.m_particles[n].densityReciprocal;
                     this.m_particles[n].pressure = 0.2f * (this.m_particles[n].density - 1000f);
                 }
+         * 
+         * 
                 float viscosity = this.m_viscosity;
                 float surfaceTension = this.m_surfaceTension;
+         * 
+         * 
                 for (int num12 = 0; num12 < this.m_neighborList.Count; num12++)
                 {
-                    FluidParticle particle5 = this.m_neighborList.Data[num12].a;
-                    FluidParticle particle6 = this.m_neighborList.Data[num12].b;
+                    FluidParticle a = this.m_neighborList.Data[num12].a;
+                    FluidParticle b = this.m_neighborList.Data[num12].b;
                     if (particle5.position != particle6.position)
                     {
-                        Vector3 vector5;
-                        Vector3 vector6;
-                        float num13;
-                        Vector3 vector3 = new Vector3(0f);
-                        Vector3 vector4 = particle5.position - particle6.position;
-                        this.GetGradientNormalAndLaplacian(ref vector4, out vector5, out vector6, out num13);
-                        float num14 = (particle5.pressure + particle6.pressure) * 0.5f;
-                        vector3 -= (Vector3)(vector5 * num14);
-                        Vector3 vector7 = particle6.velocity - particle5.velocity;
-                        vector3 += (Vector3)(vector7 * (num13 * viscosity));
-                        vector3 += (Vector3)(vector6 * (num13 * surfaceTension));
-                        particle5.force += (Vector3)(vector3 * particle6.surfaceNormal);
-                        particle6.force -= (Vector3)(vector3 * particle5.surfaceNormal);
+                        Vector3 gradient;
+                        Vector3 normal;
+                        float laplacian;
+                        Vector3 rv = particle5.position - particle6.position;
+         * 
+                        this.GetGradientNormalAndLaplacian(ref rv, out gradient, out normal, out laplacian);
+         * 
+                        vector3 = -(gradient * (particle5.pressure + particle6.pressure) * 0.5f);
+                        Vector3 dv = b.velocity - a.velocity;
+         * 
+                        vector3 += (Vector3)(dv * (laplacian * viscosity));
+                        vector3 += (Vector3)(normal * (laplacian * surfaceTension));
+         * 
+                        a.force += (Vector3)(vector3 * b.mass / b.density);
+                        b.force -= (Vector3)(vector3 * a.mass / a.density);
                     }
                 }
             }
@@ -274,6 +284,9 @@ namespace FluidSimulation1
         public void Update(float elapsedTime)
         {
             float timeStep = elapsedTime;
+
+            StopWatch.Reset();
+            StopWatch.Start();
 
             if (timeStep != 0)
             {
@@ -288,6 +301,9 @@ namespace FluidSimulation1
 
                 // Find neighbours of particles
                 FindNeighbors();
+
+                // Litar inte på att funktionen ovanför funkar till 100% så skrev en egen för att testa
+                //TempFindNeighbors();
 
                 // Compute Densities
                 ComputeDensity();
@@ -305,48 +321,75 @@ namespace FluidSimulation1
                 {
                     //simple friction
                     float frictionForce = 0.1f;
-                    Particles[i].Force -= Particles[i].Velocity * frictionForce;
+                    //Particles[i].Force -= Particles[i].Velocity * frictionForce;
 
                     Particles[i].Velocity += Particles[i].Force / Particles[i].Density * timeStep;
                     Particles[i].Position += Particles[i].Velocity * timeStep;
                     Particles[i].LifeTime += timeStep;
                 }
 
-                int size = 1;
+                HandleCollisions();
+            }
 
-                float bounce = 0.33f;
+            StopWatch.Stop();
+        }
 
-                for (int i = 0; i < Particles.Count; i++)
+        private void TempFindNeighbors()
+        {
+            Neighbours.Clear();
+            for (int i = 0; i < Particles.Count; i++)
+            {
+                for (int j = 0; j < Particles.Count; j++)
                 {
-                    if (Particles[i].Position.Y < 0)
-                    {
-                        Particles[i].Velocity.Y *= -1 * bounce;
-                        Particles[i].Position.Y = 0;
-                    }
+                    if (i == j)
+                        continue;
 
-                    if (Particles[i].Position.X < -size)
-                    {
-                        Particles[i].Velocity.X *= -1 * bounce;
-                        Particles[i].Position.X = -size;
-                    }
+                    float r = (Particles[i].Position - Particles[j].Position).Length();
 
-                    if (Particles[i].Position.X > size)
+                    if (r < h)
                     {
-                        Particles[i].Velocity.X *= -1 * bounce;
-                        Particles[i].Position.X = size;
+                        Neighbours.Add(new NeighbourPair(Particles[i], Particles[j]));
                     }
+                }
+            }
+        }
 
-                    if (Particles[i].Position.Z > size)
-                    {
-                        Particles[i].Velocity.Z *= -1 * bounce;
-                        Particles[i].Position.Z = size;
-                    }
+        private void HandleCollisions()
+        {
+            int size = 1;
 
-                    if (Particles[i].Position.Z < -size)
-                    {
-                        Particles[i].Velocity.Z *= -1 * bounce;
-                        Particles[i].Position.Z = -size;
-                    }
+            float bounce = 0.33f;
+
+            for (int i = 0; i < Particles.Count; i++)
+            {
+                if (Particles[i].Position.Y < 0)
+                {
+                    Particles[i].Velocity.Y *= -1 * bounce;
+                    Particles[i].Position.Y = 0;
+                }
+
+                if (Particles[i].Position.X < -size)
+                {
+                    Particles[i].Velocity.X *= -1 * bounce;
+                    Particles[i].Position.X = -size;
+                }
+
+                if (Particles[i].Position.X > size)
+                {
+                    Particles[i].Velocity.X *= -1 * bounce;
+                    Particles[i].Position.X = size;
+                }
+
+                if (Particles[i].Position.Z > size)
+                {
+                    Particles[i].Velocity.Z *= -1 * bounce;
+                    Particles[i].Position.Z = size;
+                }
+
+                if (Particles[i].Position.Z < -size)
+                {
+                    Particles[i].Velocity.Z *= -1 * bounce;
+                    Particles[i].Position.Z = -size;
                 }
             }
         }

@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
+    <Compile Include="Engine\FpsComponent.cs" />
     <Compile Include="Engine\InputHandler.cs" />
     <Compile Include="ModelObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

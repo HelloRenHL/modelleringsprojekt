@@ -63,9 +63,9 @@ namespace FluidSimulation1
 
             foreach (FluidParticle particle in this.Entry[index])
             {
-                Vector3 vector = part.Position - particle.Position;
+                Vector3 rv = part.Position - particle.Position;
 
-                if (vector.LengthSquared() < this.h2)
+                if (rv.LengthSquared() < this.h2)
                 {
                     neighbors.Add(new NeighbourPair(part, particle));
                 }
@@ -78,9 +78,9 @@ namespace FluidSimulation1
             for (int i = index + 1; i < this.Entry[index0].Count; i++)
             {
                 FluidParticle b = this.Entry[index0][i];
-                Vector3 vector = part.Position - b.Position;
+                Vector3 rv = part.Position - b.Position;
 
-                if (vector.LengthSquared() < this.h2)
+                if (rv.LengthSquared() < this.h2)
                 {
                     neighbors.Add(new NeighbourPair(part, b));
                 }
@@ -94,7 +94,7 @@ namespace FluidSimulation1
             y = Math.Abs(y) % this.cellSizeY;
             z = Math.Abs(z) % this.cellSizeZ;
 
-            int index = (z * this.cellSizeY + y) * this.cellSizeX + x;
+            int index = (((z * this.cellSizeY) + y) * this.cellSizeX) + x;
 
             int counter = 0;
 
