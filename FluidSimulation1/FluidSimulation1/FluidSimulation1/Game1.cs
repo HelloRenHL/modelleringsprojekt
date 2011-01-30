@@ -32,12 +32,14 @@ namespace FluidSimulation1
 
         FpsComponent fpsCounter;
 
+        Texture2D arrow;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            myFluid = new Fluid(500);
+            myFluid = new Fluid(1000);
             camera = new Camera();
 
             camera.AspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
@@ -75,9 +77,11 @@ namespace FluidSimulation1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             sphere = Content.Load<Model>(@"models\smaller_sphere");
-            teapot = Content.Load<Model>(@"models\teapot");
+            teapot = Content.Load<Model>(@"models\smaller_sphere");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
+
+            arrow = Content.Load<Texture2D>(@"arrow");
         }
 
         /// <summary>
@@ -153,12 +157,12 @@ namespace FluidSimulation1
 
             if (inputHandler.IsKeyPressed(Keys.D))
             {
-                myFluid.Gravity = Vector3.Transform(myFluid.Gravity, Matrix.CreateRotationZ(MathHelper.ToRadians(90)));
+                myFluid.GravityRotation += 45.0f;
             }
 
             if (inputHandler.IsKeyPressed(Keys.A))
             {
-                myFluid.Gravity = Vector3.Transform(myFluid.Gravity, Matrix.CreateRotationZ(MathHelper.ToRadians(-90)));
+                myFluid.GravityRotation -= 45.0f;
             }
 
         }
@@ -184,6 +188,11 @@ namespace FluidSimulation1
 
             spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60) + Vector2.One, Color.Black);
             spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60), Color.White);
+
+            string temp = "Gravity Direction:";
+            spriteBatch.DrawString(verdana, temp, new Vector2(20, 90) + Vector2.One, Color.Black);
+            spriteBatch.DrawString(verdana, temp, new Vector2(20, 90), Color.White);
+            spriteBatch.Draw(arrow, new Vector2(30 + verdana.MeasureString(temp).X, 90) + Vector2.One * 16.0f, null, Color.White, MathHelper.ToRadians(-myFluid.GravityRotation), Vector2.One * 16.0f, 1.0f, SpriteEffects.None, 0);
             spriteBatch.End();
 
             base.Draw(gameTime);

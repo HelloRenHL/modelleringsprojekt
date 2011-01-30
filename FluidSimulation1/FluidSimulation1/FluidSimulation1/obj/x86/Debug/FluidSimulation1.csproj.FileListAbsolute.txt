@@ -20,3 +20,5 @@ c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSi
 c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot.xnb
 c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\small_sphere.xnb
 c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\smaller_sphere.xnb
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\teapot_small.xnb
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\arrow.xnb

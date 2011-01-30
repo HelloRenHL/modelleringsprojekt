@@ -34,6 +34,7 @@ namespace FluidSimulation1
         float Poly6Zero;
 
         public Vector3 Gravity = Vector3.Down * 196.2f;
+        public float GravityRotation = 0.0f;
 
         float h;
 
@@ -114,9 +115,12 @@ namespace FluidSimulation1
 
         private void ComputeAllForces()
         {
+
+            Vector3 tempGravity = Vector3.Transform(Gravity, Matrix.CreateFromAxisAngle(Vector3.UnitZ, MathHelper.ToRadians(GravityRotation)));
+
             for (int i = 0; i < Particles.Count; i++)
             {
-                Particles[i].Force += this.Gravity * Particles[i].Mass; // / Particles[i].Density
+                Particles[i].Force += tempGravity * Particles[i].Mass;
             }
 
             for (int i = 0; i < Neighbours.Count; i++)
@@ -149,9 +153,9 @@ namespace FluidSimulation1
                 // Müller03 model surface tension forces even thou it is not present in the Navier-Stokes equations (Eq. 7)
                 #region Surface Tension
 
-                // Müller03: "Evaluating n/|n| at locations where |n| is small causes numerical problems. We only evaluate the force if |n| exceeds a certain threshold
                 Vector3 surfaceTensionForce = Vector3.Zero;
 
+                // Müller03: "Evaluating n/|n| at locations where |n| is small causes numerical problems. We only evaluate the force if |n| exceeds a certain threshold
                 float threshold = 0.05f;
 
                 float colorFieldLaplacian = a.Mass / a.Density * SmoothKernel.Poly6Laplacian(rv, h);
@@ -164,18 +168,15 @@ namespace FluidSimulation1
 
                 #endregion
 
-                a.Force += surfaceTensionForce;
-                b.Force -= surfaceTensionForce;
-
-                a.Force += viscosityForce;
-                b.Force -= viscosityForce;
-
-                a.Force += pressureForce; // <-- Tror det är nåt fel på den här :'(
-                b.Force -= pressureForce;
+                a.Force += surfaceTensionForce + viscosityForce + pressureForce;
+                b.Force -= (surfaceTensionForce + viscosityForce + pressureForce);
             }
         }
 
-        // Funkade skitdåligt?
+        /// <summary>
+        /// Update position according to Leap-Frog scheme (This is not being used)
+        /// </summary>
+        /// <param name="timeStep"></param>
         private void UpdateParticles(float timeStep)
         {
             //the simulation stores position, velocity, velocity half stepped and acceleration for each fluid particle
@@ -192,94 +193,6 @@ namespace FluidSimulation1
                 Particles[i].VelocityHalf = velocityHalfNext;
             }
         }
-
-        /*public void test()
-        {
-            if (timeStep != 0f)
-            {
-                for (int i = 0; i < this.m_numActiveParticles; i++)
-                {
-                    m_particles[i].velocity += (Vector3)(this.m_particles[i].force * (timeStep * this.m_particles[i].densityReciprocal));
-                    m_particles[i].position += (Vector3)(this.m_particles[i].velocity * timeStep);
-                    m_particles[i].life += timeStep;
-                }
-         * 
-         * 
-                int count = this.m_obstacles.Count;
-                for (int j = 0; j < count; j++)
-                {
-                    this.m_obstacles[j].HandleCollisions(ref this.m_particles);
-                }
-         * 
-         * 
-                for (int k = 0; k < this.m_numActiveParticles; k++)
-                {
-                    this.m_particles[k].force = (Vector3)(this.m_gravityDirection * this.m_gravityForce);
-                    this.m_particles[k].density = this.m_particles[k].mass * this.Wpoly6Zero;
-                }
-         * 
-         * 
-                this.FindNeighbors();
-                for (int m = 0; m < this.m_neighborList.Count; m++)
-                {
-                    FluidParticle a = this.m_neighborList.Data[m].a;
-                    FluidParticle b = this.m_neighborList.Data[m].b;
-                    Vector3 rv = a.position - b.position;
-                    float num6 = this.Wpoly6(rv);
-                    a.density += b.mass * num6;
-                    b.density += a.mass * num6;
-                }
-         * 
-         * 
-                if (this.m_isColorMixing)
-                {
-                    for (int num7 = 0; num7 < this.m_neighborList.Count; num7++)
-                    {
-                        FluidParticle particle3 = this.m_neighborList.Data[num7].a;
-                        FluidParticle particle4 = this.m_neighborList.Data[num7].b;
-                        float num8 = this.Wpoly6(particle3.position - particle4.position) / 2000f;
-                        Vector4 vector2 = (Vector4)((particle3.color + particle4.color) * 0.5f);
-                        particle3.color = Vector4.Lerp(particle3.color, vector2, num8);
-                        particle4.color = Vector4.Lerp(particle4.color, vector2, num8);
-                    }
-                }
-         * 
-         * 
-                for (int n = 0; n < this.m_numActiveParticles; n++)
-                {
-                    this.m_particles[n].pressure = 0.2f * (this.m_particles[n].density - 1000f);
-                }
-         * 
-         * 
-                float viscosity = this.m_viscosity;
-                float surfaceTension = this.m_surfaceTension;
-         * 
-         * 
-                for (int num12 = 0; num12 < this.m_neighborList.Count; num12++)
-                {
-                    FluidParticle a = this.m_neighborList.Data[num12].a;
-                    FluidParticle b = this.m_neighborList.Data[num12].b;
-                    if (particle5.position != particle6.position)
-                    {
-                        Vector3 gradient;
-                        Vector3 normal;
-                        float laplacian;
-                        Vector3 rv = particle5.position - particle6.position;
-         * 
-                        this.GetGradientNormalAndLaplacian(ref rv, out gradient, out normal, out laplacian);
-         * 
-                        vector3 = -(gradient * (particle5.pressure + particle6.pressure) * 0.5f);
-                        Vector3 dv = b.velocity - a.velocity;
-         * 
-                        vector3 += (Vector3)(dv * (laplacian * viscosity));
-                        vector3 += (Vector3)(normal * (laplacian * surfaceTension));
-         * 
-                        a.force += (Vector3)(vector3 * b.mass / b.density);
-                        b.force -= (Vector3)(vector3 * a.mass / a.density);
-                    }
-                }
-            }
-        }*/
 
         public void Update(float elapsedTime)
         {
@@ -315,13 +228,13 @@ namespace FluidSimulation1
                 ComputeAllForces();
 
                 // Update Position and Velocity of each Fluid Particle According to Leap-Frog Scheme
-                //UpdateParticles(timeStep);
+                // UpdateParticles(timeStep);
 
                 for (int i = 0; i < Particles.Count; i++)
                 {
                     //simple friction
                     float frictionForce = 0.1f;
-                    //Particles[i].Force -= Particles[i].Velocity * frictionForce;
+                    Particles[i].Force -= Particles[i].Velocity * frictionForce;
 
                     Particles[i].Velocity += Particles[i].Force / Particles[i].Density * timeStep;
                     Particles[i].Position += Particles[i].Velocity * timeStep;
