@@ -19,14 +19,14 @@ namespace FluidSimulation1
 
     public class Fluid
     {
-        public static Random Random = new Random();
         public int MaxParticles;
+        public int ActiveParticles;
+
         public float Viscosity = 10f;
         public float SurfaceTension = 12.5f;
+        public float ParticleMass = 4.0f;
 
         public FluidHash FluidHash;
-
-        public int ActiveParticles;
 
         List<NeighbourPair> Neighbours = new List<NeighbourPair>();
 
@@ -45,7 +45,9 @@ namespace FluidSimulation1
             h = 0.15f;
 
             bounds = new AxisAlignedBoundingBox();
-            bounds.Set(-Vector3.One, Vector3.One);
+            //bounds.Set(-Vector3.One, Vector3.One);
+            int size = 1;
+            bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
 
             FluidHash = new FluidHash(bounds, h);
 
@@ -54,24 +56,28 @@ namespace FluidSimulation1
 
             Poly6Zero = SmoothKernel.Poly6(Vector3.Zero, h);
 
-            for (int i = 0; i < maxParticles; i++)
-            {
-                Particles.Add(new FluidParticle());
-            }
-
             InitializeParticles();
+        }
+
+        private Vector3 Random(Vector3 min, Vector3 max)
+        {
+            Vector3 vector = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble());
+            Vector3 vector2 = max - min;
+            return (min + (vector2 * vector));
         }
 
         public void InitializeParticles()
         {
-            for (int i = 0; i < ActiveParticles; i++)
+            for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i].Position = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble()) * 2f - Vector3.One;
-                Particles[i].Velocity = Vector3.Zero;
-                Particles[i].Force = Vector3.Zero;
-                Particles[i].Mass = 4f;
-                Particles[i].Density = 0f;
-                Particles[i].Pressure = 0f;
+                FluidParticle particle = new FluidParticle();
+                particle.Position = Random(bounds.Min, bounds.Max);
+                particle.Velocity = Vector3.Zero;
+                particle.Force = Vector3.Zero;
+                //particle.Mass = ParticleMass;
+                particle.Density = 0f;
+                particle.Pressure = 0f;
+                Particles.Add(particle);
             }
         }
 
@@ -80,7 +86,7 @@ namespace FluidSimulation1
         private void FindNeighbors()
         {
             this.FluidHash.Clear();
-            for (int i = 0; i < this.ActiveParticles; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
                 this.FluidHash.AddParticle(this.Particles[i]);
             }
@@ -96,7 +102,7 @@ namespace FluidSimulation1
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
 
-                float density = a.Mass * SmoothKernel.Poly6(b.Position - a.Position, h);
+                float density = ParticleMass * SmoothKernel.Poly6(b.Position - a.Position, h);
 
                 // Eq. 3 ifrån Müller03
                 a.Density += density;
@@ -106,7 +112,7 @@ namespace FluidSimulation1
 
         private void ComputePressure()
         {
-            for (int i = 0; i < Particles.Count; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
                 // Eq. 12 ifrån Müller03
                 Particles[i].Pressure = 0.2f * (Particles[i].Density - 1000f); //<- ???
@@ -115,12 +121,11 @@ namespace FluidSimulation1
 
         private void ComputeAllForces()
         {
-
             Vector3 tempGravity = Vector3.Transform(Gravity, Matrix.CreateFromAxisAngle(Vector3.UnitZ, MathHelper.ToRadians(GravityRotation)));
 
-            for (int i = 0; i < Particles.Count; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
-                Particles[i].Force += tempGravity * Particles[i].Mass;
+                Particles[i].Force += tempGravity * ParticleMass;
             }
 
             for (int i = 0; i < Neighbours.Count; i++)
@@ -136,7 +141,7 @@ namespace FluidSimulation1
                 #region Pressure
 
                 //Eq. 10 Müller03
-                Vector3 pressureForce = -b.Mass / b.Density * (a.Pressure + b.Pressure) / 2.0f * -SmoothKernel.SpikyGradient(rv, h); //La in ett minus här (-Smoothed...)
+                Vector3 pressureForce = -ParticleMass / b.Density * (a.Pressure + b.Pressure) / 2.0f * -SmoothKernel.SpikyGradient(rv, h); //La in ett minus här (-Smoothed...)
 
                 #endregion
 
@@ -146,7 +151,7 @@ namespace FluidSimulation1
                 Vector3 viscosityForce = Vector3.Zero;
 
                 // Eq. 14 Müller03
-                viscosityForce = Viscosity * b.Mass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(rv, h);
+                viscosityForce = Viscosity * ParticleMass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(rv, h);
 
                 #endregion
 
@@ -158,8 +163,8 @@ namespace FluidSimulation1
                 // Müller03: "Evaluating n/|n| at locations where |n| is small causes numerical problems. We only evaluate the force if |n| exceeds a certain threshold
                 float threshold = 0.05f;
 
-                float colorFieldLaplacian = a.Mass / a.Density * SmoothKernel.Poly6Laplacian(rv, h);
-                Vector3 n = a.Mass / a.Density * SmoothKernel.Poly6Gradient(rv, h); // <- The gradient field of the smoothed color field
+                float colorFieldLaplacian = ParticleMass / a.Density * SmoothKernel.Poly6Laplacian(rv, h);
+                Vector3 n = ParticleMass / a.Density * SmoothKernel.Poly6Gradient(rv, h); // <- The gradient field of the smoothed color field
                 
                 if (n.Length() > threshold)
                 {
@@ -180,7 +185,7 @@ namespace FluidSimulation1
         private void UpdateParticles(float timeStep)
         {
             //the simulation stores position, velocity, velocity half stepped and acceleration for each fluid particle
-            for (int i = 0; i < Particles.Count; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
                 //compute v(t + 1/2dt)
                 Vector3 velocityHalfNext = Particles[i].VelocityHalf + timeStep * (Particles[i].Force / Particles[i].Density);
@@ -204,11 +209,11 @@ namespace FluidSimulation1
             if (timeStep != 0)
             {
                 // Clear particle properties
-                for (int i = 0; i < Particles.Count; i++)
+                for (int i = 0; i < ActiveParticles; i++)
                 {
                     Particles[i].Force = Vector3.Zero;
                     //Particles[i].Density = 0;
-                    Particles[i].Density = Particles[i].Mass * this.Poly6Zero;
+                    Particles[i].Density = ParticleMass * this.Poly6Zero;
                     Particles[i].Pressure = 0;
                 }
 
@@ -230,7 +235,7 @@ namespace FluidSimulation1
                 // Update Position and Velocity of each Fluid Particle According to Leap-Frog Scheme
                 // UpdateParticles(timeStep);
 
-                for (int i = 0; i < Particles.Count; i++)
+                for (int i = 0; i < ActiveParticles; i++)
                 {
                     //simple friction
                     float frictionForce = 0.1f;
@@ -250,7 +255,7 @@ namespace FluidSimulation1
         private void TempFindNeighbors()
         {
             Neighbours.Clear();
-            for (int i = 0; i < Particles.Count; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
                 for (int j = 0; j < Particles.Count; j++)
                 {
@@ -269,40 +274,38 @@ namespace FluidSimulation1
 
         private void HandleCollisions()
         {
-            int size = 1;
-
             float bounce = 0.33f;
 
-            for (int i = 0; i < Particles.Count; i++)
+            for (int i = 0; i < ActiveParticles; i++)
             {
-                if (Particles[i].Position.Y < 0)
+                if (Particles[i].Position.Y < bounds.Min.Y)
                 {
                     Particles[i].Velocity.Y *= -1 * bounce;
-                    Particles[i].Position.Y = 0;
+                    Particles[i].Position.Y = bounds.Min.Y;
                 }
 
-                if (Particles[i].Position.X < -size)
+                if (Particles[i].Position.X < bounds.Min.X)
                 {
                     Particles[i].Velocity.X *= -1 * bounce;
-                    Particles[i].Position.X = -size;
+                    Particles[i].Position.X = bounds.Min.X;
                 }
 
-                if (Particles[i].Position.X > size)
+                if (Particles[i].Position.X > bounds.Max.X)
                 {
                     Particles[i].Velocity.X *= -1 * bounce;
-                    Particles[i].Position.X = size;
+                    Particles[i].Position.X = bounds.Max.X;
                 }
 
-                if (Particles[i].Position.Z > size)
+                if (Particles[i].Position.Z > bounds.Max.Z)
                 {
                     Particles[i].Velocity.Z *= -1 * bounce;
-                    Particles[i].Position.Z = size;
+                    Particles[i].Position.Z = bounds.Max.Z;
                 }
 
-                if (Particles[i].Position.Z < -size)
+                if (Particles[i].Position.Z < bounds.Min.Z)
                 {
                     Particles[i].Velocity.Z *= -1 * bounce;
-                    Particles[i].Position.Z = -size;
+                    Particles[i].Position.Z = bounds.Min.Z;
                 }
             }
         }

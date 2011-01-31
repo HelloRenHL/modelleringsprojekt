@@ -10,7 +10,7 @@ namespace FluidSimulation1
     {
         public float Density = 0;
         public float Pressure = 0;
-        public float Mass = 4.0f;
+        //public float Mass = 4.0f;
         public float LifeTime = 0;
 
         public Vector3 Position;

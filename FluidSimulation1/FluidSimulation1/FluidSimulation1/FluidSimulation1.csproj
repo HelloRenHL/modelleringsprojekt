@@ -107,9 +107,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\Button.cs" />
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\FpsComponent.cs" />
+    <Compile Include="Engine\GuiElement.cs" />
     <Compile Include="Engine\InputHandler.cs" />
+    <Compile Include="Engine\Slider.cs" />
     <Compile Include="ModelObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
