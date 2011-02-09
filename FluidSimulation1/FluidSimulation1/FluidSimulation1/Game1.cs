@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using FluidSimulation1.Engine;
 
 namespace FluidSimulation1
 {
@@ -39,25 +40,35 @@ namespace FluidSimulation1
 
         Button restartButton;
 
+        public bool DisplayDebug = true;
+
+        DebugGrid debugGrid;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            myFluid = new Fluid(1000);
+            myFluid = new Fluid(2000);
             myFluid.ActiveParticles = 500;
-
-            camera = new Camera();
-            camera.AspectRatio = 4 / 3.0f; //graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
-            float cameraDistance = 2.0f;
-            camera.Position = new Vector3(0, cameraDistance * 0.2f, cameraDistance);
 
             fpsCounter = new FpsComponent(this);
 
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 768;
+            //graphics.PreferMultiSampling = true;
+            graphics.ApplyChanges();
+
+            camera = new Camera();
+            camera.AspectRatio = graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight;
+            float cameraDistance = 2.0f;
+            camera.Position = new Vector3(0, cameraDistance * 0.2f, cameraDistance);
 
             Components.Add(fpsCounter);
+
+            debugGrid = new DebugGrid(camera, this);
+
+            Components.Add(debugGrid);
 
             IsMouseVisible = true;
         }
@@ -120,13 +131,14 @@ namespace FluidSimulation1
             restartButton = new Button("Restart", verdana);
             restartButton.Position = new Vector2(graphics.PreferredBackBufferWidth - offset, 180);
             restartButton.OnClick += new EventHandler(restartButton_OnClick);
-            //guiElements.Add(restartButton);
+            guiElements.Add(restartButton);
 
             foreach (GuiElement element in guiElements)
             {
                 element.LoadContent(Content);
                 element.Font = verdana;
             }
+
         }
 
         void restartButton_OnClick(object sender, EventArgs e)
@@ -187,14 +199,17 @@ namespace FluidSimulation1
 
         private void HandleInput()
         {
-            foreach (GuiElement element in guiElements)
+            if (DisplayDebug)
             {
-                element.HandleInput(inputHandler);
+                foreach (GuiElement element in guiElements)
+                {
+                    element.HandleInput(inputHandler);
+                }
             }
 
-            if (inputHandler.IsKeyPressed(Keys.R))
+            if (inputHandler.IsKeyPressed(Keys.F1))
             {
-                particlesSlider_OnValueChanged(this, null);
+                DisplayDebug = !DisplayDebug;
             }
 
             float cameraSpeed = 0.01f;
@@ -233,7 +248,6 @@ namespace FluidSimulation1
             {
                 myFluid.GravityRotation -= 45.0f;
             }
-
         }
 
         /// <summary>
@@ -242,35 +256,43 @@ namespace FluidSimulation1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Blue);
+            GraphicsDevice.Clear(new Color(0.2f, 0.2f, 0.2f));
+
+            base.Draw(gameTime);
 
             ResetRenderStates();
 
+            //Apply in SRT order (Scale * Rotation * Translation)
             for (int i = 0; i < myFluid.ActiveParticles; i++)
             {
-                DrawModel(sphere, Matrix.CreateTranslation(myFluid.Particles[i].Position));
+                DrawModel(sphere, Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(myFluid.Particles[i].Position), myFluid.Particles[i].Color);
             }
 
-            spriteBatch.Begin();
-            //spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds, new Vector2(20, 40) + Vector2.One, Color.Black);
-            //spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds, new Vector2(20, 40), Color.White);
-
-            spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60) + Vector2.One, Color.Black);
-            spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60), Color.White);
-
-            string temp = "Gravity Direction:";
-            spriteBatch.DrawString(verdana, temp, new Vector2(20, 90) + Vector2.One, Color.Black);
-            spriteBatch.DrawString(verdana, temp, new Vector2(20, 90), Color.White);
-            spriteBatch.Draw(arrow, new Vector2(30 + verdana.MeasureString(temp).X, 90) + Vector2.One * 16.0f, null, Color.White, MathHelper.ToRadians(-myFluid.GravityRotation), Vector2.One * 16.0f, 1.0f, SpriteEffects.None, 0);
-
-            foreach (GuiElement element in guiElements)
+            if (DisplayDebug)
             {
-                element.Draw(spriteBatch);
+                spriteBatch.Begin();
+
+                spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds + "ms", new Vector2(20, 40) + Vector2.One, Color.Black);
+                spriteBatch.DrawString(verdana, "StopWatch: " + myFluid.StopWatch.ElapsedMilliseconds + "ms", new Vector2(20, 40), Color.White);
+
+                spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60) + Vector2.One, Color.Black);
+                spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60), Color.White);
+
+                string temp = "Gravity Direction:";
+                spriteBatch.DrawString(verdana, temp, new Vector2(20, 90) + Vector2.One, Color.Black);
+                spriteBatch.DrawString(verdana, temp, new Vector2(20, 90), Color.White);
+                spriteBatch.Draw(arrow, new Vector2(30 + verdana.MeasureString(temp).X, 90) + Vector2.One * 16.0f, null, Color.White, MathHelper.ToRadians(-myFluid.GravityRotation), Vector2.One * 16.0f, 1.0f, SpriteEffects.None, 0);
+
+                spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140) + Vector2.One, Color.Black);
+                spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140), Color.White);
+
+                foreach (GuiElement element in guiElements)
+                {
+                    element.Draw(spriteBatch);
+                }
+
+                spriteBatch.End();
             }
-
-            spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         private void ResetRenderStates()
@@ -279,11 +301,7 @@ namespace FluidSimulation1
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
 
-        /// <summary>
-        /// Simple model drawing method. The interesting part here is that
-        /// the view and projection matrices are taken from the camera object.
-        /// </summary>        
-        private void DrawModel(Model model, Matrix world)
+        private void DrawModel(Model model, Matrix world, Vector3 diffuseColor)
         {
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
@@ -293,6 +311,7 @@ namespace FluidSimulation1
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
+                    effect.DiffuseColor = diffuseColor;
                     effect.World = transforms[mesh.ParentBone.Index] * world;
 
                     // Use the matrices provided by the chase camera

@@ -49,7 +49,7 @@ namespace FluidSimulation1
 
             if (Rectangle.Contains(input.CurrentMouseState.X, input.CurrentMouseState.Y))
             {
-                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed)
+                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed && input.LastMouseState.LeftButton == ButtonState.Released)
                 {
                     Active = true;
                 }

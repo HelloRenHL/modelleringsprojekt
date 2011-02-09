@@ -18,6 +18,8 @@ namespace FluidSimulation1
         public Vector3 VelocityHalf = Vector3.Zero;
         public Vector3 Force = Vector3.Zero;
 
+        public Vector3 Color = Vector3.One;
+
         public FluidParticle()
         {
 

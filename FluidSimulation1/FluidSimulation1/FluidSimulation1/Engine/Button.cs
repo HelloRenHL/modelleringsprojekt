@@ -42,19 +42,25 @@ namespace FluidSimulation1
             base.HandleInput(input);
 
             bool oldActive = Active;
-            Active = false;
+
+            if (input.CurrentMouseState.LeftButton == ButtonState.Released)
+            {
+                Active = false;
+            }
 
             if(rectangle.Contains(input.CurrentMouseState.X, input.CurrentMouseState.Y))
             {
-                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed)
+                if (input.CurrentMouseState.LeftButton == ButtonState.Pressed && input.LastMouseState.LeftButton == ButtonState.Released)
                 {
                     Active = true;
                 }
-                else if(oldActive == true) // Currently not pressed but active was true last update -> fire click event
+                
+                if(input.CurrentMouseState.LeftButton == ButtonState.Released && input.LastMouseState.LeftButton == ButtonState.Pressed && oldActive)
                 {
                     if (OnClick != null)
                     {
                         OnClick(this, null);
+                        Active = false;
                     }
                 }
             }
@@ -72,7 +78,7 @@ namespace FluidSimulation1
             
             spriteBatch.Draw(ButtonTexture, rectangle, backgroundColor);
             spriteBatch.DrawString(Font, Label, Position + Vector2.One * Padding + Vector2.One, Color.Black);
-            spriteBatch.DrawString(Font, Label, Position + Vector2.One * Padding, Color.White);
+            //spriteBatch.DrawString(Font, Label, Position + Vector2.One * Padding, Color.White);
         }
     }
 }

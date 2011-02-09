@@ -110,6 +110,7 @@
     <Compile Include="Engine\Button.cs" />
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\FpsComponent.cs" />
+    <Compile Include="Engine\DebugGrid.cs" />
     <Compile Include="Engine\GuiElement.cs" />
     <Compile Include="Engine\InputHandler.cs" />
     <Compile Include="Engine\Slider.cs" />

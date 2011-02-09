@@ -68,12 +68,14 @@ namespace FluidSimulation1
 
         public void InitializeParticles()
         {
+            Particles.Clear();
             for (int i = 0; i < MaxParticles; i++)
             {
                 FluidParticle particle = new FluidParticle();
                 particle.Position = Random(bounds.Min, bounds.Max);
                 particle.Velocity = Vector3.Zero;
                 particle.Force = Vector3.Zero;
+                particle.Color = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble());
                 //particle.Mass = ParticleMass;
                 particle.Density = 0f;
                 particle.Pressure = 0f;
