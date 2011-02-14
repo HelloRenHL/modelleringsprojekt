@@ -8,6 +8,7 @@ namespace FluidSimulation1
 {
     public static class SmoothKernel
     {
+        
         public static float Poly6(Vector3 rv, float h)
         {
             float r = rv.Length();

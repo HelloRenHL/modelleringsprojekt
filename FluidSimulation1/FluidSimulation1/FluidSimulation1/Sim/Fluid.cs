@@ -47,9 +47,15 @@ namespace FluidSimulation1
             bounds = new AxisAlignedBoundingBox();
             //bounds.Set(-Vector3.One, Vector3.One);
             int size = 1;
-            bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
 
+            //bounds.Set(new Vector3(-1f, -1f, -1f) * size, new Vector3(1f, 1f, 1f) * size);
+            
+            bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
             FluidHash = new FluidHash(bounds, h);
+
+            //bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
+            //bounds.Max = Vector3.Transform(bounds.Max, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
+            //bounds.Min = Vector3.Transform(bounds.Min, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
 
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
@@ -284,6 +290,12 @@ namespace FluidSimulation1
                 {
                     Particles[i].Velocity.Y *= -1 * bounce;
                     Particles[i].Position.Y = bounds.Min.Y;
+                }
+
+                if (Particles[i].Position.Y > bounds.Max.Y)
+                {
+                    Particles[i].Velocity.Y *= -1 * bounce;
+                    Particles[i].Position.Y = bounds.Max.Y;
                 }
 
                 if (Particles[i].Position.X < bounds.Min.X)

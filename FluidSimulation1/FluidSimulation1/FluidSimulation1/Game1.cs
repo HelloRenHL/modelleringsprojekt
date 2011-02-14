@@ -21,7 +21,7 @@ namespace FluidSimulation1
 
         Texture2D texture;
         SpriteFont verdana;
-        Model sphere, teapot;
+        Model sphere, teapot, glassbox;
 
         InputHandler inputHandler = new InputHandler();
 
@@ -96,6 +96,7 @@ namespace FluidSimulation1
             spriteBatch = new SpriteBatch(GraphicsDevice);
             sphere = Content.Load<Model>(@"models\smaller_sphere");
             teapot = Content.Load<Model>(@"models\smaller_sphere");
+            glassbox = Content.Load<Model>(@"models\glass_box1");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
 
@@ -262,11 +263,16 @@ namespace FluidSimulation1
 
             ResetRenderStates();
 
+
             //Apply in SRT order (Scale * Rotation * Translation)
             for (int i = 0; i < myFluid.ActiveParticles; i++)
             {
-                DrawModel(sphere, Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(myFluid.Particles[i].Position), myFluid.Particles[i].Color);
+                DrawModel(sphere, Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(myFluid.Particles[i].Position), myFluid.Particles[i].Color, 1.0f);
+            
             }
+
+            DrawModel(glassbox, Matrix.Identity, Vector3.One, 0.33f);
+
 
             if (DisplayDebug)
             {
@@ -297,11 +303,41 @@ namespace FluidSimulation1
 
         private void ResetRenderStates()
         {
-            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
         }
 
-        private void DrawModel(Model model, Matrix world, Vector3 diffuseColor)
+        /*
+        void DrawFancy(Model model, Matrix world)
+        {
+            //Matrix worldView = world * camera.View; //Distorter.View
+            Matrix[] transforms = new Matrix[model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(transforms);
+
+            // make sure the depth buffering is on, so only parts of the scene
+            // behind the distortion effect are affected
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                //Matrix meshWorldView = transforms[mesh.ParentBone.Index] * worldView;
+                foreach (Effect effect in mesh.Effects)
+                {
+                    effect.CurrentTechnique = effect.Techniques["Technique1"]; //Distorter.Technique.ToString()
+                    effect.Parameters["World"].SetValue(world);
+                    effect.Parameters["View"].SetValue(camera.View);
+                    effect.Parameters["Projection"].SetValue(camera.Projection);
+                    //effect.Parameters["WorldView"].SetValue(meshWorldView);
+                    //effect.Parameters["WorldViewProjection"].SetValue(meshWorldView * Projection);
+                    effect.Parameters["Alpha"].SetValue(0.33f);
+                    //effect.Parameters["Time"].SetValue((float)gameTime.TotalGameTime.TotalSeconds);
+                }
+                mesh.Draw();
+            }
+        }*/
+
+        private void DrawModel(Model model, Matrix world, Vector3 diffuseColor, float alpha)
         {
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
@@ -313,6 +349,8 @@ namespace FluidSimulation1
                     effect.EnableDefaultLighting();
                     effect.DiffuseColor = diffuseColor;
                     effect.World = transforms[mesh.ParentBone.Index] * world;
+
+                    effect.Alpha = alpha; //0.33f;
 
                     // Use the matrices provided by the chase camera
                     effect.View = camera.View;
