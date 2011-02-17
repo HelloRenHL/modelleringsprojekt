@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 using FluidSimulation1.Engine;
+using FluidSimulation1.Sim;
 
 namespace FluidSimulation1
 {
@@ -21,7 +22,7 @@ namespace FluidSimulation1
 
         Texture2D texture;
         SpriteFont verdana;
-        Model sphere, teapot, glassbox;
+        Model sphere, teapot;
 
         InputHandler inputHandler = new InputHandler();
 
@@ -35,6 +36,7 @@ namespace FluidSimulation1
         Slider surfaceTensionSlider;
         Slider massSlider;
         Slider particlesSlider;
+        Slider timestepSlider;
 
         List<GuiElement> guiElements = new List<GuiElement>();
 
@@ -43,6 +45,10 @@ namespace FluidSimulation1
         public bool DisplayDebug = true;
 
         DebugGrid debugGrid;
+
+        public static GlassBox glassBox;
+
+        float timestep = 1.0f;
 
         public Game1()
         {
@@ -96,7 +102,6 @@ namespace FluidSimulation1
             spriteBatch = new SpriteBatch(GraphicsDevice);
             sphere = Content.Load<Model>(@"models\smaller_sphere");
             teapot = Content.Load<Model>(@"models\smaller_sphere");
-            glassbox = Content.Load<Model>(@"models\glass_box1");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
 
@@ -124,15 +129,24 @@ namespace FluidSimulation1
             particlesSlider.OnValueChanged += new EventHandler(particlesSlider_OnValueChanged);
             particlesSlider.Length = 200;
 
+            timestepSlider = new Slider("Timestep: ", 1, 5, 1);
+            timestepSlider.Position = new Vector2(graphics.PreferredBackBufferWidth - offset, 180);
+            timestepSlider.OnValueChanged += new EventHandler(timestepSlider_OnValueChanged);
+            timestepSlider.Length = 200;
+
             guiElements.Add(surfaceTensionSlider);
             guiElements.Add(viscositySlider);
             guiElements.Add(massSlider);
             guiElements.Add(particlesSlider);
+            guiElements.Add(timestepSlider);
 
             restartButton = new Button("Restart", verdana);
-            restartButton.Position = new Vector2(graphics.PreferredBackBufferWidth - offset, 180);
+            restartButton.Position = new Vector2(graphics.PreferredBackBufferWidth - offset, 240);
             restartButton.OnClick += new EventHandler(restartButton_OnClick);
             guiElements.Add(restartButton);
+
+            glassBox = new GlassBox(1,1,1, Vector3.Zero);
+            glassBox.LoadContent(Content);
 
             foreach (GuiElement element in guiElements)
             {
@@ -142,6 +156,11 @@ namespace FluidSimulation1
 
         }
 
+        void timestepSlider_OnValueChanged(object sender, EventArgs e)
+        {
+            timestep = timestepSlider.Value;
+        }
+
         void restartButton_OnClick(object sender, EventArgs e)
         {
             myFluid.InitializeParticles();
@@ -149,7 +168,7 @@ namespace FluidSimulation1
 
         void particlesSlider_OnValueChanged(object sender, EventArgs e)
         {
-            myFluid.ActiveParticles = particlesSlider.Value;
+            myFluid.ActiveParticles = (int)particlesSlider.Value;
         }
 
         void massSlider_OnValueChanged(object sender, EventArgs e)
@@ -193,7 +212,9 @@ namespace FluidSimulation1
 
             camera.Update();
 
-            myFluid.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            myFluid.Update(elapsed, timestep);
 
             base.Update(gameTime);
         }
@@ -207,6 +228,11 @@ namespace FluidSimulation1
                     element.HandleInput(inputHandler);
                 }
             }
+
+            //if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.D1))
+            //{
+                glassBox.Rotate(0.005f);
+            //}
 
             if (inputHandler.IsKeyPressed(Keys.F1))
             {
@@ -249,6 +275,17 @@ namespace FluidSimulation1
             {
                 myFluid.GravityRotation -= 45.0f;
             }
+
+            if (inputHandler.IsKeyPressed(Keys.Escape))
+            {
+                this.Exit();
+            }
+
+            if (inputHandler.IsKeyPressed(Keys.F5))
+            {
+                this.graphics.IsFullScreen = !this.graphics.IsFullScreen;
+                this.graphics.ApplyChanges();
+            }
         }
 
         /// <summary>
@@ -259,10 +296,12 @@ namespace FluidSimulation1
         {
             GraphicsDevice.Clear(new Color(0.2f, 0.2f, 0.2f));
 
-            base.Draw(gameTime);
+            if (DisplayDebug)
+            {
+                base.Draw(gameTime);
+            }
 
             ResetRenderStates();
-
 
             //Apply in SRT order (Scale * Rotation * Translation)
             for (int i = 0; i < myFluid.ActiveParticles; i++)
@@ -271,8 +310,7 @@ namespace FluidSimulation1
             
             }
 
-            DrawModel(glassbox, Matrix.Identity, Vector3.One, 0.33f);
-
+            DrawModel(glassBox.Model, glassBox.World, Vector3.One, 0.33f);
 
             if (DisplayDebug)
             {
@@ -291,6 +329,14 @@ namespace FluidSimulation1
 
                 spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140) + Vector2.One, Color.Black);
                 spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140), Color.White);
+
+                spriteBatch.DrawString(verdana, "Press F1 to toggle debug", new Vector2(20, 160), Color.White);
+                spriteBatch.DrawString(verdana, "Press F5 to toggle fullscreen", new Vector2(20, 180), Color.White);
+
+
+                spriteBatch.DrawString(verdana, "Right: " + glassBox.Right, new Vector2(20, 200), Color.White);
+                spriteBatch.DrawString(verdana, "Forward: " + glassBox.Forward, new Vector2(20, 220), Color.White);
+                spriteBatch.DrawString(verdana, "Up: " + glassBox.Up, new Vector2(20, 240), Color.White);
 
                 foreach (GuiElement element in guiElements)
                 {

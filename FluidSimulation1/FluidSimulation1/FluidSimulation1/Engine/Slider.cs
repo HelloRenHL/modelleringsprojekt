@@ -14,7 +14,7 @@ namespace FluidSimulation1
         public int Length = 100;
         public int Min;
         public int Max;
-        public int Value;
+        public float Value;
         Texture2D sliderHandle;
         Texture2D sliderBackground;
         public event EventHandler OnValueChanged;
@@ -57,9 +57,9 @@ namespace FluidSimulation1
 
             if (Active)
             {
-                int oldValue = Value;
+                float oldValue = Value;
                 float temp = (input.CurrentMouseState.X - Position.X) / Length * Max + Min;
-                Value = (int)MathHelper.Clamp(temp, Min, Max);
+                Value = (float)MathHelper.Clamp(temp, Min, Max);
 
                 if (oldValue != Value)
                 {
