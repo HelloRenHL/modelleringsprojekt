@@ -124,7 +124,6 @@
     <Compile Include="Sim\FluidParticle.cs" />
     <Compile Include="Sim\GlassBox.cs" />
     <Compile Include="Sim\Kernel.cs" />
-    <Compile Include="Sim\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

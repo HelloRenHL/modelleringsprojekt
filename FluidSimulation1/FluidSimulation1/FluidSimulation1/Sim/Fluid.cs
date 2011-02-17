@@ -56,7 +56,7 @@ namespace FluidSimulation1
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
 
-            Poly6Zero = SmoothKernel.Poly6(0);
+            Poly6Zero = SmoothKernel.Poly6(Vector3.Zero);
 
             InitializeParticles();
         }
@@ -106,7 +106,7 @@ namespace FluidSimulation1
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
 
-                float density = ParticleMass * SmoothKernel.Poly6((b.Position - a.Position).Length());
+                float density = ParticleMass * SmoothKernel.Poly6(b.Position - a.Position);
 
                 // Eq. 3 ifrån Müller03
                 a.Density += density;
