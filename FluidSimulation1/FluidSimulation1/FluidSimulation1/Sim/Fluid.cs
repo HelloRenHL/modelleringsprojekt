@@ -137,6 +137,9 @@ namespace FluidSimulation1
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
 
+                if (a == b)
+                    continue;
+
                 Vector3 rv = a.Position - b.Position;
                 float r = rv.Length();
                 float r2 = r * r;
@@ -244,16 +247,12 @@ namespace FluidSimulation1
                     //simple friction
                     float frictionForce = 0.1f;
                     Particles[i].Force -= Particles[i].Velocity * frictionForce;
-
                     Particles[i].Velocity += Particles[i].Force / Particles[i].Density * timeStep;
-
-
-
                     Particles[i].Position += Particles[i].Velocity * timeStep;
                     Particles[i].LifeTime += timeStep;
                 }
 
-                RotateParticles(Particles, 0.1f);
+                HandleCollisions();
             }
 
             StopWatch.Stop();
@@ -279,57 +278,13 @@ namespace FluidSimulation1
         //    }
         //}
 
-        private void HandleCollisions()
+        public void HandleCollisions()
         {
             float bounce = 0.33f;
+            Matrix invWorld = Matrix.Invert(Game1.glassBox.World);
 
-            for (int i = 0; i < ActiveParticles; i++)
+            foreach (FluidParticle particle in Particles)
             {
-
-
-                if (Particles[i].Position.Y < bounds.Min.Y)
-                {
-                    Particles[i].Velocity.Y *= -1 * bounce;
-                    Particles[i].Position.Y = bounds.Min.Y;
-                }
-
-                if (Particles[i].Position.Y > bounds.Max.Y)
-                {
-                    Particles[i].Velocity.Y *= -1 * bounce;
-                    Particles[i].Position.Y = bounds.Max.Y;
-                }
-
-                if (Particles[i].Position.X < bounds.Min.X)
-                {
-                    Particles[i].Velocity.X *= -1 * bounce;
-                    Particles[i].Position.X = bounds.Min.X;
-                }
-
-                if (Particles[i].Position.X > bounds.Max.X)
-                {
-                    Particles[i].Velocity.X *= -1 * bounce;
-                    Particles[i].Position.X = bounds.Max.X;
-                }
-
-                if (Particles[i].Position.Z > bounds.Max.Z)
-                {
-                    Particles[i].Velocity.Z *= -1 * bounce;
-                    Particles[i].Position.Z = bounds.Max.Z;
-                }
-
-                if (Particles[i].Position.Z < bounds.Min.Z)
-                {
-                    Particles[i].Velocity.Z *= -1 * bounce;
-                    Particles[i].Position.Z = bounds.Min.Z;
-                }
-            }
-        }
-            public void RotateParticles(List<FluidParticle> particles,float amount)
-        {
-            float bounce = 0.33f;
-            Matrix invWorld  = Matrix.Invert(Game1.glassBox.World);
-            foreach(FluidParticle particle in particles){
-
                 Vector3 particleTempPos = Vector3.Transform(particle.Position, invWorld); //Game1.glassBox.World);
                 Vector3 particleTempVel = Vector3.Transform(particle.Velocity, invWorld); //Game1.glassBox.World);
 
@@ -369,15 +324,9 @@ namespace FluidSimulation1
                     particleTempPos.Z = bounds.Min.Z;
                 }
 
-
                 particle.Position = Vector3.Transform(particleTempPos, Game1.glassBox.World);
                 particle.Velocity = Vector3.Transform(particleTempVel, Game1.glassBox.World);
             }
-
         }
-        }
-
-        
-        
     }
-
+}

@@ -21,6 +21,9 @@ namespace FluidSimulation1.Sim
         public Vector3 Forward = Vector3.Forward;
         public Vector3 Up = Vector3.Up;
         public Vector3 Right = Vector3.Right;
+        public float Alpha = 0.33f;
+
+        public float RotationSpeed = 0.01f;
 
         public Matrix World
         {
@@ -50,11 +53,11 @@ namespace FluidSimulation1.Sim
             Model = content.Load<Model>(@"models\glass_box1");
         }
 
-        public void Rotate(float amount)
+        public void Rotate(float yaw, float pitch, float roll)
         {
             //Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Right, amount);
 
-            Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(0, 0, amount);
+            Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
 
             Right = Vector3.TransformNormal(Right, rotationMatrix);
             //Up = Vector3.TransformNormal(Up, rotationMatrix);
@@ -67,6 +70,13 @@ namespace FluidSimulation1.Sim
 
             //re-calculate up to maintain orthogonality
             Up = Vector3.Cross(Right, Forward);
+        }
+
+        public void Reset()
+        {
+            Up = Vector3.Up;
+            Forward = Vector3.Forward;
+            Right = Vector3.Right;
         }
     }
 }

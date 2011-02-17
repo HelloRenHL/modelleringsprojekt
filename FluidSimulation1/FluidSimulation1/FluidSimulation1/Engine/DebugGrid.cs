@@ -7,33 +7,28 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FluidSimulation1.Engine
 {
-    public class DebugGrid : DrawableGameComponent
+    public class DebugGrid
     {
         BasicEffect effect;
-        GraphicsDevice graphics;
+        GraphicsDevice _graphics;
         VertexPositionColor[] verts;
 
         float resolution = 0.2f;
         int scale = 25;
 
-        Camera _camera;
+        Color gridColor = Color.Orange;
 
-        Color gridColor = Color.LimeGreen;
+        public bool Visible = true;
 
-        public DebugGrid(Camera camera, Game game)
-            : base(game)
+        public DebugGrid(GraphicsDevice graphics)
         {
-            _camera = camera;
-            CreateGrid();
-        }
+            _graphics = graphics;
 
-        public override void Initialize()
-        {
-            graphics = Game.GraphicsDevice;
-            effect = new BasicEffect(graphics);
+            effect = new BasicEffect(_graphics);
             effect.VertexColorEnabled = true;
-            effect.DiffuseColor = Vector3.One;
             effect.World = Matrix.Identity;
+
+            CreateGrid();
         }
 
         /// <summary>
@@ -52,7 +47,7 @@ namespace FluidSimulation1.Engine
 
             int halfScale = scale / 2;
 
-            float offsetY = -0.5f;
+            float offsetY = -0.7f;
 
             Vector3 startX = Vector3.UnitY * offsetY +  new Vector3(-halfScale, 0, -halfScale) * resolution;
             Vector3 endX = Vector3.UnitY * offsetY + new Vector3(halfScale, 0, -halfScale) * resolution;
@@ -83,11 +78,11 @@ namespace FluidSimulation1.Engine
         /// <param name="gameTime">The current game timestamp.</param>
         /// <param name="view">The view matrix to use when rendering the shapes.</param>
         /// <param name="projection">The projection matrix to use when rendering the shapes.</param>
-        public override void Draw(GameTime gameTime)
+        public void Draw(Matrix view, Matrix projection)
         {
             // Update our effect with the matrices.
-            effect.View = _camera.View;
-            effect.Projection = _camera.Projection;
+            effect.View = view;
+            effect.Projection = projection;
 
             if (verts.Length > 0)
             {
@@ -102,7 +97,7 @@ namespace FluidSimulation1.Engine
                     int linesToDraw = Math.Min(lineCount, 65535);
 
                     // Draw the lines
-                    graphics.DrawUserPrimitives(PrimitiveType.LineList, verts, vertexOffset, linesToDraw);
+                    _graphics.DrawUserPrimitives(PrimitiveType.LineList, verts, vertexOffset, linesToDraw);
 
                     // Move our vertex offset ahead based on the lines we drew
                     vertexOffset += linesToDraw * 2;
