@@ -44,3 +44,6 @@ D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Flu
 D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\glass_box1.xnb
 D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\Shaders\distort.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\glass_box1.xnb
+c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\Shaders\distort.xnb
+C:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\models\box.xnb

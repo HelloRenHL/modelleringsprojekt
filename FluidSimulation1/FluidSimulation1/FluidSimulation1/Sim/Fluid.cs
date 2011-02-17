@@ -36,14 +36,10 @@ namespace FluidSimulation1
         public Vector3 Gravity = Vector3.Down * 196.2f;
         public float GravityRotation = 0.0f;
 
-        float h;
-
         AxisAlignedBoundingBox bounds;
 
         public Fluid(int maxParticles)
         {
-            h = 0.15f;
-
             bounds = new AxisAlignedBoundingBox();
             //bounds.Set(-Vector3.One, Vector3.One);
             int size = 1;
@@ -51,7 +47,7 @@ namespace FluidSimulation1
             //bounds.Set(new Vector3(-1f, -1f, -1f) * size, new Vector3(1f, 1f, 1f) * size);
             
             bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
-            FluidHash = new FluidHash(bounds, h);
+            FluidHash = new FluidHash(bounds, SmoothKernel.h);
 
             //bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
             //bounds.Max = Vector3.Transform(bounds.Max, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
@@ -60,7 +56,7 @@ namespace FluidSimulation1
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
 
-            Poly6Zero = SmoothKernel.Poly6(Vector3.Zero, h);
+            Poly6Zero = SmoothKernel.Poly6(0);
 
             InitializeParticles();
         }
@@ -110,7 +106,7 @@ namespace FluidSimulation1
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
 
-                float density = ParticleMass * SmoothKernel.Poly6(b.Position - a.Position, h);
+                float density = ParticleMass * SmoothKernel.Poly6((b.Position - a.Position).Length());
 
                 // Eq. 3 ifrån Müller03
                 a.Density += density;
@@ -149,7 +145,7 @@ namespace FluidSimulation1
                 #region Pressure
 
                 //Eq. 10 Müller03
-                Vector3 pressureForce = -ParticleMass / b.Density * (a.Pressure + b.Pressure) / 2.0f * -SmoothKernel.SpikyGradient(rv, h); //La in ett minus här (-Smoothed...)
+                Vector3 pressureForce = -ParticleMass / b.Density * (a.Pressure + b.Pressure) / 2.0f * -SmoothKernel.SpikyGradient(rv); //La in ett minus här (-Smoothed...)
 
                 #endregion
 
@@ -159,7 +155,7 @@ namespace FluidSimulation1
                 Vector3 viscosityForce = Vector3.Zero;
 
                 // Eq. 14 Müller03
-                viscosityForce = Viscosity * ParticleMass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(rv, h);
+                viscosityForce = Viscosity * ParticleMass * (b.Velocity - a.Velocity) / b.Density * SmoothKernel.ViscosityLaplacian(rv);
 
                 #endregion
 
@@ -171,8 +167,8 @@ namespace FluidSimulation1
                 // Müller03: "Evaluating n/|n| at locations where |n| is small causes numerical problems. We only evaluate the force if |n| exceeds a certain threshold
                 float threshold = 0.05f;
 
-                float colorFieldLaplacian = ParticleMass / a.Density * SmoothKernel.Poly6Laplacian(rv, h);
-                Vector3 n = ParticleMass / a.Density * SmoothKernel.Poly6Gradient(rv, h); // <- The gradient field of the smoothed color field
+                float colorFieldLaplacian = ParticleMass / a.Density * SmoothKernel.Poly6Laplacian(rv);
+                Vector3 n = ParticleMass / a.Density * SmoothKernel.Poly6Gradient(rv); // <- The gradient field of the smoothed color field
                 
                 if (n.Length() > threshold)
                 {
@@ -207,9 +203,9 @@ namespace FluidSimulation1
             }
         }
 
-        public void Update(float elapsedTime)
+        public void Update(float elapsedTime, float t)
         {
-            float timeStep = elapsedTime;
+            float timeStep = elapsedTime * t;
 
             StopWatch.Reset();
             StopWatch.Start();
@@ -250,35 +246,38 @@ namespace FluidSimulation1
                     Particles[i].Force -= Particles[i].Velocity * frictionForce;
 
                     Particles[i].Velocity += Particles[i].Force / Particles[i].Density * timeStep;
+
+
+
                     Particles[i].Position += Particles[i].Velocity * timeStep;
                     Particles[i].LifeTime += timeStep;
                 }
 
-                HandleCollisions();
+                RotateParticles(Particles, 0.1f);
             }
 
             StopWatch.Stop();
         }
 
-        private void TempFindNeighbors()
-        {
-            Neighbours.Clear();
-            for (int i = 0; i < ActiveParticles; i++)
-            {
-                for (int j = 0; j < Particles.Count; j++)
-                {
-                    if (i == j)
-                        continue;
+        //private void TempFindNeighbors()
+        //{
+        //    Neighbours.Clear();
+        //    for (int i = 0; i < ActiveParticles; i++)
+        //    {
+        //        for (int j = 0; j < Particles.Count; j++)
+        //        {
+        //            if (i == j)
+        //                continue;
 
-                    float r = (Particles[i].Position - Particles[j].Position).Length();
+        //            float r = (Particles[i].Position - Particles[j].Position).Length();
 
-                    if (r < h)
-                    {
-                        Neighbours.Add(new NeighbourPair(Particles[i], Particles[j]));
-                    }
-                }
-            }
-        }
+        //            if (r < SmoothKernel.h)
+        //            {
+        //                Neighbours.Add(new NeighbourPair(Particles[i], Particles[j]));
+        //            }
+        //        }
+        //    }
+        //}
 
         private void HandleCollisions()
         {
@@ -286,6 +285,8 @@ namespace FluidSimulation1
 
             for (int i = 0; i < ActiveParticles; i++)
             {
+
+
                 if (Particles[i].Position.Y < bounds.Min.Y)
                 {
                     Particles[i].Velocity.Y *= -1 * bounce;
@@ -323,5 +324,60 @@ namespace FluidSimulation1
                 }
             }
         }
+            public void RotateParticles(List<FluidParticle> particles,float amount)
+        {
+            float bounce = 0.33f;
+            Matrix invWorld  = Matrix.Invert(Game1.glassBox.World);
+            foreach(FluidParticle particle in particles){
+
+                Vector3 particleTempPos = Vector3.Transform(particle.Position, invWorld); //Game1.glassBox.World);
+                Vector3 particleTempVel = Vector3.Transform(particle.Velocity, invWorld); //Game1.glassBox.World);
+
+                if (particleTempPos.Y < bounds.Min.Y)
+                {
+                    particleTempVel.Y *= -1 * bounce;
+                    particleTempPos.Y = bounds.Min.Y;
+                }
+
+                if (particleTempPos.Y > bounds.Max.Y)
+                {
+                    particleTempVel.Y *= -1 * bounce;
+                    particleTempPos.Y = bounds.Max.Y;
+                }
+
+                if (particleTempPos.X < bounds.Min.X)
+                {
+                    particleTempVel.X *= -1 * bounce;
+                    particleTempPos.X = bounds.Min.X;
+                }
+
+                if (particleTempPos.X > bounds.Max.X)
+                {
+                    particleTempVel.X *= -1 * bounce;
+                    particleTempPos.X = bounds.Max.X;
+                }
+
+                if (particleTempPos.Z > bounds.Max.Z)
+                {
+                    particleTempVel.Z *= -1 * bounce;
+                    particleTempPos.Z = bounds.Max.Z;
+                }
+
+                if (particleTempPos.Z < bounds.Min.Z)
+                {
+                    particleTempVel.Z *= -1 * bounce;
+                    particleTempPos.Z = bounds.Min.Z;
+                }
+
+
+                particle.Position = Vector3.Transform(particleTempPos, Game1.glassBox.World);
+                particle.Velocity = Vector3.Transform(particleTempVel, Game1.glassBox.World);
+            }
+
+        }
+        }
+
+        
+        
     }
-}
+
