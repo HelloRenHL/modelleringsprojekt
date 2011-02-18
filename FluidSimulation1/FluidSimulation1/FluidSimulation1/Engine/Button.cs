@@ -20,10 +20,10 @@ namespace FluidSimulation1
 
         public Texture2D ButtonTexture;
 
-        private void UpdateRectangle()
+        private void UpdateRectangle(Vector2 position)
         {
             Vector2 labelSize = Font.MeasureString(Label);
-            rectangle = new Rectangle((int)Position.X, (int)Position.Y, (int)labelSize.X + 2 * Padding, (int)labelSize.Y + 2 * Padding);
+            rectangle = new Rectangle((int)position.X, (int)position.Y, (int)labelSize.X + 2 * Padding, (int)labelSize.Y + 2 * Padding);
         }
 
         public Button(string label, SpriteFont font)
@@ -66,7 +66,7 @@ namespace FluidSimulation1
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             Color backgroundColor = Color.White;
             if (Active)
@@ -74,10 +74,10 @@ namespace FluidSimulation1
                 backgroundColor = Color.Yellow;
             }
 
-            UpdateRectangle();
+            UpdateRectangle(position);
             
             spriteBatch.Draw(ButtonTexture, rectangle, backgroundColor);
-            spriteBatch.DrawString(Font, Label, Position + Vector2.One * Padding + Vector2.One, Color.Black);
+            spriteBatch.DrawString(Font, Label, position + Vector2.One * Padding + Vector2.One, Color.Black);
             //spriteBatch.DrawString(Font, Label, Position + Vector2.One * Padding, Color.White);
         }
     }
