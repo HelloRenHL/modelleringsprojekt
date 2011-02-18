@@ -10,11 +10,12 @@ namespace FluidSimulation1
 {
     public abstract class GuiElement
     {
-        public Vector2 Position;
         public SpriteFont Font;
 
         public bool Enabled = true;
         public bool Active = false;
+
+        public int Height = 0;
 
         public virtual void HandleInput(InputHandler input)
         {
@@ -26,6 +27,6 @@ namespace FluidSimulation1
         }
 
         public abstract void LoadContent(ContentManager content);
-        public abstract void Draw(SpriteBatch spriteBatch);
+        public abstract void Draw(SpriteBatch spriteBatch, Vector2 position);
     }
 }

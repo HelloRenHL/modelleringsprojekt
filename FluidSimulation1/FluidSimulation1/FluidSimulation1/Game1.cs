@@ -38,7 +38,7 @@ namespace FluidSimulation1
         Slider particlesSlider;
         Slider timestepSlider;
 
-        List<GuiElement> guiElements = new List<GuiElement>();
+        StackPanel guiElements;
 
         Button restartButton;
 
@@ -47,7 +47,7 @@ namespace FluidSimulation1
         DebugGrid debugGrid;
 
         public static GlassBox glassBox;
-
+        float cameraDistance = 2.0f;
         float timestep = 1.0f;
 
         public Game1()
@@ -60,14 +60,13 @@ namespace FluidSimulation1
 
             fpsCounter = new FpsComponent(this);
 
-            graphicsDeviceManager.PreferredBackBufferWidth = 1024;
-            graphicsDeviceManager.PreferredBackBufferHeight = 768;
+            graphicsDeviceManager.PreferredBackBufferWidth = 1280;
+            graphicsDeviceManager.PreferredBackBufferHeight = 1024;
             //graphics.PreferMultiSampling = true;
             graphicsDeviceManager.ApplyChanges();
 
             camera = new Camera();
             camera.AspectRatio = graphicsDeviceManager.PreferredBackBufferWidth / (float)graphicsDeviceManager.PreferredBackBufferHeight;
-            float cameraDistance = 2.0f;
             camera.Position = new Vector3(0, cameraDistance * 0.2f, cameraDistance);
 
             Components.Add(fpsCounter);
@@ -103,33 +102,27 @@ namespace FluidSimulation1
 
             arrow = Content.Load<Texture2D>(@"arrow");
 
-            int offset = 220;
-
             surfaceTensionSlider = new Slider("Surface Tension: ", 0, 100, myFluid.SurfaceTension, 2);
-            surfaceTensionSlider.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 60);
             surfaceTensionSlider.OnValueChanged += new EventHandler(surfaceTensionSlider_OnValueChanged);
             surfaceTensionSlider.Length = 200;
 
             viscositySlider = new Slider("Viscosity: ", 0, 100, myFluid.Viscosity, 2);
             viscositySlider.OnValueChanged += new EventHandler(viscositySlider_OnValueChanged);
-            viscositySlider.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 20);
             viscositySlider.Length = 200;
 
             massSlider = new Slider("Particle Mass: ", 1, 20, myFluid.ParticleMass, 2);
-            massSlider.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 100);
             massSlider.OnValueChanged += new EventHandler(massSlider_OnValueChanged);
             massSlider.Length = 200;
 
             particlesSlider = new Slider("Particles: ", 1, myFluid.MaxParticles, myFluid.ActiveParticles, 0);
-            particlesSlider.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 140);
             particlesSlider.OnValueChanged += new EventHandler(particlesSlider_OnValueChanged);
             particlesSlider.Length = 200;
 
             timestepSlider = new Slider("Timestep: ", 1, 5, 1, 2);
-            timestepSlider.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 180);
             timestepSlider.OnValueChanged += new EventHandler(timestepSlider_OnValueChanged);
             timestepSlider.Length = 200;
 
+            guiElements = new StackPanel(40);
             guiElements.Add(surfaceTensionSlider);
             guiElements.Add(viscositySlider);
             guiElements.Add(massSlider);
@@ -137,7 +130,6 @@ namespace FluidSimulation1
             guiElements.Add(timestepSlider);
 
             restartButton = new Button("Restart", verdana);
-            restartButton.Position = new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - offset, 240);
             restartButton.OnClick += new EventHandler(restartButton_OnClick);
             guiElements.Add(restartButton);
 
@@ -146,12 +138,8 @@ namespace FluidSimulation1
 
             debugGrid = new DebugGrid(GraphicsDevice);
 
-            foreach (GuiElement element in guiElements)
-            {
-                element.LoadContent(Content);
-                element.Font = verdana;
-            }
-
+            guiElements.Font = verdana;
+            guiElements.LoadContent(Content);
         }
 
         void timestepSlider_OnValueChanged(object sender, EventArgs e)
@@ -163,6 +151,7 @@ namespace FluidSimulation1
         {
             myFluid.InitializeParticles();
             glassBox.Reset();
+            camera.Position = new Vector3(0, cameraDistance * 0.2f, cameraDistance);
         }
 
         void particlesSlider_OnValueChanged(object sender, EventArgs e)
@@ -222,10 +211,7 @@ namespace FluidSimulation1
         {
             if (DisplayDebug)
             {
-                foreach (GuiElement element in guiElements)
-                {
-                    element.HandleInput(inputHandler);
-                }
+                guiElements.HandleInput(inputHandler);
             }
 
             float yaw = 0;
@@ -332,10 +318,10 @@ namespace FluidSimulation1
                 spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60) + Vector2.One, Color.Black);
                 spriteBatch.DrawString(verdana, "Particles: " + myFluid.ActiveParticles, new Vector2(20, 60), Color.White);
 
-                string temp = "Gravity Direction:";
-                spriteBatch.DrawString(verdana, temp, new Vector2(20, 90) + Vector2.One, Color.Black);
-                spriteBatch.DrawString(verdana, temp, new Vector2(20, 90), Color.White);
-                spriteBatch.Draw(arrow, new Vector2(30 + verdana.MeasureString(temp).X, 90) + Vector2.One * 16.0f, null, Color.White, MathHelper.ToRadians(-myFluid.GravityRotation), Vector2.One * 16.0f, 1.0f, SpriteEffects.None, 0);
+                //string temp = "Gravity Direction:";
+                //spriteBatch.DrawString(verdana, temp, new Vector2(20, 90) + Vector2.One, Color.Black);
+                //spriteBatch.DrawString(verdana, temp, new Vector2(20, 90), Color.White);
+                //spriteBatch.Draw(arrow, new Vector2(30 + verdana.MeasureString(temp).X, 90) + Vector2.One * 16.0f, null, Color.White, MathHelper.ToRadians(-myFluid.GravityRotation), Vector2.One * 16.0f, 1.0f, SpriteEffects.None, 0);
 
                 spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140) + Vector2.One, Color.Black);
                 spriteBatch.DrawString(verdana, "Camera Position: " + camera.Position.ToString(), new Vector2(20, 140), Color.White);
@@ -350,10 +336,7 @@ namespace FluidSimulation1
                 //spriteBatch.DrawString(verdana, "Forward: " + glassBox.Forward, new Vector2(20, 220), Color.White);
                 //spriteBatch.DrawString(verdana, "Up: " + glassBox.Up, new Vector2(20, 240), Color.White);
 
-                foreach (GuiElement element in guiElements)
-                {
-                    element.Draw(spriteBatch);
-                }
+                guiElements.Draw(spriteBatch, new Vector2(graphicsDeviceManager.PreferredBackBufferWidth - 220, 20));
 
                 spriteBatch.End();
             }

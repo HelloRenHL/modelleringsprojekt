@@ -26,7 +26,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\slider_background.xnb</Output>
-      <Time>2011-02-14T18:48:04.3682205+01:00</Time>
+      <Time>2011-02-18T00:56:50.8671872+01:00</Time>
     </Item>
     <Item>
       <Source>slider_handle.png</Source>
@@ -35,7 +35,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Debug\Content\slider_handle.xnb</Output>
-      <Time>2011-02-14T18:48:04.3692205+01:00</Time>
+      <Time>2011-02-18T00:55:59.7070304+01:00</Time>
     </Item>
     <Item>
       <Source>button.png</Source>

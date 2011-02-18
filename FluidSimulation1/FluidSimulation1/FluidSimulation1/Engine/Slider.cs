@@ -18,11 +18,11 @@ namespace FluidSimulation1
         Texture2D sliderHandle;
         Texture2D sliderBackground;
         public event EventHandler OnValueChanged;
-        public int Height = 20;
 
         public string Label = "";
 
         public int Precision = 0;
+        int labelOffset = 130;
 
         int handleWidth
         {
@@ -32,11 +32,13 @@ namespace FluidSimulation1
             }
         }
 
+        Vector2 _position = Vector2.Zero;
+
         Rectangle Rectangle
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y, Length, Height);
+                return new Rectangle((int)_position.X, (int)_position.Y, Length, Height);
             }
         }
 
@@ -46,6 +48,7 @@ namespace FluidSimulation1
             Min = min;
             Max = max;
             Precision = precision;
+            Height = 20;
             Value = (float)Math.Round(MathHelper.Clamp(initialValue, min, max), precision);
         }
 
@@ -69,7 +72,7 @@ namespace FluidSimulation1
             if (Active)
             {
                 float oldValue = Value;
-                float temp = (input.CurrentMouseState.X - Position.X - handleWidth * 0.5f) / (Length - handleWidth) * (Max - Min) + Min;
+                float temp = (input.CurrentMouseState.X - _position.X - handleWidth * 0.5f) / (Length - handleWidth) * (Max - Min) + Min;
                 Value = (float)Math.Round(MathHelper.Clamp(temp, Min, Max), Precision);
 
                 if (oldValue != Value)
@@ -89,8 +92,10 @@ namespace FluidSimulation1
             sliderBackground = content.Load<Texture2D>(@"slider_background");
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
+            _position = position;
+
             Color backgroundColor = Color.White;
             if (Active)
             {
@@ -100,11 +105,11 @@ namespace FluidSimulation1
             Rectangle sliderBackgroundRectangle = Rectangle;
             spriteBatch.Draw(sliderBackground, sliderBackgroundRectangle, backgroundColor);
 
-            Vector2 labelPosition = Position - new Vector2(Font.MeasureString(Label).X, 0);
+            Vector2 labelPosition = position - labelOffset * Vector2.UnitX; //new Vector2(Font.MeasureString(Label).X, 0);
             spriteBatch.DrawString(Font, Label, labelPosition + Vector2.One, Color.Black);
             spriteBatch.DrawString(Font, Label, labelPosition, Color.White);
 
-            Vector2 handlePosition = Position + new Vector2((Value - Min) / (float)(Max - Min) * (Length - handleWidth), 0);
+            Vector2 handlePosition = position + new Vector2((Value - Min) / (float)(Max - Min) * (Length - handleWidth), 0);
             spriteBatch.Draw(sliderHandle, new Rectangle((int)handlePosition.X, (int)handlePosition.Y, handleWidth, Height), Color.White);
 
             if (Active)
