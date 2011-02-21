@@ -52,7 +52,7 @@ namespace FluidSimulation1
             //bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
             //bounds.Max = Vector3.Transform(bounds.Max, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
             //bounds.Min = Vector3.Transform(bounds.Min, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
-
+            
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
 
@@ -63,21 +63,24 @@ namespace FluidSimulation1
 
         public void CreateColorField(ref float[] inside, float minParticleSize, float bx, float by, float bz, float dx, float dy, float dz, int MCX, int MCY, int MCZ)
         {
-            int num4;
-            for (num4 = 0; num4 < ((MCX * MCY) * MCZ); num4++)
+            for (int n = 0; n < ((MCX * MCY) * MCZ); n++)
             {
-                inside[num4] = minParticleSize;
+                inside[n] = minParticleSize;
             }
-            for (num4 = 0; num4 < this.ActiveParticles; num4++)
+
+            for (int n = 0; n < this.ActiveParticles; n++)
             {
-                FluidParticle particle = this.Particles[num4];
+                FluidParticle particle = this.Particles[n];
+
                 Vector3 position = particle.Position;
+
                 int num5 = (int)(((position.X - 0.15f) - bx) / dx);
                 int num6 = (int)(((position.Y - 0.15f) - by) / dy);
                 int num7 = (int)(((position.Z - 0.15f) - bz) / dz);
                 int num8 = (int)(((position.X + 0.15f) - bx) / dx);
                 int num9 = (int)(((position.Y + 0.15f) - by) / dy);
                 int num10 = (int)(((position.Z + 0.15f) - bz) / dz);
+
                 if (num5 < 0)
                 {
                     num5 = 0;

@@ -43,12 +43,15 @@ namespace FluidSimulation1
             for (int i = 0; i < this.NumTriangles; i++)
             {
                 MarchingCubesTriangle triangle = this.marchingCubesField.Triangles[i];
-                this.localVertices[index].Position = triangle.v0.position;
-                this.localVertices[num2].Position = triangle.v1.position;
-                this.localVertices[num3].Position = triangle.v2.position;
-                this.localVertices[index].Normal = triangle.v0.normal;
-                this.localVertices[num2].Normal = triangle.v1.normal;
-                this.localVertices[num3].Normal = triangle.v2.normal;
+
+                this.localVertices[index].Position = triangle.v0.Position;
+                this.localVertices[num2].Position = triangle.v1.Position;
+                this.localVertices[num3].Position = triangle.v2.Position;
+
+                this.localVertices[index].Normal = triangle.v0.Normal;
+                this.localVertices[num2].Normal = triangle.v1.Normal;
+                this.localVertices[num3].Normal = triangle.v2.Normal;
+
                 index += 3;
                 num2 += 3;
                 num3 += 3;
@@ -58,7 +61,7 @@ namespace FluidSimulation1
         public void BuildField()
         {
             float num = 0.15f;
-            float num2 = 0.06f;
+            float num2 = 0.06f; // default
             float num3 = (this.Fluid.Bounds.Min.X - num) - num2;
             float num4 = (this.Fluid.Bounds.Min.Y - num) - num2;
             float num5 = (this.Fluid.Bounds.Min.Z - num) - num2;
@@ -68,6 +71,7 @@ namespace FluidSimulation1
             int num9 = (int)Math.Ceiling((double)((num6 - num3) / num2));
             int num10 = (int)Math.Ceiling((double)((num7 - num4) / num2));
             int num11 = (int)Math.Ceiling((double)((num8 - num5) / num2));
+
             this.marchingCubesField = new MarchingCubesField(num9, num10, num11, num3, num4, num5, num2, num2, num2);
             this.marchingCubesField.MinimumParticleSize = this.MinParticleSize;
         }
@@ -91,7 +95,13 @@ namespace FluidSimulation1
                     basicEffect.World = Matrix.Identity;
                     basicEffect.View = camera.View;
                     basicEffect.Projection = camera.Projection;
+
                     basicEffect.EnableDefaultLighting();
+
+                    // reset render states
+                    graphicsDevice.BlendState = BlendState.AlphaBlend;
+                    graphicsDevice.DepthStencilState = DepthStencilState.Default;
+                    graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
                     foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
                     {
