@@ -146,6 +146,8 @@ namespace FluidSimulation1
 
             guiElements.Font = verdana;
             guiElements.LoadContent(Content);
+
+            fluidRenderer = new FluidRendererMarchingCubes(myFluid, GraphicsDevice);
         }
 
         void timestepSlider_OnValueChanged(object sender, EventArgs e)
@@ -225,7 +227,7 @@ namespace FluidSimulation1
 
             //if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.D1))
             //{
-                glassBox.Rotate(0.005f);
+                //glassBox.Rotate(0.005f);
             //}
 
             if (inputHandler.IsKeyPressed(Keys.Tab))
