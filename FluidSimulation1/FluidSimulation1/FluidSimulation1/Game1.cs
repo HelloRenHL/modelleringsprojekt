@@ -22,7 +22,7 @@ namespace FluidSimulation1
 
         Texture2D texture;
         SpriteFont verdana;
-        Model sphere, teapot;
+        Model sphere;
 
         InputHandler inputHandler = new InputHandler();
 
@@ -49,6 +49,12 @@ namespace FluidSimulation1
         public static GlassBox glassBox;
 
         float timestep = 1.0f;
+
+        FluidRendererMarchingCubes fluidRenderer;
+
+        private bool drawUsingMarchingCubes = true;
+
+        Model teapot;
 
         public Game1()
         {
@@ -101,7 +107,7 @@ namespace FluidSimulation1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             sphere = Content.Load<Model>(@"models\smaller_sphere");
-            teapot = Content.Load<Model>(@"models\smaller_sphere");
+            teapot = Content.Load<Model>(@"models\teapot_small");
             texture = Content.Load<Texture2D>("ploj");
             verdana = Content.Load<SpriteFont>("verdana");
 
@@ -154,6 +160,7 @@ namespace FluidSimulation1
                 element.Font = verdana;
             }
 
+            fluidRenderer = new FluidRendererMarchingCubes(myFluid, GraphicsDevice);
         }
 
         void timestepSlider_OnValueChanged(object sender, EventArgs e)
@@ -231,8 +238,13 @@ namespace FluidSimulation1
 
             //if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.D1))
             //{
-                glassBox.Rotate(0.005f);
+                //glassBox.Rotate(0.005f);
             //}
+
+            if (inputHandler.IsKeyPressed(Keys.Tab))
+            {
+                drawUsingMarchingCubes = !drawUsingMarchingCubes;
+            }
 
             if (inputHandler.IsKeyPressed(Keys.F1))
             {
@@ -298,19 +310,27 @@ namespace FluidSimulation1
 
             if (DisplayDebug)
             {
-                base.Draw(gameTime);
+               base.Draw(gameTime);
             }
 
             ResetRenderStates();
 
             //Apply in SRT order (Scale * Rotation * Translation)
-            for (int i = 0; i < myFluid.ActiveParticles; i++)
+            if (drawUsingMarchingCubes)
             {
-                DrawModel(sphere, Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(myFluid.Particles[i].Position), myFluid.Particles[i].Color, 1.0f);
-            
+                fluidRenderer.Draw(camera, teapot.Meshes[0].Effects[0] as BasicEffect);
+            }
+            else
+            {
+                for (int i = 0; i < myFluid.ActiveParticles; i++)
+                {
+                    DrawModel(sphere, Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(myFluid.Particles[i].Position), myFluid.Particles[i].Color, 1.0f);
+                }
             }
 
-            DrawModel(glassBox.Model, glassBox.World, Vector3.One, 0.33f);
+            DrawModel(teapot, Matrix.CreateTranslation(new Vector3(1, 0, 0)), Vector3.UnitX, 1.0f);
+
+            //DrawModel(glassBox.Model, glassBox.World, Vector3.One, 0.33f);
 
             if (DisplayDebug)
             {
@@ -351,7 +371,6 @@ namespace FluidSimulation1
         {
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
         }
 
         /*

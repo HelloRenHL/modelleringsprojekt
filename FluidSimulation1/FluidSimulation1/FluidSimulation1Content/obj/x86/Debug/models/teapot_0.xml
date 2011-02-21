@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>Teapot001</Name>
     <Identity>
-      <SourceFilename>c:\Users\marpe\Documents\Visual Studio 2010\Projects\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\models\teapot.FBX</SourceFilename>
+      <SourceFilename>R:\Documents\[Skola]\TNM085 - Mosprojekt\modelleringsprojekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\models\teapot.FBX</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <OpaqueData>
