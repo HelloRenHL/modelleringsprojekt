@@ -122,8 +122,13 @@
     <Compile Include="Sim\Fluid.cs" />
     <Compile Include="Sim\FluidHash.cs" />
     <Compile Include="Sim\FluidParticle.cs" />
+    <Compile Include="Sim\MarchingCubes\Data.cs" />
+    <Compile Include="Sim\MarchingCubes\FluidRendererMarchingCubes.cs" />
     <Compile Include="Sim\GlassBox.cs" />
     <Compile Include="Sim\Kernel.cs" />
+    <Compile Include="Sim\MarchingCubes\MarchingCubesField.cs" />
+    <Compile Include="Sim\MarchingCubes\MarchingCubesTriangle.cs" />
+    <Compile Include="Sim\MarchingCubes\MarchingCubesVertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
