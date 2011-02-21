@@ -53,11 +53,11 @@ namespace FluidSimulation1.Sim
             Model = content.Load<Model>(@"models\glass_box1");
         }
 
-        public void Rotate(float yaw, float pitch, float roll)
+        public void Rotate(float yaw) //, float pitch, float roll)
         {
             //Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Right, amount);
 
-            Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
+            Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(0, 0, yaw);
 
             Right = Vector3.TransformNormal(Right, rotationMatrix);
             //Up = Vector3.TransformNormal(Up, rotationMatrix);
