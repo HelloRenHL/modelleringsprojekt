@@ -8,10 +8,9 @@ namespace FluidSimulation1
 {
     public class MarchingCubesVertex
     {
-        public float b;
-        public Vector3 normal;
-        public int numTrisConnected;
-        public Vector3 position;
-        public Vector3 temp;
+        public Vector3 Normal;
+        public int NumTrisConnected;
+        public Vector3 Position;
+        public Vector3 Temp;
     }
 }

@@ -238,7 +238,7 @@ namespace FluidSimulation1
 
             //if (inputHandler.CurrentKeyboardState.IsKeyDown(Keys.D1))
             //{
-                //glassBox.Rotate(0.005f);
+                glassBox.Rotate(0.005f);
             //}
 
             if (inputHandler.IsKeyPressed(Keys.Tab))
@@ -328,9 +328,10 @@ namespace FluidSimulation1
                 }
             }
 
-            DrawModel(teapot, Matrix.CreateTranslation(new Vector3(1, 0, 0)), Vector3.UnitX, 1.0f);
+            ResetRenderStates();
 
-            //DrawModel(glassBox.Model, glassBox.World, Vector3.One, 0.33f);
+            //DrawModel(teapot, Matrix.CreateTranslation(new Vector3(1, 0, 0)), Vector3.UnitX, 1.0f);
+            DrawModel(glassBox.Model, glassBox.World, Vector3.One, 0.33f);
 
             if (DisplayDebug)
             {
@@ -371,6 +372,7 @@ namespace FluidSimulation1
         {
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
         }
 
         /*
