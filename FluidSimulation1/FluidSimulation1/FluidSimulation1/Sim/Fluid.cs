@@ -36,29 +36,118 @@ namespace FluidSimulation1
         public Vector3 Gravity = Vector3.Down * 196.2f;
         public float GravityRotation = 0.0f;
 
-        AxisAlignedBoundingBox bounds;
+        public AxisAlignedBoundingBox Bounds;
 
         public Fluid(int maxParticles)
         {
-            bounds = new AxisAlignedBoundingBox();
+            Bounds = new AxisAlignedBoundingBox();
             //bounds.Set(-Vector3.One, Vector3.One);
             int size = 1;
 
             //bounds.Set(new Vector3(-1f, -1f, -1f) * size, new Vector3(1f, 1f, 1f) * size);
             
-            bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
-            FluidHash = new FluidHash(bounds, SmoothKernel.h);
+            Bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
+            FluidHash = new FluidHash(Bounds, SmoothKernel.h);
 
             //bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
             //bounds.Max = Vector3.Transform(bounds.Max, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
             //bounds.Min = Vector3.Transform(bounds.Min, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
-
+            
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
 
             Poly6Zero = SmoothKernel.Poly6(Vector3.Zero);
 
             InitializeParticles();
+        }
+
+        public void CreateColorField(ref float[] inside, float minParticleSize, float bx, float by, float bz, float dx, float dy, float dz, int MCX, int MCY, int MCZ)
+        {
+            for (int n = 0; n < ((MCX * MCY) * MCZ); n++)
+            {
+                inside[n] = minParticleSize;
+            }
+
+            for (int n = 0; n < this.ActiveParticles; n++)
+            {
+                FluidParticle particle = this.Particles[n];
+
+                Vector3 position = particle.Position;
+
+                int num5 = (int)(((position.X - 0.15f) - bx) / dx);
+                int num6 = (int)(((position.Y - 0.15f) - by) / dy);
+                int num7 = (int)(((position.Z - 0.15f) - bz) / dz);
+                int num8 = (int)(((position.X + 0.15f) - bx) / dx);
+                int num9 = (int)(((position.Y + 0.15f) - by) / dy);
+                int num10 = (int)(((position.Z + 0.15f) - bz) / dz);
+
+                if (num5 < 0)
+                {
+                    num5 = 0;
+                }
+                else if (num5 >= MCX)
+                {
+                    num5 = MCX - 1;
+                }
+                if (num6 < 0)
+                {
+                    num6 = 0;
+                }
+                else if (num6 >= MCY)
+                {
+                    num6 = MCY - 1;
+                }
+                if (num7 < 0)
+                {
+                    num7 = 0;
+                }
+                else if (num7 >= MCZ)
+                {
+                    num7 = MCZ - 1;
+                }
+                if (num8 < 0)
+                {
+                    num8 = 0;
+                }
+                else if (num8 >= MCX)
+                {
+                    num8 = MCX - 1;
+                }
+                if (num9 < 0)
+                {
+                    num9 = 0;
+                }
+                else if (num9 >= MCY)
+                {
+                    num9 = MCY - 1;
+                }
+                if (num10 < 0)
+                {
+                    num10 = 0;
+                }
+                else if (num10 >= MCZ)
+                {
+                    num10 = MCZ - 1;
+                }
+                for (int i = num7; i <= num10; i++)
+                {
+                    for (int j = num6; j <= num9; j++)
+                    {
+                        for (int k = num5; k <= num8; k++)
+                        {
+                            Vector3 p = new Vector3(((k + 0.5f) * dx) + bx, ((j + 0.5f) * dy) + by, ((i + 0.5f) * dz) + bz);
+                            if (this.Bounds.Inside(ref p))
+                            {
+                                Vector3 rv = position - p;
+                                if (rv.LengthSquared() < 0.0225f)
+                                {
+                                    inside[(((i * MCY) + j) * MCX) + k] -= SmoothKernel.Poly6(rv) * particle.SurfaceNormal;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private Vector3 Random(Vector3 min, Vector3 max)
@@ -74,7 +163,7 @@ namespace FluidSimulation1
             for (int i = 0; i < MaxParticles; i++)
             {
                 FluidParticle particle = new FluidParticle();
-                particle.Position = Random(bounds.Min, bounds.Max);
+                particle.Position = Random(Bounds.Min, Bounds.Max);
                 particle.Velocity = Vector3.Zero;
                 particle.Force = Vector3.Zero;
                 particle.Color = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble());
@@ -118,6 +207,8 @@ namespace FluidSimulation1
         {
             for (int i = 0; i < ActiveParticles; i++)
             {
+                Particles[i].SurfaceNormal = 1.0f / Particles[i].Density * ParticleMass;
+
                 // Eq. 12 ifrån Müller03
                 Particles[i].Pressure = 0.2f * (Particles[i].Density - 1000f); //<- ???
             }
@@ -288,40 +379,40 @@ namespace FluidSimulation1
                 Vector3 particleTempPos = Vector3.Transform(particle.Position, invWorld); //Game1.glassBox.World);
                 Vector3 particleTempVel = Vector3.Transform(particle.Velocity, invWorld); //Game1.glassBox.World);
 
-                if (particleTempPos.Y < bounds.Min.Y)
+                if (particleTempPos.Y < Bounds.Min.Y)
                 {
                     particleTempVel.Y *= -1 * bounce;
-                    particleTempPos.Y = bounds.Min.Y;
+                    particleTempPos.Y = Bounds.Min.Y;
                 }
 
-                if (particleTempPos.Y > bounds.Max.Y)
+                if (particleTempPos.Y > Bounds.Max.Y)
                 {
                     particleTempVel.Y *= -1 * bounce;
-                    particleTempPos.Y = bounds.Max.Y;
+                    particleTempPos.Y = Bounds.Max.Y;
                 }
 
-                if (particleTempPos.X < bounds.Min.X)
+                if (particleTempPos.X < Bounds.Min.X)
                 {
                     particleTempVel.X *= -1 * bounce;
-                    particleTempPos.X = bounds.Min.X;
+                    particleTempPos.X = Bounds.Min.X;
                 }
 
-                if (particleTempPos.X > bounds.Max.X)
+                if (particleTempPos.X > Bounds.Max.X)
                 {
                     particleTempVel.X *= -1 * bounce;
-                    particleTempPos.X = bounds.Max.X;
+                    particleTempPos.X = Bounds.Max.X;
                 }
 
-                if (particleTempPos.Z > bounds.Max.Z)
+                if (particleTempPos.Z > Bounds.Max.Z)
                 {
                     particleTempVel.Z *= -1 * bounce;
-                    particleTempPos.Z = bounds.Max.Z;
+                    particleTempPos.Z = Bounds.Max.Z;
                 }
 
-                if (particleTempPos.Z < bounds.Min.Z)
+                if (particleTempPos.Z < Bounds.Min.Z)
                 {
                     particleTempVel.Z *= -1 * bounce;
-                    particleTempPos.Z = bounds.Min.Z;
+                    particleTempPos.Z = Bounds.Min.Z;
                 }
 
                 particle.Position = Vector3.Transform(particleTempPos, Game1.glassBox.World);

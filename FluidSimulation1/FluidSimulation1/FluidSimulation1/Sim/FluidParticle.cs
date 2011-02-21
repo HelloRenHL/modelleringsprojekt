@@ -20,6 +20,8 @@ namespace FluidSimulation1
 
         public Vector3 Color = Vector3.One;
 
+        public float SurfaceNormal = 0;
+
         public FluidParticle()
         {
 
