@@ -77,7 +77,7 @@ namespace FluidSimulation1
         }
 
 
-        public void Draw(Camera camera, BasicEffect basicEffect)
+        public void Draw(Camera camera, Matrix world, BasicEffect basicEffect)
         {
             if (this.isActive)
             {
@@ -92,7 +92,7 @@ namespace FluidSimulation1
                     basicEffect.Alpha = 1.0f;
                     basicEffect.DiffuseColor = new Vector3(0.7f, 0.1f, 0);
 
-                    basicEffect.World = Matrix.Identity;
+                    basicEffect.World = world;
                     basicEffect.View = camera.View;
                     basicEffect.Projection = camera.Projection;
 
@@ -111,19 +111,5 @@ namespace FluidSimulation1
                 }
             }
         }
-
-        /*public void UpdateShaders()
-        {
-            Matrix matrix = (Renderer.WorldMatrix * Renderer.ViewMatrix) * Renderer.ProjectionMatrix;
-            Matrix matrix2 = Matrix.Transpose(Matrix.Invert(Renderer.WorldMatrix));
-            Matrix matrix3 = Matrix.Transpose(Matrix.Invert(Renderer.WorldMatrix * Renderer.ViewMatrix));
-            this.m_deferredShader.get_Parameters().get_Item("WorldViewProj").SetValue(matrix);
-            this.m_deferredShader.get_Parameters().get_Item("WorldView").SetValue(Renderer.WorldMatrix * Renderer.ViewMatrix);
-            this.m_deferredShader.get_Parameters().get_Item("WorldViewIT").SetValue(matrix3);
-            this.m_deferredShader.get_Parameters().get_Item("WorldIT").SetValue(matrix2);
-            this.m_deferredShader.get_Parameters().get_Item("World").SetValue(Renderer.WorldMatrix);
-            this.m_deferredShader.get_Parameters().get_Item("ViewInv").SetValue(Matrix.Invert(Renderer.ViewMatrix));
-            this.m_deferredShader.get_Parameters().get_Item("cubeMap").SetValue(this.m_cubemap);
-        }*/
     }
 }

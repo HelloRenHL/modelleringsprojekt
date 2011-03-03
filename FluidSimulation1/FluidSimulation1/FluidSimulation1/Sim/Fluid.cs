@@ -205,7 +205,7 @@ namespace FluidSimulation1
 
         private void ComputeAllForces()
         {
-            Vector3 tempGravity = Gravity; //Vector3.TransformNormal(Gravity, Container.World);
+            Vector3 tempGravity = Vector3.Transform(Gravity, Matrix.Invert(Container.World));
 
             for (int i = 0; i < ActiveParticles; i++)
             {
@@ -336,51 +336,44 @@ namespace FluidSimulation1
         {
             float bounce = 0.33f;
 
-            Matrix invWorld = Matrix.Invert(Container.World);
-
-            foreach (FluidParticle particle in Particles)
+            for (int i = 0; i < ActiveParticles; i++)
             {
-                Vector3 tempParticlePos = Vector3.Transform(particle.Position, invWorld);
-                Vector3 tempParticleVel = Vector3.Transform(particle.Velocity, invWorld);
-
-                if (tempParticlePos.Y < this.Container.Bounds.Min.Y)
+                if (Particles[i].Position.Y < this.Container.Bounds.Min.Y)
                 {
-                    tempParticleVel.Y *= -1 * bounce;
-                    tempParticlePos.Y = this.Container.Bounds.Min.Y;
+                    Particles[i].Velocity.Y *= -1 * bounce;
+                    Particles[i].Position.Y = this.Container.Bounds.Min.Y;
                 }
 
-                if (tempParticlePos.Y > this.Container.Bounds.Max.Y)
+                if (Particles[i].Position.Y > this.Container.Bounds.Max.Y)
                 {
-                    tempParticleVel.Y *= -1 * bounce;
-                    tempParticlePos.Y = this.Container.Bounds.Max.Y;
+                    Particles[i].Velocity.Y *= -1 * bounce;
+                    Particles[i].Position.Y = this.Container.Bounds.Max.Y;
                 }
 
-                if (tempParticlePos.X < this.Container.Bounds.Min.X)
+                if (Particles[i].Position.X < this.Container.Bounds.Min.X)
                 {
-                    tempParticleVel.X *= -1 * bounce;
-                    tempParticlePos.X = this.Container.Bounds.Min.X;
+                    Particles[i].Velocity.X *= -1 * bounce;
+                    Particles[i].Position.X = this.Container.Bounds.Min.X;
                 }
 
-                if (tempParticlePos.X > this.Container.Bounds.Max.X)
+                if (Particles[i].Position.X > this.Container.Bounds.Max.X)
                 {
-                    tempParticleVel.X *= -1 * bounce;
-                    tempParticlePos.X = this.Container.Bounds.Max.X;
+                    Particles[i].Velocity.X *= -1 * bounce;
+                    Particles[i].Position.X = this.Container.Bounds.Max.X;
                 }
 
-                if (tempParticlePos.Z > this.Container.Bounds.Max.Z)
+                if (Particles[i].Position.Z > this.Container.Bounds.Max.Z)
                 {
-                    tempParticleVel.Z *= -1 * bounce;
-                    tempParticlePos.Z = this.Container.Bounds.Max.Z;
+                    Particles[i].Velocity.Z *= -1 * bounce;
+                    Particles[i].Position.Z = this.Container.Bounds.Max.Z;
                 }
 
-                if (tempParticlePos.Z < this.Container.Bounds.Min.Z)
+                if (Particles[i].Position.Z < this.Container.Bounds.Min.Z)
                 {
-                    tempParticleVel.Z *= -1 * bounce;
-                    tempParticlePos.Z = this.Container.Bounds.Min.Z;
+                    Particles[i].Velocity.Z *= -1 * bounce;
+                    Particles[i].Position.Z = this.Container.Bounds.Min.Z;
                 }
 
-                particle.Position = Vector3.Transform(tempParticlePos, Container.World);
-                particle.Velocity = Vector3.Transform(tempParticleVel, Container.World);
             }
         }
     }
