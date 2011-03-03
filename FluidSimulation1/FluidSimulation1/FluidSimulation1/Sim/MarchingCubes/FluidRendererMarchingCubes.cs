@@ -10,34 +10,39 @@ namespace FluidSimulation1
 {
     public class FluidRendererMarchingCubes
     {
+        public static float MinimumParticleSize = 0.2f;
+
         private Fluid Fluid;
         private GraphicsDevice graphicsDevice;
         private bool isActive = true;
         private VertexPositionNormalTexture[] localVertices;
         private MarchingCubesField marchingCubesField;
-        private float MinParticleSize = 0.2f;
         private int NumTriangles;
 
-        private VertexBuffer vertexBuffer;
-
-        private const int MAX_TRIANGLES = 65536;
+        private const int MAX_TRIANGLES = 65536; //Max number of primitives that can be drawn each update
 
         public FluidRendererMarchingCubes(Fluid fluid, GraphicsDevice graphicsDevice)
         {
-            this.graphicsDevice = graphicsDevice;
-            this.localVertices = new VertexPositionNormalTexture[MAX_TRIANGLES * 3];
-            this.vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionNormalTexture), localVertices.Length, BufferUsage.WriteOnly | BufferUsage.None);
-
             this.Fluid = fluid;
+            this.graphicsDevice = graphicsDevice;
+
+            // Create vertexbuffer
+            this.localVertices = new VertexPositionNormalTexture[MAX_TRIANGLES * 3];
+            for (int i = 0; i < localVertices.Length; i++)
+            {
+                this.localVertices[i] = new VertexPositionNormalTexture();
+            }
+
+
             BuildField();
         }
 
         public void CreateMesh()
         {
-            this.marchingCubesField.GenerateMesh(ref this.Fluid);
+            this.marchingCubesField.GenerateMesh(this.Fluid);
+
+            //Copy mesh data into vertexbuffer
             int index = 0;
-            int num2 = 1;
-            int num3 = 2;
             this.NumTriangles = Math.Min(MAX_TRIANGLES, this.marchingCubesField.NumTriangles);
 
             for (int i = 0; i < this.NumTriangles; i++)
@@ -45,35 +50,32 @@ namespace FluidSimulation1
                 MarchingCubesTriangle triangle = this.marchingCubesField.Triangles[i];
 
                 this.localVertices[index].Position = triangle.v0.Position;
-                this.localVertices[num2].Position = triangle.v1.Position;
-                this.localVertices[num3].Position = triangle.v2.Position;
-
                 this.localVertices[index].Normal = triangle.v0.Normal;
-                this.localVertices[num2].Normal = triangle.v1.Normal;
-                this.localVertices[num3].Normal = triangle.v2.Normal;
+
+                this.localVertices[index + 1].Position = triangle.v1.Position;
+                this.localVertices[index + 1].Normal = triangle.v1.Normal;
+
+                this.localVertices[index + 2].Position = triangle.v2.Position;
+                this.localVertices[index + 2].Normal = triangle.v2.Normal;
 
                 index += 3;
-                num2 += 3;
-                num3 += 3;
             }
         }
 
         public void BuildField()
         {
-            float num = 0.15f;
-            float num2 = 0.06f; // default
-            float num3 = (this.Fluid.Container.Bounds.Min.X - num) - num2;
-            float num4 = (this.Fluid.Container.Bounds.Min.Y - num) - num2;
-            float num5 = (this.Fluid.Container.Bounds.Min.Z - num) - num2;
-            float num6 = (this.Fluid.Container.Bounds.Max.X + num) + num2;
-            float num7 = (this.Fluid.Container.Bounds.Max.Y + num) + num2;
-            float num8 = (this.Fluid.Container.Bounds.Max.Z + num) + num2;
-            int num9 = (int)Math.Ceiling((double)((num6 - num3) / num2));
-            int num10 = (int)Math.Ceiling((double)((num7 - num4) / num2));
-            int num11 = (int)Math.Ceiling((double)((num8 - num5) / num2));
+            float h = SmoothKernel.h;
+            float delta = 0.05f; //h / 2f; // default
 
-            this.marchingCubesField = new MarchingCubesField(num9, num10, num11, num3, num4, num5, num2, num2, num2);
-            this.marchingCubesField.MinimumParticleSize = this.MinParticleSize;
+            float bx = this.Fluid.Container.Bounds.Min.X - h - delta;
+            float by = this.Fluid.Container.Bounds.Min.Y - h - delta;
+            float bz = this.Fluid.Container.Bounds.Min.Z - h - delta;
+
+            int x = (int)Math.Ceiling((this.Fluid.Container.Bounds.Max.X - this.Fluid.Container.Bounds.Min.X + 2 * h + 2 * delta) / delta);
+            int y = (int)Math.Ceiling((this.Fluid.Container.Bounds.Max.Y - this.Fluid.Container.Bounds.Min.Y + 2 * h + 2 * delta) / delta);
+            int z = (int)Math.Ceiling((this.Fluid.Container.Bounds.Max.Z - this.Fluid.Container.Bounds.Min.Z + 2 * h + 2 * delta) / delta);
+
+            this.marchingCubesField = new MarchingCubesField(x, y, z, bx, by, bz, delta, delta, delta);
         }
 
 
@@ -85,10 +87,6 @@ namespace FluidSimulation1
 
                 if (this.NumTriangles > 0)
                 {
-                    graphicsDevice.SetVertexBuffer(null); // unset vertexbuffer from graphicsdevice
-                    vertexBuffer.SetData<VertexPositionNormalTexture>(localVertices); // update vertexbuffer
-                    graphicsDevice.SetVertexBuffer(vertexBuffer); // set vertexbuffer
-
                     basicEffect.Alpha = 1.0f;
                     basicEffect.DiffuseColor = new Vector3(0.7f, 0.1f, 0);
 
@@ -99,14 +97,12 @@ namespace FluidSimulation1
                     basicEffect.EnableDefaultLighting();
 
                     // reset render states
-                    graphicsDevice.BlendState = BlendState.AlphaBlend;
-                    graphicsDevice.DepthStencilState = DepthStencilState.Default;
                     graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
                     foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
                     {
                         pass.Apply();
-                        this.graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, this.NumTriangles);
+                        this.graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, this.localVertices, 0, this.NumTriangles);
                     }
                 }
             }

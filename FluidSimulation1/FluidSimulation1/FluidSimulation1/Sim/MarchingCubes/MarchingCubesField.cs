@@ -12,24 +12,31 @@ namespace FluidSimulation1
         private float bx;
         private float by;
         private float bz;
-        private double[] divLut;
+
         private float dx;
         private float dy;
         private float dz;
-        private float[] m_fieldSmooth;
-        public float[] m_isInside;
-        public float MinimumParticleSize = 0.2f;
-        public int NumTriangles;
-        public int m_numVertices;
+
+        private float[] divLut;
+
+        private float[] fieldSmooth;
+        public float[] isInside;
+
+        public int NumTriangles = 0;
+        public int NumVertexes = 0;
+
         public MarchingCubesTriangle[] Triangles;
-        public MarchingCubesVertex[] m_vertex;
+        public MarchingCubesVertex[] Vertexes;
+
         private int MAX_CUBE_TRIANGLES = 5;
         private bool SMOOTH = true;
+
         private int X;
-        private MarchingCubesVertex[] xv;
         private int Y;
-        private MarchingCubesVertex[] yv;
         private int Z;
+
+        private MarchingCubesVertex[] xv;
+        private MarchingCubesVertex[] yv;
         private MarchingCubesVertex[] zv;
 
         public MarchingCubesField(int X_, int Y_, int Z_, float bx_, float by_, float bz_, float dx_, float dy_, float dz_)
@@ -38,12 +45,12 @@ namespace FluidSimulation1
             this.Y = Y_;
             this.Z = Z_;
 
-            this.m_isInside = new float[(this.X * this.Y) * this.Z];
-            this.m_fieldSmooth = new float[(this.X * this.Y) * this.Z];
+            this.isInside = new float[this.X * this.Y * this.Z];
+            this.fieldSmooth = new float[this.X * this.Y * this.Z];
 
-            this.xv = new MarchingCubesVertex[((this.X - 1) * this.Y) * this.Z];
-            this.yv = new MarchingCubesVertex[(this.X * (this.Y - 1)) * this.Z];
-            this.zv = new MarchingCubesVertex[(this.X * this.Y) * (this.Z - 1)];
+            this.xv = new MarchingCubesVertex[(this.X - 1) * this.Y * this.Z];
+            this.yv = new MarchingCubesVertex[this.X * (this.Y - 1) * this.Z];
+            this.zv = new MarchingCubesVertex[this.X * this.Y * (this.Z - 1)];
 
             for (int i = 0; i < this.xv.Length; i++)
             {
@@ -67,123 +74,206 @@ namespace FluidSimulation1
             this.dy = dy_;
             this.dz = dz_;
 
-            this.Triangles = new MarchingCubesTriangle[((this.MAX_CUBE_TRIANGLES * (this.X - 1)) * (this.Y - 1)) * (this.Z - 1)];
-
-            for (int m = 0; m < this.Triangles.Length; m++)
+            this.Triangles = new MarchingCubesTriangle[this.MAX_CUBE_TRIANGLES * (this.X - 1) * (this.Y - 1) * (this.Z - 1)];
+            for (int i = 0; i < this.Triangles.Length; i++)
             {
-                this.Triangles[m] = new MarchingCubesTriangle();
+                this.Triangles[i] = new MarchingCubesTriangle();
             }
 
-            this.NumTriangles = 0;
-            this.m_vertex = new MarchingCubesVertex[((((this.X - 1) * this.Y) * this.Z) + ((this.X * (this.Y - 1)) * this.Z)) + ((this.X * this.Y) * (this.Z - 1))];
-            
-            for (int n = 0; n < this.m_vertex.Length; n++)
+            this.Vertexes = new MarchingCubesVertex[(this.X - 1) * this.Y * this.Z + this.X * (this.Y - 1) * this.Z + this.X * this.Y * (this.Z - 1)];
+            for (int n = 0; n < this.Vertexes.Length; n++)
             {
-                this.m_vertex[n] = new MarchingCubesVertex();
+                this.Vertexes[n] = new MarchingCubesVertex();
             }
 
-            this.m_numVertices = 0;
-            this.divLut = new double[20];
-            this.divLut[0] = 0.0;
-            for (int num6 = 1; num6 < 20; num6++)
+            this.divLut = new float[20];
+            this.divLut[0] = 0;
+            for (int i = 1; i < 20; i++)
             {
-                this.divLut[num6] = 1.0 / (num6 * 3.0);
+                this.divLut[i] = 1f / (i * 3f);
             }
         }
 
         private Vector3 Bisect(float left, float right, Vector3 pleft, Vector3 pright)
         {
             float num = left / (left - right);
-            return (pleft + ((Vector3)((pright - pleft) * num)));
+            return pleft + (pright - pleft) * num;
         }
 
-        private void ComputeGrids(ref Fluid fluid)
+        public void CreateColorField(Fluid fluid)
         {
-            int num;
-            int num2;
-            int num3;
-
-            fluid.CreateColorField(ref this.m_isInside, this.MinimumParticleSize, this.bx, this.by, this.bz, this.dx, this.dy, this.dz, this.X, this.Y, this.Z);
-            
-            for (int i = 0; i < 1; i++)
+            for (int n = 0; n < X * Y * Z; n++)
             {
-                this.SmoothColorField();
+                isInside[n] = FluidRendererMarchingCubes.MinimumParticleSize;
             }
 
-            this.m_numVertices = 0;
-            for (num3 = 0; num3 < this.Z; num3++)
+            for (int n = 0; n < fluid.ActiveParticles; n++)
             {
-                num2 = 0;
-                while (num2 < this.Y)
-                {
-                    num = 0;
-                    while (num < (this.X - 1))
-                    {
-                        int index = (((num3 * this.Y) + num2) * this.X) + num;
-                        int num6 = (((num3 * this.Y) + num2) * this.X) + (num + 1);
-                        int num7 = (((num3 * this.Y) + num2) * (this.X - 1)) + num;
+                FluidParticle particle = fluid.Particles[n];
 
-                        if ((this.m_isInside[index] * this.m_isInside[num6]) < 0f)
+                Vector3 position = particle.Position;
+
+                float h = SmoothKernel.h;
+
+                int num5 = (int)((position.X - h - bx) / dx);
+                int num6 = (int)((position.Y - h - by) / dy);
+                int num7 = (int)((position.Z - h - bz) / dz);
+                int num8 = (int)((position.X + h - bx) / dx);
+                int num9 = (int)((position.Y + h - by) / dy);
+                int num10 = (int)((position.Z + h - bz) / dz);
+
+                if (num5 < 0)
+                {
+                    num5 = 0;
+                }
+                else if (num5 >= X)
+                {
+                    num5 = X - 1;
+                }
+
+                if (num6 < 0)
+                {
+                    num6 = 0;
+                }
+                else if (num6 >= Y)
+                {
+                    num6 = Y - 1;
+                }
+
+                if (num7 < 0)
+                {
+                    num7 = 0;
+                }
+                else if (num7 >= Z)
+                {
+                    num7 = Z - 1;
+                }
+
+                if (num8 < 0)
+                {
+                    num8 = 0;
+                }
+                else if (num8 >= X)
+                {
+                    num8 = X - 1;
+                }
+
+                if (num9 < 0)
+                {
+                    num9 = 0;
+                }
+                else if (num9 >= Y)
+                {
+                    num9 = Y - 1;
+                }
+
+                if (num10 < 0)
+                {
+                    num10 = 0;
+                }
+                else if (num10 >= Z)
+                {
+                    num10 = Z - 1;
+                }
+
+                for (int i = num7; i <= num10; i++)
+                {
+                    for (int j = num6; j <= num9; j++)
+                    {
+                        for (int k = num5; k <= num8; k++)
                         {
-                            this.xv[num7].Position = this.Bisect(this.m_isInside[index], this.m_isInside[num6], this.GCSToWCS((float)num, (float)num2, (float)num3), this.GCSToWCS((float)(num + 1), (float)num2, (float)num3));
+                            Vector3 p = this.GCSToWCS(k, j, i);
+
+                            if (fluid.Container.Bounds.Contains(p) == ContainmentType.Contains)
+                            {
+                                Vector3 rv = position - p;
+                                if (rv.LengthSquared() < 0.0225f)
+                                {
+                                    isInside[(i * Y + j) * X + k] -= SmoothKernel.Poly6(rv) * particle.SurfaceNormal;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ComputeGrids(Fluid fluid)
+        {
+            CreateColorField(fluid);
+   
+            this.SmoothColorField();
+   
+            this.NumVertexes = 0;
+            for (int i = 0; i < this.Z; i++)
+            {
+                for(int j = 0; j < this.Y; j++)
+                {
+                    for(int k = 0; k < this.X - 1; k++)
+                    {
+                        int index = (i * this.Y + j) * this.X + k;
+                        int num6 = (i * this.Y + j) * this.X + k + 1;
+                        int num7 = (i * this.Y + j) * (this.X - 1) + k;
+
+                        if (this.isInside[index] * this.isInside[num6] < 0f)
+                        {
+                            this.xv[num7].Position = this.Bisect(this.isInside[index], this.isInside[num6], this.GCSToWCS(k, j, i), this.GCSToWCS(k + 1, j, i));
                             this.xv[num7].Normal = Vector3.Zero;
-                            this.m_vertex[this.m_numVertices] = this.xv[num7];
-                            this.m_numVertices++;
+                            this.Vertexes[this.NumVertexes] = this.xv[num7];
+                            this.NumVertexes++;
                         }
-                        num++;
                     }
-                    num2++;
                 }
             }
 
-            for (num3 = 0; num3 < this.Z; num3++)
+            for (int i = 0; i < this.Z; i++)
             {
-                num2 = 0;
-                while (num2 < (this.Y - 1))
+                for (int j = 0; j < this.Y - 1; j++)
                 {
-                    num = 0;
-                    while (num < this.X)
+                    for (int k = 0; k < this.X; k++)
                     {
-                        int num8 = (((num3 * this.Y) + num2) * this.X) + num;
-                        int num9 = (((num3 * this.Y) + (num2 + 1)) * this.X) + num;
-                        int num10 = (((num3 * (this.Y - 1)) + num2) * this.X) + num;
-                        if ((this.m_isInside[num8] * this.m_isInside[num9]) < 0f)
+                        int num8 = (((i * this.Y) + j) * this.X) + k;
+                        int num9 = (((i * this.Y) + (j + 1)) * this.X) + k;
+                        int num10 = (((i * (this.Y - 1)) + j) * this.X) + k;
+
+                        if ((this.isInside[num8] * this.isInside[num9]) < 0f)
                         {
-                            this.yv[num10].Position = this.Bisect(this.m_isInside[num8], this.m_isInside[num9], this.GCSToWCS((float)num, (float)num2, (float)num3), this.GCSToWCS((float)num, (float)(num2 + 1), (float)num3));
+                            this.yv[num10].Position = this.Bisect(this.isInside[num8], this.isInside[num9], this.GCSToWCS(k, j, i), this.GCSToWCS(k, j + 1, i));
                             this.yv[num10].Normal = Vector3.Zero;
-                            this.m_vertex[this.m_numVertices] = this.yv[num10];
-                            this.m_numVertices++;
+                            this.Vertexes[this.NumVertexes] = this.yv[num10];
+                            this.NumVertexes++;
                         }
-                        num++;
                     }
-                    num2++;
                 }
             }
 
-            for (num3 = 0; num3 < (this.Z - 1); num3++)
+            for (int i = 0; i < this.Z - 1; i++)
             {
-                for (num2 = 0; num2 < this.Y; num2++)
+                for (int j = 0; j < this.Y; j++)
                 {
-                    for (num = 0; num < this.X; num++)
+                    for (int k = 0; k < this.X; k++)
                     {
-                        int num11 = (((num3 * this.Y) + num2) * this.X) + num;
-                        int num12 = ((((num3 + 1) * this.Y) + num2) * this.X) + num;
-                        int num13 = (((num3 * this.Y) + num2) * this.X) + num;
-                        if ((this.m_isInside[num11] * this.m_isInside[num12]) < 0f)
+                        int num11 = (((i * this.Y) + j) * this.X) + k;
+                        int num12 = ((((i + 1) * this.Y) + j) * this.X) + k;
+                        int num13 = (((i * this.Y) + j) * this.X) + k;
+
+                        if ((this.isInside[num11] * this.isInside[num12]) < 0f)
                         {
-                            this.zv[num13].Position = this.Bisect(this.m_isInside[num11], this.m_isInside[num12], this.GCSToWCS((float)num, (float)num2, (float)num3), this.GCSToWCS((float)num, (float)num2, (float)(num3 + 1)));
+                            this.zv[num13].Position = this.Bisect(this.isInside[num11], this.isInside[num12], this.GCSToWCS(k, j, i), this.GCSToWCS(k, j, i + 1));
                             this.zv[num13].Normal = Vector3.Zero;
-                            this.m_vertex[this.m_numVertices] = this.zv[num13];
-                            this.m_numVertices++;
+                            this.Vertexes[this.NumVertexes] = this.zv[num13];
+                            this.NumVertexes++;
                         }
                     }
                 }
             }
         }
 
-        private Vector3 GCSToWCS(float x, float y, float z)
+        public Vector3 GCSToWCS(float x, float y, float z)
         {
-            return new Vector3(((x + 0.5f) * this.dx) + this.bx, ((y + 0.5f) * this.dy) + this.by, ((z + 0.05f) * this.dz) + this.bz);
+            return new Vector3((x + 0.5f) * this.dx + this.bx,
+                (y + 0.5f) * this.dy + this.by,
+                (z + 0.5f) * this.dz + this.bz);
         }
 
         /// <summary>
@@ -199,18 +289,26 @@ namespace FluidSimulation1
 
         private void SmoothColorField()
         {
-            //for (int i = 0; i < ((this.X * this.Y) * this.Z); i++)
-            //{
-            //    this.m_fieldSmooth[i] = this.m_isInside[i];
-            //}
+            for (int i = 0; i < this.X * this.Y * this.Z; i++)
+            {
+                fieldSmooth[i] = isInside[i];
+            }
 
-            //for (int j = 0; j < this.Z; j++)
+            //for (int k = 0; k < this.Z - 1; k++)
             //{
-            //    for (int k = 0; k < this.Y; k++)
+            //    for (int j = 0; j < this.Y; j++)
             //    {
-            //        for (int m = 0; m < this.X; m++)
+            //        for (int i = 0; i < this.X; i++)
             //        {
-            //            this.m_isInside[(((j * this.Y) + k) * this.X) + m] = (((((this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m + 1, this.X)] + this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m - 1, this.X)]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k + 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k - 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((this.Clamp(j + 1, this.Z) * this.Y) + k) * this.X) + m]) + this.m_fieldSmooth[(((this.Clamp(j - 1, this.Z) * this.Y) + k) * this.X) + m]) / 6f;
+            //            int a = (k * this.Y + j) * this.X + this.Clamp(i + 1, this.X);
+            //            int b = (k * this.Y) + j * this.X + this.Clamp(i - 1, this.X);
+            //            int c = (k * this.Y + this.Clamp(j + 1, this.Y)) * this.X + i;
+            //            int d = (k * this.Y + this.Clamp(j - 1, this.Y)) * this.X + i;
+            //            int e = (this.Clamp(k + 1, this.Z) * this.Y + j) * this.X + i;
+            //            int f = (this.Clamp(k - 1, this.Z) * this.Y + j) * this.X + i;
+
+            //            int temp = (k * this.Y + j) * this.X + i;
+            //            this.isInside[temp] = (fieldSmooth[a] + fieldSmooth[b] + fieldSmooth[c] + fieldSmooth[d] + fieldSmooth[e] + fieldSmooth[f]) / 6f;
             //        }
             //    }
             //}
@@ -220,35 +318,35 @@ namespace FluidSimulation1
         private void PolygonizeCube(int i, int j, int k, MarchingCubesVertex[] vertlist)
         {
             int index = 0;
-            if (this.m_isInside[(((k * this.Y) + j) * this.X) + i] < 0f)
+            if (this.isInside[(k * this.Y + j) * this.X + i] < 0f)
             {
                 index |= 1;
             }
-            if (this.m_isInside[(((k * this.Y) + j) * this.X) + (i + 1)] < 0f)
+            if (this.isInside[(((k * this.Y) + j) * this.X) + (i + 1)] < 0f)
             {
                 index |= 2;
             }
-            if (this.m_isInside[((((k + 1) * this.Y) + j) * this.X) + (i + 1)] < 0f)
+            if (this.isInside[((((k + 1) * this.Y) + j) * this.X) + (i + 1)] < 0f)
             {
                 index |= 4;
             }
-            if (this.m_isInside[((((k + 1) * this.Y) + j) * this.X) + i] < 0f)
+            if (this.isInside[((((k + 1) * this.Y) + j) * this.X) + i] < 0f)
             {
                 index |= 8;
             }
-            if (this.m_isInside[(((k * this.Y) + (j + 1)) * this.X) + i] < 0f)
+            if (this.isInside[(((k * this.Y) + (j + 1)) * this.X) + i] < 0f)
             {
                 index |= 0x10;
             }
-            if (this.m_isInside[(((k * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
+            if (this.isInside[(((k * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
             {
                 index |= 0x20;
             }
-            if (this.m_isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
+            if (this.isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
             {
                 index |= 0x40;
             }
-            if (this.m_isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + i] < 0f)
+            if (this.isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + i] < 0f)
             {
                 index |= 0x80;
             }
@@ -316,11 +414,12 @@ namespace FluidSimulation1
         {
             this.NumTriangles = 0;
             MarchingCubesVertex[] vertlist = new MarchingCubesVertex[12];
-            for (int i = 0; i < (this.Z - 1); i++)
+
+            for (int i = 0; i < this.Z - 1; i++)
             {
-                for (int j = 0; j < (this.Y - 1); j++)
+                for (int j = 0; j < this.Y - 1; j++)
                 {
-                    for (int k = 0; k < (this.X - 1); k++)
+                    for (int k = 0; k < this.X - 1; k++)
                     {
                         this.PolygonizeCube(k, j, i, vertlist);
                     }
@@ -331,27 +430,27 @@ namespace FluidSimulation1
 
         private void SmoothMesh()
         {
-            int num;
-            for (num = 0; num < this.m_numVertices; num++)
+            for (int i = 0; i < this.NumVertexes; i++)
             {
-                this.m_vertex[num].Temp = Vector3.Zero;
-                this.m_vertex[num].NumTrisConnected = 0;
-            }
-            for (num = 0; num < this.NumTriangles; num++)
-            {
-                Vector3 vector = (this.Triangles[num].v0.Position + this.Triangles[num].v1.Position) + this.Triangles[num].v2.Position;
-                this.Triangles[num].v0.Temp += vector;
-                this.Triangles[num].v1.Temp += vector;
-                this.Triangles[num].v2.Temp += vector;
-
-                this.Triangles[num].v0.NumTrisConnected++;
-                this.Triangles[num].v1.NumTrisConnected++;
-                this.Triangles[num].v2.NumTrisConnected++;
+                this.Vertexes[i].Temp = Vector3.Zero;
+                this.Vertexes[i].NumTrisConnected = 0;
             }
 
-            for (num = 0; num < this.m_numVertices; num++)
+            for (int i = 0; i < this.NumTriangles; i++)
             {
-                this.m_vertex[num].Position = (Vector3)(this.m_vertex[num].Temp * ((float)this.divLut[this.m_vertex[num].NumTrisConnected]));
+                Vector3 vector = (this.Triangles[i].v0.Position + this.Triangles[i].v1.Position) + this.Triangles[i].v2.Position;
+                this.Triangles[i].v0.Temp += vector;
+                this.Triangles[i].v1.Temp += vector;
+                this.Triangles[i].v2.Temp += vector;
+
+                this.Triangles[i].v0.NumTrisConnected++;
+                this.Triangles[i].v1.NumTrisConnected++;
+                this.Triangles[i].v2.NumTrisConnected++;
+            }
+
+            for (int i = 0; i < this.NumVertexes; i++)
+            {
+                this.Vertexes[i].Position = this.Vertexes[i].Temp * this.divLut[this.Vertexes[i].NumTrisConnected];
             }
         }
 
@@ -360,29 +459,32 @@ namespace FluidSimulation1
         {
             for (int i = 0; i < this.NumTriangles; i++)
             {
-                Vector3 position = this.Triangles[i].v0.Position;
-                Vector3 vector2 = this.Triangles[i].v1.Position;
-                Vector3 vector3 = this.Triangles[i].v2.Position;
-                Vector3 vector4 = Vector3.Cross(vector2 - position, vector3 - position);
-                this.Triangles[i].v0.Normal += vector4;
-                this.Triangles[i].v1.Normal += vector4;
-                this.Triangles[i].v2.Normal += vector4;
+                MarchingCubesTriangle t = this.Triangles[i];
+
+                Vector3 normal = Vector3.Cross(t.v1.Position - t.v0.Position, t.v2.Position - t.v0.Position);
+
+                this.Triangles[i].v0.Normal += normal;
+                this.Triangles[i].v1.Normal += normal;
+                this.Triangles[i].v2.Normal += normal;
             }
 
-            for (int i = 0; i < this.m_numVertices; i++)
+            for (int i = 0; i < this.NumVertexes; i++)
             {
-                this.m_vertex[i].Normal.Normalize();
+                this.Vertexes[i].Normal.Normalize();
             }
         }
 
-        public void GenerateMesh(ref Fluid fluid)
+        public void GenerateMesh(Fluid fluid)
         {
-            this.ComputeGrids(ref fluid);
+            this.ComputeGrids(fluid);
+
             this.PolygonizeCubes();
+
             if (this.SMOOTH)
             {
                 this.SmoothMesh();
             }
+
             this.UpdateNormals();
         }
     }
