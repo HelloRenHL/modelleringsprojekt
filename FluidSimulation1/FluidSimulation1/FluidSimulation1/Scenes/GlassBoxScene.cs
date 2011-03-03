@@ -188,12 +188,12 @@ namespace FluidSimulation1
                 debugGrid.Draw(FluidSimulation1.Camera.View, FluidSimulation1.Camera.Projection);
             }
 
-            VertexPositionColor b = new VertexPositionColor(Vector3.Zero, Color.LightGreen);
-            Vector3 temp = Fluid.Gravity;
-            temp.Normalize();
-            VertexPositionColor a = new VertexPositionColor(Vector3.Transform(temp, Fluid.Container.World), Color.LightSalmon);
+            //VertexPositionColor b = new VertexPositionColor(Vector3.Zero, Color.LightGreen);
+            //Vector3 temp = Fluid.Gravity;
+            //temp.Normalize();
+            //VertexPositionColor a = new VertexPositionColor(Vector3.Transform(temp, Fluid.Container.World), Color.LightSalmon);
 
-            fluidSimulation1.GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, new VertexPositionColor[] { a, b }, 0, 1);
+            //fluidSimulation1.GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, new VertexPositionColor[] { a, b }, 0, 1);
 
             if (drawUsingMarchingCubes)
             {
