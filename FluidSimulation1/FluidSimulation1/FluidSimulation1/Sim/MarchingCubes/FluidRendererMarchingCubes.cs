@@ -62,12 +62,12 @@ namespace FluidSimulation1
         {
             float num = 0.15f;
             float num2 = 0.06f; // default
-            float num3 = (this.Fluid.Bounds.Min.X - num) - num2;
-            float num4 = (this.Fluid.Bounds.Min.Y - num) - num2;
-            float num5 = (this.Fluid.Bounds.Min.Z - num) - num2;
-            float num6 = (this.Fluid.Bounds.Max.X + num) + num2;
-            float num7 = (this.Fluid.Bounds.Max.Y + num) + num2;
-            float num8 = (this.Fluid.Bounds.Max.Z + num) + num2;
+            float num3 = (this.Fluid.Container.Bounds.Min.X - num) - num2;
+            float num4 = (this.Fluid.Container.Bounds.Min.Y - num) - num2;
+            float num5 = (this.Fluid.Container.Bounds.Min.Z - num) - num2;
+            float num6 = (this.Fluid.Container.Bounds.Max.X + num) + num2;
+            float num7 = (this.Fluid.Container.Bounds.Max.Y + num) + num2;
+            float num8 = (this.Fluid.Container.Bounds.Max.Z + num) + num2;
             int num9 = (int)Math.Ceiling((double)((num6 - num3) / num2));
             int num10 = (int)Math.Ceiling((double)((num7 - num4) / num2));
             int num11 = (int)Math.Ceiling((double)((num8 - num5) / num2));

@@ -12,37 +12,35 @@ namespace FluidSimulation1
         public List<FluidParticle>[] Entry;
         private int numberOfEntries;
 
-        AxisAlignedBoundingBox AxisAlignedBoundingBox;
-
         private float h;
         private float h2;
 
-        int cellSizeX;
-        int cellSizeY;
-        int cellSizeZ;
+        int width;
+        int height;
+        int depth;
 
-        public FluidHash(AxisAlignedBoundingBox axisAlignedBoundingBox, float h)
+        Fluid fluid;
+
+        public FluidHash(Fluid fluid)
         {
-            this.AxisAlignedBoundingBox = axisAlignedBoundingBox;
+            this.fluid = fluid;
 
-            this.h = h;
+            this.h = SmoothKernel.h;
             this.h2 = h * h;
 
-            this.cellSizeX = (int)Math.Ceiling((double)((this.AxisAlignedBoundingBox.Max.X - this.AxisAlignedBoundingBox.Min.X) / this.h));
-            this.cellSizeY = (int)Math.Ceiling((double)((this.AxisAlignedBoundingBox.Max.Y - this.AxisAlignedBoundingBox.Min.Y) / this.h));
-            this.cellSizeZ = (int)Math.Ceiling((double)((this.AxisAlignedBoundingBox.Max.Z - this.AxisAlignedBoundingBox.Min.Z) / this.h));
+            // Calculate number of cells required
+            this.width = (int)Math.Ceiling((double)((fluid.Container.Bounds.Max.X - fluid.Container.Bounds.Min.X) / this.h)); // Ceiling avrundar alltid uppåt
+            this.height = (int)Math.Ceiling((double)((fluid.Container.Bounds.Max.Y - fluid.Container.Bounds.Min.Y) / this.h)); // 4.001 blir tex 5
+            this.depth = (int)Math.Ceiling((double)((fluid.Container.Bounds.Max.Z - fluid.Container.Bounds.Min.Z) / this.h));
 
-
-            // Create the list that holds each cells particles
-            this.numberOfEntries = this.cellSizeX * this.cellSizeY * this.cellSizeZ;
+            // Create a list that holds lists of neighbours
+            this.numberOfEntries = this.width * this.height * this.depth;
             this.Entry = new List<FluidParticle>[this.numberOfEntries];
             for (int i = 0; i < this.numberOfEntries; i++)
             {
-                this.Entry[i] = new List<FluidParticle>(64);
+                this.Entry[i] = new List<FluidParticle>(64); // Max number of neighbours
             }
         }
-
-
 
         public void Clear()
         {
@@ -52,14 +50,13 @@ namespace FluidSimulation1
             }
         }
 
-
         private void GatherCellNeighbors2(FluidParticle part, int x1, int y1, int z1, List<NeighbourPair> neighbors)
         {
-            x1 = Math.Abs(x1) % this.cellSizeX;
-            y1 = Math.Abs(y1) % this.cellSizeY;
-            z1 = Math.Abs(z1) % this.cellSizeZ;
+            x1 = Math.Abs(x1) % this.width;
+            y1 = Math.Abs(y1) % this.height;
+            z1 = Math.Abs(z1) % this.depth;
 
-            int index = (((z1 * this.cellSizeY) + y1) * this.cellSizeX) + x1;
+            int index = (((z1 * this.height) + y1) * this.width) + x1;
 
             foreach (FluidParticle particle in this.Entry[index])
             {
@@ -90,11 +87,11 @@ namespace FluidSimulation1
         private void GatherCellNeighbors(int x, int y, int z, List<NeighbourPair> neighbors)
         {
             // Get the cell index
-            x = Math.Abs(x) % this.cellSizeX;
-            y = Math.Abs(y) % this.cellSizeY;
-            z = Math.Abs(z) % this.cellSizeZ;
+            x = Math.Abs(x) % this.width;
+            y = Math.Abs(y) % this.height;
+            z = Math.Abs(z) % this.depth;
 
-            int index = (((z * this.cellSizeY) + y) * this.cellSizeX) + x;
+            int index = (((z * this.height) + y) * this.width) + x;
 
             int counter = 0;
 
@@ -117,11 +114,11 @@ namespace FluidSimulation1
         public void GatherNeighbors(List<NeighbourPair> neighbors)
         {
             // Loop through each cell
-            for (int i = 0; i < this.cellSizeZ; i++)
+            for (int i = 0; i < this.depth; i++)
             {
-                for (int j = 0; j < this.cellSizeY; j++)
+                for (int j = 0; j < this.height; j++)
                 {
-                    for (int k = 0; k < this.cellSizeX; k++)
+                    for (int k = 0; k < this.width; k++)
                     {
                         this.GatherCellNeighbors(k, j, i, neighbors);
                     }
@@ -131,17 +128,21 @@ namespace FluidSimulation1
 
         public void AddParticle(FluidParticle p)
         {
-            //Debug.Write(p.Position.ToString());
+            // Calculate which cell this particle goes in
+            //Vector3 temp = Vector3.Transform(p.Position, Matrix.Invert(fluid.Container.World)); // Transform particle position to bounds coordinate space
 
-            int x = (int)((p.Position.X - this.AxisAlignedBoundingBox.Min.X) / this.h);
-            int y = (int)((p.Position.Y - this.AxisAlignedBoundingBox.Min.Y) / this.h);
-            int z = (int)((p.Position.Z - this.AxisAlignedBoundingBox.Min.Z) / this.h);
+            Vector3 temp = p.Position;
 
-            x = Math.Abs(x) % this.cellSizeX;
-            y = Math.Abs(y) % this.cellSizeY;
-            z = Math.Abs(z) % this.cellSizeZ;
+            int x = (int)((temp.X - fluid.Container.Bounds.Max.X) / this.h);
+            int y = (int)((temp.Y - fluid.Container.Bounds.Max.Y) / this.h);
+            int z = (int)((temp.Z - fluid.Container.Bounds.Max.Z) / this.h);
 
-            int index = (((z * this.cellSizeY) + y) * this.cellSizeX) + x;
+            x = Math.Abs(x) % this.width;
+            y = Math.Abs(y) % this.height;
+            z = Math.Abs(z) % this.depth;
+
+            int index = this.width * this.height * z + this.width * y + x;
+
             this.Entry[index].Add(p);
         }
     }

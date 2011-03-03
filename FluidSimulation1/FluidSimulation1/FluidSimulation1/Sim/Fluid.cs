@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using FluidSimulation1.Sim;
 
 namespace FluidSimulation1
 {
@@ -33,26 +34,15 @@ namespace FluidSimulation1
         public List<FluidParticle> Particles = new List<FluidParticle>();
         float Poly6Zero;
 
+        public GlassBox Container;
         public Vector3 Gravity = Vector3.Down * 196.2f;
-        public float GravityRotation = 0.0f;
 
-        public AxisAlignedBoundingBox Bounds;
-
-        public Fluid(int maxParticles)
+        public Fluid(int maxParticles, GlassBox container)
         {
-            Bounds = new AxisAlignedBoundingBox();
-            //bounds.Set(-Vector3.One, Vector3.One);
-            int size = 1;
+            this.Container = container;
 
-            //bounds.Set(new Vector3(-1f, -1f, -1f) * size, new Vector3(1f, 1f, 1f) * size);
-            
-            Bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
-            FluidHash = new FluidHash(Bounds, SmoothKernel.h);
+            FluidHash = new FluidHash(this);
 
-            //bounds.Set(new Vector3(-1f, -0.5f, -0.2f) * size, new Vector3(1f, 0.5f, 0.2f) * size);
-            //bounds.Max = Vector3.Transform(bounds.Max, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
-            //bounds.Min = Vector3.Transform(bounds.Min, Matrix.CreateRotationY(MathHelper.ToRadians(30)));
-            
             MaxParticles = maxParticles;
             ActiveParticles = maxParticles;
 
@@ -136,7 +126,7 @@ namespace FluidSimulation1
                         for (int k = num5; k <= num8; k++)
                         {
                             Vector3 p = new Vector3(((k + 0.5f) * dx) + bx, ((j + 0.5f) * dy) + by, ((i + 0.5f) * dz) + bz);
-                            if (this.Bounds.Inside(ref p))
+                            if (this.Container.Bounds.Contains(p) == ContainmentType.Contains)
                             {
                                 Vector3 rv = position - p;
                                 if (rv.LengthSquared() < 0.0225f)
@@ -152,7 +142,7 @@ namespace FluidSimulation1
 
         private Vector3 Random(Vector3 min, Vector3 max)
         {
-            Vector3 vector = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble());
+            Vector3 vector = new Vector3((float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble());
             Vector3 vector2 = max - min;
             return (min + (vector2 * vector));
         }
@@ -163,11 +153,10 @@ namespace FluidSimulation1
             for (int i = 0; i < MaxParticles; i++)
             {
                 FluidParticle particle = new FluidParticle();
-                particle.Position = Random(Bounds.Min, Bounds.Max);
+                particle.Position = Random(this.Container.Bounds.Min, this.Container.Bounds.Max);
                 particle.Velocity = Vector3.Zero;
                 particle.Force = Vector3.Zero;
-                particle.Color = new Vector3((float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble(), (float)Game1.Random.NextDouble());
-                //particle.Mass = ParticleMass;
+                particle.Color = new Vector3((float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble());
                 particle.Density = 0f;
                 particle.Pressure = 0f;
                 Particles.Add(particle);
@@ -216,7 +205,7 @@ namespace FluidSimulation1
 
         private void ComputeAllForces()
         {
-            Vector3 tempGravity = Vector3.Transform(Gravity, Matrix.CreateFromAxisAngle(Vector3.UnitZ, MathHelper.ToRadians(GravityRotation)));
+            Vector3 tempGravity = Gravity; //Vector3.TransformNormal(Gravity, Container.World);
 
             for (int i = 0; i < ActiveParticles; i++)
             {
@@ -227,9 +216,6 @@ namespace FluidSimulation1
             {
                 FluidParticle a = Neighbours[i].A;
                 FluidParticle b = Neighbours[i].B;
-
-                if (a == b)
-                    continue;
 
                 Vector3 rv = a.Position - b.Position;
                 float r = rv.Length();
@@ -318,9 +304,6 @@ namespace FluidSimulation1
                 // Find neighbours of particles
                 FindNeighbors();
 
-                // Litar inte på att funktionen ovanför funkar till 100% så skrev en egen för att testa
-                //TempFindNeighbors();
-
                 // Compute Densities
                 ComputeDensity();
 
@@ -349,74 +332,55 @@ namespace FluidSimulation1
             StopWatch.Stop();
         }
 
-        //private void TempFindNeighbors()
-        //{
-        //    Neighbours.Clear();
-        //    for (int i = 0; i < ActiveParticles; i++)
-        //    {
-        //        for (int j = 0; j < Particles.Count; j++)
-        //        {
-        //            if (i == j)
-        //                continue;
-
-        //            float r = (Particles[i].Position - Particles[j].Position).Length();
-
-        //            if (r < SmoothKernel.h)
-        //            {
-        //                Neighbours.Add(new NeighbourPair(Particles[i], Particles[j]));
-        //            }
-        //        }
-        //    }
-        //}
-
         public void HandleCollisions()
         {
             float bounce = 0.33f;
-            Matrix invWorld = Matrix.Invert(Game1.glassBox.World);
+
+            Matrix invWorld = Matrix.Invert(Container.World);
 
             foreach (FluidParticle particle in Particles)
             {
-                Vector3 particleTempPos = Vector3.Transform(particle.Position, invWorld); //Game1.glassBox.World);
-                Vector3 particleTempVel = Vector3.Transform(particle.Velocity, invWorld); //Game1.glassBox.World);
+                Vector3 tempParticlePos = Vector3.Transform(particle.Position, invWorld);
+                Vector3 tempParticleVel = Vector3.Transform(particle.Velocity, invWorld);
 
-                if (particleTempPos.Y < Bounds.Min.Y)
+                if (tempParticlePos.Y < this.Container.Bounds.Min.Y)
                 {
-                    particleTempVel.Y *= -1 * bounce;
-                    particleTempPos.Y = Bounds.Min.Y;
+                    tempParticleVel.Y *= -1 * bounce;
+                    tempParticlePos.Y = this.Container.Bounds.Min.Y;
                 }
 
-                if (particleTempPos.Y > Bounds.Max.Y)
+                if (tempParticlePos.Y > this.Container.Bounds.Max.Y)
                 {
-                    particleTempVel.Y *= -1 * bounce;
-                    particleTempPos.Y = Bounds.Max.Y;
+                    tempParticleVel.Y *= -1 * bounce;
+                    tempParticlePos.Y = this.Container.Bounds.Max.Y;
                 }
 
-                if (particleTempPos.X < Bounds.Min.X)
+                if (tempParticlePos.X < this.Container.Bounds.Min.X)
                 {
-                    particleTempVel.X *= -1 * bounce;
-                    particleTempPos.X = Bounds.Min.X;
+                    tempParticleVel.X *= -1 * bounce;
+                    tempParticlePos.X = this.Container.Bounds.Min.X;
                 }
 
-                if (particleTempPos.X > Bounds.Max.X)
+                if (tempParticlePos.X > this.Container.Bounds.Max.X)
                 {
-                    particleTempVel.X *= -1 * bounce;
-                    particleTempPos.X = Bounds.Max.X;
+                    tempParticleVel.X *= -1 * bounce;
+                    tempParticlePos.X = this.Container.Bounds.Max.X;
                 }
 
-                if (particleTempPos.Z > Bounds.Max.Z)
+                if (tempParticlePos.Z > this.Container.Bounds.Max.Z)
                 {
-                    particleTempVel.Z *= -1 * bounce;
-                    particleTempPos.Z = Bounds.Max.Z;
+                    tempParticleVel.Z *= -1 * bounce;
+                    tempParticlePos.Z = this.Container.Bounds.Max.Z;
                 }
 
-                if (particleTempPos.Z < Bounds.Min.Z)
+                if (tempParticlePos.Z < this.Container.Bounds.Min.Z)
                 {
-                    particleTempVel.Z *= -1 * bounce;
-                    particleTempPos.Z = Bounds.Min.Z;
+                    tempParticleVel.Z *= -1 * bounce;
+                    tempParticlePos.Z = this.Container.Bounds.Min.Z;
                 }
 
-                particle.Position = Vector3.Transform(particleTempPos, Game1.glassBox.World);
-                particle.Velocity = Vector3.Transform(particleTempVel, Game1.glassBox.World);
+                particle.Position = Vector3.Transform(tempParticlePos, Container.World);
+                particle.Velocity = Vector3.Transform(tempParticleVel, Container.World);
             }
         }
     }
