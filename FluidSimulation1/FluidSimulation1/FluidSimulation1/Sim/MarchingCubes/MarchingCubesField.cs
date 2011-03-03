@@ -199,10 +199,10 @@ namespace FluidSimulation1
 
         private void SmoothColorField()
         {
-            for (int i = 0; i < (X * Y) * Z; i++)
-            {
-                this.m_fieldSmooth[i] = this.m_isInside[i];
-            }
+            //for (int i = 0; i < ((this.X * this.Y) * this.Z); i++)
+            //{
+            //    this.m_fieldSmooth[i] = this.m_isInside[i];
+            //}
 
             //for (int j = 0; j < this.Z; j++)
             //{
@@ -210,11 +210,12 @@ namespace FluidSimulation1
             //    {
             //        for (int m = 0; m < this.X; m++)
             //        {
-            //            this.m_isInside[((j * this.Y + k) * this.X) + m] = (((((this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m + 1, this.X)] + this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m - 1, this.X)]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k + 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k - 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((this.Clamp(j + 1, this.Z) * this.Y) + k) * this.X) + m]) + this.m_fieldSmooth[(this.Clamp(j - 1, this.Z) * this.Y + k) * this.X + m]) / 6f;
+            //            this.m_isInside[(((j * this.Y) + k) * this.X) + m] = (((((this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m + 1, this.X)] + this.m_fieldSmooth[(((j * this.Y) + k) * this.X) + this.Clamp(m - 1, this.X)]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k + 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((j * this.Y) + this.Clamp(k - 1, this.Y)) * this.X) + m]) + this.m_fieldSmooth[(((this.Clamp(j + 1, this.Z) * this.Y) + k) * this.X) + m]) + this.m_fieldSmooth[(((this.Clamp(j - 1, this.Z) * this.Y) + k) * this.X) + m]) / 6f;
             //        }
             //    }
             //}
         }
+
 
         private void PolygonizeCube(int i, int j, int k, MarchingCubesVertex[] vertlist)
         {

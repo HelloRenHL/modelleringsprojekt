@@ -144,7 +144,7 @@ namespace FluidSimulation1
             Fluid.InitializeParticles();
             Fluid.Container.Reset();
             FluidSimulation1.Camera.Reset();
-            rotationSpeed = rotationSpeedSlider.Value = 0;
+            //rotationSpeed = rotationSpeedSlider.Value = 0;
         }
 
         void particlesSlider_OnValueChanged(object sender, EventArgs e)
@@ -197,7 +197,7 @@ namespace FluidSimulation1
 
             if (drawUsingMarchingCubes)
             {
-                fluidRenderer.Draw(FluidSimulation1.Camera, marchingCubesEffect);
+                fluidRenderer.Draw(FluidSimulation1.Camera, Fluid.Container.World, marchingCubesEffect);
             }
             else
             {
@@ -205,7 +205,7 @@ namespace FluidSimulation1
                 {
                     //Apply in SRT order (Scale * Rotation * Translation)
                     Matrix particleWorld = Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(Fluid.Particles[i].Position);
-                    fluidSimulation1.DrawModel(FluidSimulation1.Sphere, particleWorld, Fluid.Particles[i].Color, 1.0f);
+                    fluidSimulation1.DrawModel(FluidSimulation1.Sphere, particleWorld * Fluid.Container.World, Fluid.Particles[i].Color, 1.0f);
                 }
             }
 

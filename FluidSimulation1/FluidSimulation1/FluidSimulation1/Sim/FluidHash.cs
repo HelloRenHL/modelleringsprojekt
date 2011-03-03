@@ -129,13 +129,9 @@ namespace FluidSimulation1
         public void AddParticle(FluidParticle p)
         {
             // Calculate which cell this particle goes in
-            //Vector3 temp = Vector3.Transform(p.Position, Matrix.Invert(fluid.Container.World)); // Transform particle position to bounds coordinate space
-
-            Vector3 temp = p.Position;
-
-            int x = (int)((temp.X - fluid.Container.Bounds.Max.X) / this.h);
-            int y = (int)((temp.Y - fluid.Container.Bounds.Max.Y) / this.h);
-            int z = (int)((temp.Z - fluid.Container.Bounds.Max.Z) / this.h);
+            int x = (int)((p.Position.X - fluid.Container.Bounds.Max.X) / this.h);
+            int y = (int)((p.Position.Y - fluid.Container.Bounds.Max.Y) / this.h);
+            int z = (int)((p.Position.Z - fluid.Container.Bounds.Max.Z) / this.h);
 
             x = Math.Abs(x) % this.width;
             y = Math.Abs(y) % this.height;
