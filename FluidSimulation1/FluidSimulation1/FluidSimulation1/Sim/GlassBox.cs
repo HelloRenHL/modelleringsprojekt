@@ -12,9 +12,7 @@ namespace FluidSimulation1.Sim
     {
         public Vector3 Position = Vector3.Zero;
 
-        public float Width = 1;
-        public float Height = 1;
-        public float Depth = 1;
+        public BoundingBox Bounds;
 
         public Model Model;
 
@@ -22,8 +20,6 @@ namespace FluidSimulation1.Sim
         public Vector3 Up = Vector3.Up;
         public Vector3 Right = Vector3.Right;
         public float Alpha = 0.33f;
-
-        public float RotationSpeed = 0.01f;
 
         public Matrix World
         {
@@ -36,16 +32,13 @@ namespace FluidSimulation1.Sim
                 temp.Right = Right;
                 temp.Translation = Position;
 
-                return Matrix.CreateScale(Width, Height, Depth) * temp;
+                return temp; //Scale * temp
             }
         }
 
-        public GlassBox(float width, float height, float depth, Vector3 position)
+        public GlassBox()
         {
-            Position = position;
-            Width = width;
-            Height = height;
-            Depth = depth;
+            Bounds = new BoundingBox(new Vector3(-1f, -0.5f, -0.2f), new Vector3(1f, 0.5f, 0.2f));
         }
 
         public void LoadContent(ContentManager content)
@@ -53,10 +46,8 @@ namespace FluidSimulation1.Sim
             Model = content.Load<Model>(@"models\glass_box1");
         }
 
-        public void Rotate(float yaw) //, float pitch, float roll)
+        public void Rotate(float yaw)
         {
-            //Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Right, amount);
-
             Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(0, 0, yaw);
 
             Right = Vector3.TransformNormal(Right, rotationMatrix);

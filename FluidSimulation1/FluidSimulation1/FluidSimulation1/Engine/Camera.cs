@@ -22,6 +22,11 @@ namespace FluidSimulation1
 
         }
 
+        public void Reset()
+        {
+            Position = new Vector3(0, 2.0f * 0.2f, 2.0f);
+        }
+
         /// <summary>
         /// Rebuilds camera's view and projection matricies.
         /// </summary>

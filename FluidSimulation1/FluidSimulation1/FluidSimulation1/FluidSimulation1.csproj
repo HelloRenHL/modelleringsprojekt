@@ -118,8 +118,8 @@
     <Compile Include="ModelObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="Sim\AxisAlignedBoundingBox.cs" />
+    <Compile Include="FluidSimulation1.cs" />
+    <Compile Include="Scenes\GlassBoxScene.cs" />
     <Compile Include="Sim\Fluid.cs" />
     <Compile Include="Sim\FluidHash.cs" />
     <Compile Include="Sim\FluidParticle.cs" />

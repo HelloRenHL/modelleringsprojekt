@@ -12,8 +12,8 @@ namespace FluidSimulation1
     public class Slider : GuiElement
     {
         public int Length = 100;
-        public int Min;
-        public int Max;
+        public float Min;
+        public float Max;
         public float Value;
         Texture2D sliderHandle;
         Texture2D sliderBackground;
@@ -42,7 +42,7 @@ namespace FluidSimulation1
             }
         }
 
-        public Slider(string label, int min, int max, float initialValue, int precision)
+        public Slider(string label, float min, float max, float initialValue, int precision)
         {
             Label = label;
             Min = min;

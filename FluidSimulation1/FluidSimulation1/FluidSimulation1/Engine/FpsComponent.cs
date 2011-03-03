@@ -18,7 +18,7 @@ namespace FluidSimulation1
         ContentManager content;
         SpriteBatch spriteBatch;
 
-        public FpsComponent(Game1 game) : base(game)
+        public FpsComponent(FluidSimulation1 game) : base(game)
         {
 
         }

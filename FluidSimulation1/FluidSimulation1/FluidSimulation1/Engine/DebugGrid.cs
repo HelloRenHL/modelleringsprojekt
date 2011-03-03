@@ -9,7 +9,7 @@ namespace FluidSimulation1.Engine
 {
     public class DebugGrid
     {
-        BasicEffect effect;
+        public BasicEffect effect;
         GraphicsDevice _graphics;
         VertexPositionColor[] verts;
 
