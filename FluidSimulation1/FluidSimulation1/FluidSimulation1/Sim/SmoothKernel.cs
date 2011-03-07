@@ -27,35 +27,22 @@ namespace FluidSimulation1
         {
             float r = rv.Length();
 
-            if (r >= 0 && r <= h)
-            {
-                return poly6Const * (float)Math.Pow(h2 - r * r, 3);
-            }
-
-            return 0.0f;
+            return poly6Const * (float)Math.Pow(h2 - r * r, 3);
         }
 
         public static Vector3 Poly6Gradient(Vector3 rv)
         {
             float r = rv.Length();
-            if (r >= 0 && r <= h)
-            {
-                return poly6GradientConst * (float)Math.Pow(h2 - r * r, 2) * rv;
-            }
 
-            return Vector3.Zero;
+            return poly6GradientConst * (float)Math.Pow(h2 - r * r, 2) * rv;
         }
 
         public static float Poly6Laplacian(Vector3 rv)
         {
             float r = rv.Length();
             float r2 = (float)Math.Pow(r, 2);
-            if (r >= 0 & r <= h)
-            {
-                return poly6LaplacianConst * (h2 - r2) * (7 * r2 - 3 * h2);
-            }
 
-            return 0.0f;
+            return poly6LaplacianConst * (h2 - r2) * (7 * r2 - 3 * h2);
         }
 
         // Derivative of Eq. 21 Müller03 (Spiky Kernel)
@@ -76,12 +63,7 @@ namespace FluidSimulation1
         {
             float r = rv.Length();
 
-            if (r >= 0 && r <= h)
-            {
-                return viscosityLaplacianConst * (h - r);
-            }
-
-            return 0.0f;
+            return viscosityLaplacianConst * (h - r);
         }
     }
 }
