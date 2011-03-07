@@ -9,6 +9,19 @@ namespace FluidSimulation1
     public static class SmoothKernel
     {
         public static float h = 0.15f;
+        public static float h2 = (float)Math.Pow(h, 2);
+        public static float h9 = (float)Math.Pow(h, 9);
+        public static float h6 = (float)Math.Pow(h, 6);
+
+        public static float h9TimesPi = (float)MathHelper.Pi * h9;
+        public static float h6TimesPi = (float)MathHelper.Pi * h6;
+
+        public static float poly6Const = 315.0f / (64.0f * h9TimesPi);
+        public static float poly6GradientConst = 945.0f / (32.0f * h9TimesPi);
+        public static float poly6LaplacianConst = 945.0f / (32.0f * h9TimesPi);
+
+        public static float spikyGradientConst = 45.0f / (h6TimesPi);
+        public static float viscosityLaplacianConst = 45.0f / (h6TimesPi);
 
         public static float Poly6(Vector3 rv)
         {
@@ -16,8 +29,7 @@ namespace FluidSimulation1
 
             if (r >= 0 && r <= h)
             {
-                float h9 = (float)Math.Pow(h, 9);
-                return 315.0f / (64.0f * MathHelper.Pi * h9) * (float)Math.Pow(h * h - r * r, 3);
+                return poly6Const * (float)Math.Pow(h2 - r * r, 3);
             }
 
             return 0.0f;
@@ -26,11 +38,9 @@ namespace FluidSimulation1
         public static Vector3 Poly6Gradient(Vector3 rv)
         {
             float r = rv.Length();
-
             if (r >= 0 && r <= h)
             {
-                float h9 = (float)Math.Pow(h, 9);
-                return 945.0f / (32.0f * MathHelper.Pi * h9) * (float)Math.Pow(h * h - r * r, 2) * rv;
+                return poly6GradientConst * (float)Math.Pow(h2 - r * r, 2) * rv;
             }
 
             return Vector3.Zero;
@@ -39,11 +49,10 @@ namespace FluidSimulation1
         public static float Poly6Laplacian(Vector3 rv)
         {
             float r = rv.Length();
-
+            float r2 = (float)Math.Pow(r, 2);
             if (r >= 0 & r <= h)
             {
-                float h9 = (float)Math.Pow(h, 9);
-                return 945.0f / (32.0f * MathHelper.Pi * h9) * (h * h - r * r) * (7 * r * r - 3 * h * h);
+                return poly6LaplacianConst * (h2 - r2) * (7 * r2 - 3 * h2);
             }
 
             return 0.0f;
@@ -56,8 +65,7 @@ namespace FluidSimulation1
 
             if (r > 0 && r <= h) //r > 0 <-- r får absolut inte vara 0! då krashar det! :P
             {
-                float h6 = (float)Math.Pow(h, 6);
-                return 45.0f / (MathHelper.Pi * h6) * ((h * h + r * r) / r - 2 * h) * rv;
+                return spikyGradientConst * ((h2 + r * r) / r - 2 * h) * rv;
             }
 
             return Vector3.Zero;
@@ -70,8 +78,7 @@ namespace FluidSimulation1
 
             if (r >= 0 && r <= h)
             {
-                float h6 = (float)Math.Pow(h, 6);
-                return 45.0f / (MathHelper.Pi * h6) * (h - r);
+                return viscosityLaplacianConst * (h - r);
             }
 
             return 0.0f;
