@@ -38,7 +38,7 @@ namespace FluidSimulation1.Sim
 
         public GlassBox()
         {
-            Bounds = new BoundingBox(new Vector3(-1f, -0.5f, -0.2f), new Vector3(1f, 0.5f, 0.2f));
+            Bounds = new BoundingBox(new Vector3(-2f, -1f, -0.4f), new Vector3(2f, 1f, 0.4f));
         }
 
         public void LoadContent(ContentManager content)
