@@ -1,0 +1,10 @@
+Förklaring Fluidsimulations-program
+
+I Program.cs skapas ett Fluidsimulation-object, och en tråd för detta skapats (Run();)
+
+Ett Fluidsimulation-object består bla av en Camera, graphiceDeviceManager, och ett GlassBoxScene-object
+När ett Fluidsimulation-object skapats körs dess Initialize() funktion, vilket initierar objectet. LoadContet körs också, vilken laddar in GraphicsdDevice och 3d-modell som ska användas till partiklarna. I LoadContent anropas även konstruktorn för GlassBoxScene och skapar ett sådant object till Fluidsimulation
+
+Det är i en GlassBoxScene som Fluid deklarareras, som en public variabel. Denna består bla av en lista med FluidParticles.
+
+På det stora hela kan man säga att när simuleringen körs, så anropas Update i Fluid, vilken anropar de beräkningsfunktioner för de krafter som verkar på partiklarna och sedan anropar ComputeAllForces, vilken applicerar krafterna på respektive partikel. Partiklarnas position uppdateras genom att flytta dem v*t, och därefter ritas de, antingen som bollar (då används en 3d-modell, vilkas centrum är i respektive partikels kärna) eller som marching cubes, i vilken partiklarnas positioner används för att skapa en sammanhängande mesh som visar vätskan. Kollisionshantering med den låda som innesluter partiklarna sker sedan. Om en partikel kolliderar med någon av lådans väggar, vilka defineras som en bound-box, ändras dess riktning och hastighet till -(1-bounce)*riktningInnan
