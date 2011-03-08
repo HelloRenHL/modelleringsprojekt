@@ -67,7 +67,8 @@ namespace FluidSimulation1
                 particle.Position = Random(this.Container.Bounds.Min, this.Container.Bounds.Max);
                 particle.Velocity = Vector3.Zero;
                 particle.Force = Vector3.Zero;
-                particle.Color = new Vector3((float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble());
+                //particle.Color = new Vector3((float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble(), (float)FluidSimulation1.Random.NextDouble());
+                particle.Color = new Vector3(0.18f, 0.81f, 1);
                 particle.Density = 0f;
                 particle.Pressure = 0f;
                 Particles.Add(particle);
