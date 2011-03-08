@@ -202,7 +202,7 @@ namespace FluidSimulation1
         {
             CreateColorField(fluid);
    
-            this.SmoothColorField();
+            //this.SmoothColorField();
    
             this.NumVertexes = 0;
             for (int i = 0; i < this.Z; i++)
@@ -287,119 +287,178 @@ namespace FluidSimulation1
             return (int)MathHelper.Clamp(value, 0, max);
         }
 
-        private void SmoothColorField()
-        {
-            for (int i = 0; i < this.X * this.Y * this.Z; i++)
-            {
-                fieldSmooth[i] = isInside[i];
-            }
+        #region Smoothing
+        //private void SmoothColorField()
+        //{
+        //    for (int i = 0; i < this.X * this.Y * this.Z; i++)
+        //    {
+        //        fieldSmooth[i] = isInside[i];
+        //    }
 
-            //for (int k = 0; k < this.Z - 1; k++)
-            //{
-            //    for (int j = 0; j < this.Y; j++)
-            //    {
-            //        for (int i = 0; i < this.X; i++)
-            //        {
-            //            int a = (k * this.Y + j) * this.X + this.Clamp(i + 1, this.X);
-            //            int b = (k * this.Y) + j * this.X + this.Clamp(i - 1, this.X);
-            //            int c = (k * this.Y + this.Clamp(j + 1, this.Y)) * this.X + i;
-            //            int d = (k * this.Y + this.Clamp(j - 1, this.Y)) * this.X + i;
-            //            int e = (this.Clamp(k + 1, this.Z) * this.Y + j) * this.X + i;
-            //            int f = (this.Clamp(k - 1, this.Z) * this.Y + j) * this.X + i;
+        //    //for (int k = 0; k < this.Z - 1; k++)
+        //    //{
+        //    //    for (int j = 0; j < this.Y; j++)
+        //    //    {
+        //    //        for (int i = 0; i < this.X; i++)
+        //    //        {
+        //    //            int a = (k * this.Y + j) * this.X + this.Clamp(i + 1, this.X);
+        //    //            int b = (k * this.Y) + j * this.X + this.Clamp(i - 1, this.X);
+        //    //            int c = (k * this.Y + this.Clamp(j + 1, this.Y)) * this.X + i;
+        //    //            int d = (k * this.Y + this.Clamp(j - 1, this.Y)) * this.X + i;
+        //    //            int e = (this.Clamp(k + 1, this.Z) * this.Y + j) * this.X + i;
+        //    //            int f = (this.Clamp(k - 1, this.Z) * this.Y + j) * this.X + i;
 
-            //            int temp = (k * this.Y + j) * this.X + i;
-            //            this.isInside[temp] = (fieldSmooth[a] + fieldSmooth[b] + fieldSmooth[c] + fieldSmooth[d] + fieldSmooth[e] + fieldSmooth[f]) / 6f;
-            //        }
-            //    }
-            //}
-        }
+        //    //            int temp = (k * this.Y + j) * this.X + i;
+        //    //            this.isInside[temp] = (fieldSmooth[a] + fieldSmooth[b] + fieldSmooth[c] + fieldSmooth[d] + fieldSmooth[e] + fieldSmooth[f]) / 6f;
+        //    //        }
+        //    //    }
+        //    //}
+        //}
 
+        //private void SmoothMesh()
+        //{
+        //    for (int i = 0; i < this.NumVertexes; i++)
+        //    {
+        //        this.Vertexes[i].Temp = Vector3.Zero;
+        //        this.Vertexes[i].NumTrisConnected = 0;
+        //    }
+
+        //    for (int i = 0; i < this.NumTriangles; i++)
+        //    {
+        //        Vector3 vector = (this.Triangles[i].v0.Position + this.Triangles[i].v1.Position) + this.Triangles[i].v2.Position;
+        //        this.Triangles[i].v0.Temp += vector;
+        //        this.Triangles[i].v1.Temp += vector;
+        //        this.Triangles[i].v2.Temp += vector;
+
+        //        this.Triangles[i].v0.NumTrisConnected++;
+        //        this.Triangles[i].v1.NumTrisConnected++;
+        //        this.Triangles[i].v2.NumTrisConnected++;
+        //    }
+
+        //    for (int i = 0; i < this.NumVertexes; i++)
+        //    {
+        //        this.Vertexes[i].Position = this.Vertexes[i].Temp * this.divLut[this.Vertexes[i].NumTrisConnected];
+        //    }
+        //}
+        #endregion
 
         private void PolygonizeCube(int i, int j, int k, MarchingCubesVertex[] vertlist)
         {
             int index = 0;
+
             if (this.isInside[(k * this.Y + j) * this.X + i] < 0f)
             {
-                index |= 1;
+                index = 1; //|= 1;
             }
-            if (this.isInside[(((k * this.Y) + j) * this.X) + (i + 1)] < 0f)
+
+            //x+1
+            if (this.isInside[(k * this.Y + j) * this.X + i + 1] < 0f)
             {
                 index |= 2;
             }
-            if (this.isInside[((((k + 1) * this.Y) + j) * this.X) + (i + 1)] < 0f)
+
+            //z+1, x+1
+            if (this.isInside[((k + 1) * this.Y + j) * this.X + i + 1] < 0f)
             {
                 index |= 4;
             }
-            if (this.isInside[((((k + 1) * this.Y) + j) * this.X) + i] < 0f)
+
+            //z+1
+            if (this.isInside[((k + 1) * this.Y + j) * this.X + i] < 0f)
             {
                 index |= 8;
             }
-            if (this.isInside[(((k * this.Y) + (j + 1)) * this.X) + i] < 0f)
+
+            //y+1
+            if (this.isInside[(k * this.Y + j + 1) * this.X + i] < 0f)
             {
-                index |= 0x10;
+                index |= 16;
             }
-            if (this.isInside[(((k * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
+
+            //y+1, x+1
+            if (this.isInside[(k * this.Y + j + 1) * this.X + i + 1] < 0f)
             {
-                index |= 0x20;
+                index |= 32;
             }
-            if (this.isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + (i + 1)] < 0f)
+
+            //z+1, y+1, x+1
+            if (this.isInside[((k + 1) * this.Y + j + 1) * this.X + i + 1] < 0f)
             {
-                index |= 0x40;
+                index |= 64;
             }
-            if (this.isInside[((((k + 1) * this.Y) + (j + 1)) * this.X) + i] < 0f)
+
+            //z+1, y+1
+            if (this.isInside[((k + 1) * this.Y + j + 1) * this.X + i] < 0f)
             {
-                index |= 0x80;
+                index |= 128;
             }
+
+            //index fungerar som ett gäng flaggor, 255 = 11111111 = alla if-satser kördes
+            //om index tex = 21 = 10101 betyder det att if-sats nr 1, 3 och 5 kördes
             if (Data.edgeTable[index] != 0)
             {
                 if ((Data.edgeTable[index] & 1) != 0)
                 {
-                    vertlist[0] = this.xv[(((k * this.Y) + j) * (this.X - 1)) + i];
+                    //x-1?
+                    vertlist[0] = this.xv[(k * this.Y + j) * (this.X - 1) + i];
                 }
+
                 if ((Data.edgeTable[index] & 2) != 0)
                 {
-                    vertlist[1] = this.zv[(((k * this.Y) + j) * this.X) + (i + 1)];
+
+                    vertlist[1] = this.zv[((k * this.Y + j) * this.X) + i + 1];
                 }
+
                 if ((Data.edgeTable[index] & 4) != 0)
                 {
                     vertlist[2] = this.xv[((((k + 1) * this.Y) + j) * (this.X - 1)) + i];
                 }
+
                 if ((Data.edgeTable[index] & 8) != 0)
                 {
                     vertlist[3] = this.zv[(((k * this.Y) + j) * this.X) + i];
                 }
-                if ((Data.edgeTable[index] & 0x10) != 0)
+
+                if ((Data.edgeTable[index] & 16) != 0)
                 {
                     vertlist[4] = this.xv[(((k * this.Y) + (j + 1)) * (this.X - 1)) + i];
                 }
-                if ((Data.edgeTable[index] & 0x20) != 0)
+
+                if ((Data.edgeTable[index] & 32) != 0)
                 {
                     vertlist[5] = this.zv[(((k * this.Y) + (j + 1)) * this.X) + (i + 1)];
                 }
-                if ((Data.edgeTable[index] & 0x40) != 0)
+
+                if ((Data.edgeTable[index] & 64) != 0)
                 {
                     vertlist[6] = this.xv[((((k + 1) * this.Y) + (j + 1)) * (this.X - 1)) + i];
                 }
-                if ((Data.edgeTable[index] & 0x80) != 0)
+
+                if ((Data.edgeTable[index] & 128) != 0)
                 {
                     vertlist[7] = this.zv[(((k * this.Y) + (j + 1)) * this.X) + i];
                 }
-                if ((Data.edgeTable[index] & 0x100) != 0)
+
+                if ((Data.edgeTable[index] & 256) != 0)
                 {
                     vertlist[8] = this.yv[(((k * (this.Y - 1)) + j) * this.X) + i];
                 }
-                if ((Data.edgeTable[index] & 0x200) != 0)
+
+                if ((Data.edgeTable[index] & 512) != 0)
                 {
                     vertlist[9] = this.yv[(((k * (this.Y - 1)) + j) * this.X) + (i + 1)];
                 }
-                if ((Data.edgeTable[index] & 0x400) != 0)
+
+                if ((Data.edgeTable[index] & 1024) != 0)
                 {
                     vertlist[10] = this.yv[((((k + 1) * (this.Y - 1)) + j) * this.X) + (i + 1)];
                 }
-                if ((Data.edgeTable[index] & 0x800) != 0)
+
+                if ((Data.edgeTable[index] & 2048) != 0)
                 {
                     vertlist[11] = this.yv[((((k + 1) * (this.Y - 1)) + j) * this.X) + i];
                 }
+
                 for (int m = 0; Data.triTable[index, m] != -1; m += 3)
                 {
                     this.Triangles[this.NumTriangles].v0 = vertlist[Data.triTable[index, m]];
@@ -415,45 +474,17 @@ namespace FluidSimulation1
             this.NumTriangles = 0;
             MarchingCubesVertex[] vertlist = new MarchingCubesVertex[12];
 
-            for (int i = 0; i < this.Z - 1; i++)
+            for (int k = 0; k < this.Z - 1; k++)
             {
                 for (int j = 0; j < this.Y - 1; j++)
                 {
-                    for (int k = 0; k < this.X - 1; k++)
+                    for (int i = 0; i < this.X - 1; i++)
                     {
-                        this.PolygonizeCube(k, j, i, vertlist);
+                        this.PolygonizeCube(i, j, k, vertlist);
                     }
                 }
             }
         }
-
-
-        private void SmoothMesh()
-        {
-            for (int i = 0; i < this.NumVertexes; i++)
-            {
-                this.Vertexes[i].Temp = Vector3.Zero;
-                this.Vertexes[i].NumTrisConnected = 0;
-            }
-
-            for (int i = 0; i < this.NumTriangles; i++)
-            {
-                Vector3 vector = (this.Triangles[i].v0.Position + this.Triangles[i].v1.Position) + this.Triangles[i].v2.Position;
-                this.Triangles[i].v0.Temp += vector;
-                this.Triangles[i].v1.Temp += vector;
-                this.Triangles[i].v2.Temp += vector;
-
-                this.Triangles[i].v0.NumTrisConnected++;
-                this.Triangles[i].v1.NumTrisConnected++;
-                this.Triangles[i].v2.NumTrisConnected++;
-            }
-
-            for (int i = 0; i < this.NumVertexes; i++)
-            {
-                this.Vertexes[i].Position = this.Vertexes[i].Temp * this.divLut[this.Vertexes[i].NumTrisConnected];
-            }
-        }
-
 
         private void UpdateNormals()
         {
@@ -480,10 +511,10 @@ namespace FluidSimulation1
 
             this.PolygonizeCubes();
 
-            if (this.SMOOTH)
-            {
-                this.SmoothMesh();
-            }
+            //if (this.SMOOTH)
+            //{
+            //    this.SmoothMesh();
+            //}
 
             this.UpdateNormals();
         }
