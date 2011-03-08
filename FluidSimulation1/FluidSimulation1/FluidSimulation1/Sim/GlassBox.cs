@@ -32,13 +32,13 @@ namespace FluidSimulation1.Sim
                 temp.Right = Right;
                 temp.Translation = Position;
 
-                return temp; //Scale * temp
+                return temp;
             }
         }
 
         public GlassBox()
         {
-            Bounds = new BoundingBox(new Vector3(-1f, -0.5f, -0.2f), new Vector3(1f, 0.5f, 0.2f));
+            Bounds = new BoundingBox(new Vector3(-2f, -1.0f, -0.4f), new Vector3(2f, 1f, 0.4f));
         }
 
         public void LoadContent(ContentManager content)
@@ -51,7 +51,6 @@ namespace FluidSimulation1.Sim
             Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(0, 0, yaw);
 
             Right = Vector3.TransformNormal(Right, rotationMatrix);
-            //Up = Vector3.TransformNormal(Up, rotationMatrix);
 
             Right.Normalize();
             Up.Normalize();
