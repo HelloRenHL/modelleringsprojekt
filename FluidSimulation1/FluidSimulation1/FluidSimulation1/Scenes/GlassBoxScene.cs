@@ -211,7 +211,7 @@ namespace FluidSimulation1
 
             fluidSimulation1.ResetRenderStates();
 
-            fluidSimulation1.DrawModel(Fluid.Container.Model, Matrix.CreateScale(2.0f) * Fluid.Container.World, Vector3.One, Fluid.Container.Alpha);
+            fluidSimulation1.DrawModel(Fluid.Container.Model, Fluid.Container.World, Vector3.One, Fluid.Container.Alpha);
 
             if (DisplayDebug)
             {

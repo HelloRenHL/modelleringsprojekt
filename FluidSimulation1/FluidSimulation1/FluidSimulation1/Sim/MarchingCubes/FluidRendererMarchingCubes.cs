@@ -88,7 +88,7 @@ namespace FluidSimulation1
                 if (this.NumTriangles > 0)
                 {
                     basicEffect.Alpha = 1.0f;
-                    basicEffect.DiffuseColor = new Vector3(0.18f, 0.81f, 1);
+                    basicEffect.DiffuseColor = new Vector3(0.7f, 0.1f, 0);
 
                     basicEffect.World = world;
                     basicEffect.View = camera.View;
