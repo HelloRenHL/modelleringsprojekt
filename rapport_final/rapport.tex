@@ -8,6 +8,17 @@
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{epstopdf}
+\usepackage{hyperref}
+
+\usepackage{times}  
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{theorem}
+\usepackage[latin1]{inputenc}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{babel}
 
 
 \addtolength{\textheight}{20mm}
@@ -96,7 +107,7 @@
 	\end{abstract}
 
 	% fixar sidfot och sidhuvud
-	\lfoot{\footnotesize{\name\course}}
+%	\lfoot{\footnotesize{\name\course}}
 	\lhead{\nouppercase\sc\footnotesize\title}
 	\rhead{\nouppercase{\sc\footnotesize}}
 	\pagestyle{fancy}
@@ -141,9 +152,8 @@ Below we present the methods used in the project.
 	A well-used method for description of fluids is the Navier-Stokes equations which were formulated by Claude-Louis Navier and George Gabriel Stokes. Navier-Stokes utilized Newtons second law to describe flows of fluids that is steady and generated a series of differential equations [1]. The Navier-Stokes equations made it possible to illustrate how magnitudes like pressure, density, viscosity relates and affect the fluid.
 
 	\subsection{SPH, Smoothed Particle Hydrodynamics}
-	Smoothed Particle Hydrodynamics (SPH), as developed by Lucy and Gingold, is originally a method of simulating astrophysical problems, but is sufficient enough to simulate any kind of fluid. In an article by Müller, Charypar and Gross (2003), the authors present a further development of the method. Müller et al concludes that in order to determine the movement of every particle you will need to include the following forces: mass, pressure, viscosity, surface tension and gravity. You will also need to incorporate a smoothing kernels method, which regulates the SPH's stability, accuracy and speed. According to SPH, a scalar quantity A is interpolated at location r by a weighted sum of contributions from all particles:
-	
-	
+	Smoothed Particle Hydrodynamics (SPH), as developed by Lucy and Gingold, is originally a method of simulating astrophysical problems, but is sufficient enough to simulate any kind of fluid. In an article by Müller, Charypar and Gross (2003), the authors present a further development of the method. Müller et al concludes that in order to determine the movement of every particle you will need to include the following forces: mass, pressure, viscosity, surface tension and gravity. You will also need to incorporate a smoothing kernels method, which regulates the SPH's stability, accuracy and speed. According to SPH, a scalar quantity A is interpolated at location r by a weighted sum of contributions from all particles:	
+
 \begin{equation}
 	A_{S}(\textbf{r}) = {\sum_{j}} m_{j} \frac{A_{j}}{\rho_{j}} W(\textbf{r}-\textbf{r}_{j},h)
 \label{eq:}
@@ -234,5 +244,43 @@ What could have been done differently?
 -  One could consider if the same, or better, result could be accomplished if another environment had been chosen as a platform for the project. For example if we have had chosen OpenGL instead of XNA. It was also possible to have used other methods to reach our goal. One of the most important reasons why we chose to use SPH was that there were quite a lot of resources available on the subject. At one point we were considering using point splatting (Müller at alt, 2003) instead of marching cubes. But we quickly realized that point splatting generally uses 10.000 to 100.000 particles, which would have demanded significantly more CPU-power, since we only used up to 2000 particles in our system.
 If we wanted to continue developing the software, what would we have done?
 - In an ongoing development of the project we would concentrate our efforts to implement the NVIDIA engine CUDA, Compute Unified Device Architecture, to the project. CUDA uses the inbuilt graphics card of the computer to calculate simple computations and unburden the CPU. Doing this will improve the "speed" of the simulation, i.e. the number of frames/second. We would also do more collision handling. We could for example have a static object in the glass cube that the fluid would have to interact with.
+\newpage
+
+\section{References}
+
+\begin{thebibliography}{20}
+
+\bibitem{muller}
+Müller M., Charypar D., Gross M.
+\emph{Particle based fluid simulation for interactive applications}
+2003.
+
+\bibitem{lucy}
+Lucy L. B.
+\emph{A numerical approach to the testing of the fission hypothesis.}
+The Astronomical Journal, 82:1013-1024, 1977.
+\url{http://adsabs.harvard.edu/full/1977AJ.....82.1013L}
+
+\bibitem{sph}
+Gingold R. A., Monaghan J. J.
+\emph{Smoothed Particle hydrodynamics: theory and application t non-spherical stars.}
+Monthly Notices of the Royal Astronomical Society, 181:375-389, 1977.
+\url{http://adsabs.harvard.edu/full/1977MNRAS.181..375G}(2011-03-09)
+
+\bibitem{marching_cubes}
+Cline H. E., Lorensen W.E.
+\emph{Marching Cubes: A high resolution 3D surface construction algorithm.} 
+SIGGRAPH, 1987.
+\url{http://kucg.korea.ac.kr/seminar/2001/src/PA-01-16.pdf}(2011-03-09)
+
+\bibitem{visco_fluid_simulation}
+Beaudoin P., Clavet S., Poulin P.
+\emph{Particle-based Viscoelastic Fluid Simulation.}
+\url{http://www.iro.umontreal.ca/labs/infographie/papers/Clavet-2005-PVFS/pvfs.pdf}(2011-01)
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{Screen captures}
 
 \end{document}
