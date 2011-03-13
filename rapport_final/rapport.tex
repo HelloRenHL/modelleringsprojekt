@@ -138,12 +138,19 @@
 \section{Introduction}
 Simulation of different physical phenomena is increasingly used within several fields including such diverse areas as various scientific researches and the entertainment industry, for instance in gaming development or special effects in movies. Consequently, we find that the simulation of fluids would be an exciting and important region to explore. The aim of this project is to program an interactive application which simulates fluids in 3D.
 
+\subsection{Background}
+This report is the result of a course in modelling and simulation taken at Linköping University, campus Norrköping, during spring 2011. When deciding what subject to model, the authors of this project quickly found that the simulation of fluids would be an exciting and important region to explore.
+Description and simulation of different physical phenomena has always been an important part of science studies and a fundament in physics. Fluids are not an exception and numerous approaches to visualise fluids has been presented. Two frequent approaches are grid-based and particle-based visualisation. The use of computer calculations and computer graphics has revolutionized prospects for CFD, or Computational Fluid Dynamics. This report employs the particle-based method of CFD which is based on the Navier-Stokes equations.
+
 \subsection{Usage}
 	\subsubsection{Computer games}
 	In computer games of today the player is likely to encounter some sort of fluid being simulated, whether it be water, smoke etcetera. In order to improve rendering speed and visual quality of the simulation, some physical details are sacrificed. To interact with fluids in game the simulation is usually done by graphic card calculations.
 	
 	\subsubsection{Movies}
 	On the contrary to computer games, where the focus lies in rendering speed, the most important factor of fluid simulations in movies is its visual appearance. Real-time rendering is not necessary in movies, thus enabling heavier calculations, should that be required for the visual appearance.
+
+\subsection{Aim}
+The aim of this project was to program an interactive application that uses particle-based visualisation of fluids in real-time.
 	
 \section{Methods}
 Below we present the methods used in the project.
@@ -226,15 +233,23 @@ The smoothing kernel used for calculating the density in this simulation was the
 	
 	\subsection{Force simulation}
 	The sum of all forces that act on the particles is used for the final calculation that will actually move a particle. The force is recalculated according to Newtons 2nd law to acceleration. The current acceleration is multiplied with a predefined timestep and added to the current velocity. The new velocity is multipled with the same predefined timestep, which gives the movement ant therefore the new position of the particle.
-	\subsection{Collision Handling}
-	The collision handling performed in this simulation is fairly simple. A bound is defined in which the fluid can exist. After a particle's new position is calculated, the program checks if it is within the acceptable bounds or not. If the particle's position is not within the defined area, the velocity and acceleration of the particle is inverted, otherwise nothing changes.
 	
 		
 \section{Implementation}
 	
+	As mentioned in methods, code fot this simulation were written in /C# using Microsoft Visual Studion Pro 2010.	
+
+	\subsection{Structure of the simulation software}
+	The main functions of the software for this simulation is to calculate the forces which affect the particles. The amount of forces acting on each particle depends on the surrounding particles, and therefore an important step is to find the neighbors of each particle. A particle i is considered as neighbour to a particle j if the distance betweem them is less than a preset maximum distance. The distance between found neighbours decides how they will affect eachother.
+	
+
+	\subsection{Collision Handling}
+	The collision handling performed in this simulation is fairly simple. A bound is defined in which the fluid can exist. After a particle's new position is calculated, the program checks if it is within the acceptable bounds or not. If the particle's position is not within the defined area, the velocity and acceleration of the particle is inverted, otherwise nothing changes.
 
 	\subsection{Rendering}
 	The simulation is rendered using the benefits of XNA... bla bla.
+
+
 \section{Results}
 
 \section{Conclusion}
