@@ -1,0 +1,351 @@
+\documentclass[10pt, titlepage, oneside, a4paper]{article}
+%\documentclass{book}
+
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amssymb, graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+
+\usepackage{times}  
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{theorem}
+\usepackage[latin1]{inputenc}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{babel}
+
+\hyphenpenalty=100000
+
+
+\addtolength{\textheight}{20mm}
+\addtolength{\voffset}{-5mm}
+
+\renewcommand{\sectionmark}[1]{\markleft{#1}}
+%\renewcommand{\chaptermark}[1]{%
+
+%\markboth{#1}{}} \renewcommand{\sectionmark}[1]{%
+%\markright{\thesection\ #1}}
+
+% \Section ger mindre spillutrymme, anv?nd dem om du vill
+\newcommand{\Section}[1]{\section{#1}\vspace{-8pt}}
+\newcommand{\Subsection}[1]{\vspace{-4pt}\subsection{#1}\vspace{-8pt}}
+\newcommand{\Subsubsection}[1]{\vspace{-4pt}\subsubsection{#1}\vspace{-8pt}}
+	
+% appendices, \appitem och \appsubitem ?r f?r bilagor
+\newcounter{appendixpage}
+
+\newenvironment{appendices}{
+	\setcounter{appendixpage}{\arabic{page}}
+	\stepcounter{appendixpage}
+}{
+}
+
+\newcommand{\appitem}[2]{
+	\stepcounter{section}
+	\addtocontents{toc}{\protect\contentsline{section}{\numberline{\Alph{section}}#1}{\arabic{appendixpage}}}
+	\addtocounter{appendixpage}{#2}
+}
+
+\newcommand{\appsubitem}[2]{
+	\stepcounter{subsection}
+	\addtocontents{toc}{\protect\contentsline{subsection}{\numberline{\Alph{section}.\arabic{subsection}}#1}{\arabic{appendixpage}}}
+	\addtocounter{appendixpage}{#2}
+}
+
+\def\inst{Teknik och Naturvetenskap}
+\def\course{Fluid Simulation}
+\def\pretitle{TNM085 Modelleringsprojekt}
+\def\title{TNM085 MODELLERINGSPROJEKT}
+\def\graders{Anna Lombardi}
+
+
+% om du vill referera till katalogen d?r dina filer ligger kan du 
+% anv?nda \fullpath som kommer att vara "~username/edu..." o.s.v.
+\begin{document}
+
+	% skapar framsidan (om den inte duger: g?r helt enkelt en egen)
+	
+	\begin{titlepage}
+
+		\thispagestyle{empty}
+		
+		\begin{large}
+			\begin{tabular}{@{}p{\textwidth}@{}}
+			
+				\textbf{LINKÖPINGS UNIVERSITET\hfill} \\
+				\textbf{Institutionen för \inst} \\
+			\end{tabular}
+		\end{large}
+		\vspace{50mm}
+		\begin{center}
+			\LARGE{\pretitle} \\
+			\huge{\textbf{\course}}\\
+			\vspace{10mm}
+			
+			\vspace{15mm}
+			\normalsize\today
+			\vspace{15mm}
+			
+			\begin{large}
+			Robert Novo, robno767@student.liu.se\\
+			Martin Person, marpe357@student.liu.se\\
+			Mattias Persson, matpe621@student.liu.se\\
+			Johannes Ullström, johul223@student.liu.se\\
+			\end{large}
+			
+			\vfill
+			\large{\textbf{Examiner}}\\
+			\mbox{\large{\graders}}
+		\end{center}
+	\end{titlepage}
+
+	\begin{abstract}
+	The aim of this project was to create a real-time interactive fluid simulation. The fluid simulation utilizes SPH, which is a computional method used to simulate fluids. The simulation application was developed using the programming language C\# and the environment Microsoft XNA for the visualization.
+Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
+	\end{abstract}
+
+	% fixar sidfot och sidhuvud
+%	\lfoot{\footnotesize{\name\course}}
+	\lhead{\nouppercase\sc\footnotesize\title}
+	\rhead{\nouppercase{\sc\footnotesize}}
+	\pagestyle{fancy}
+	\renewcommand{\headrulewidth}{0.2pt}
+	\renewcommand{\footrulewidth}{0.2pt}
+
+	% skapar innehållsf?rteckning.
+	% T?nk på att k?ra latex 2ggr f?r att uppdatera allt
+	\tableofcontents
+	
+	\newpage
+	
+	\addtocontents{toc}{\protect\thispagestyle{empty}}
+	\listoffigures    % chapter with the list of figures
+%	\addtocontents{lof}{\protect\thispagestyle{empty}}
+%	\listoftables     % chapter with the list of tables
+%	\addtocontents{lot}{\protect\thispagestyle{empty}}
+	% och l?gger in en sidbrytning
+	\newpage
+
+	\pagenumbering{arabic}
+
+	% i Sverige har vi normalt inget indrag vid nytt stycke
+	\setlength{\parindent}{10pt}
+	% men d?remot lite mellanrum
+	\setlength{\parskip}{10pt}
+
+\newpage
+\section{Introduktion}
+
+	Simuleringar av olika naturliga fenomen är ett växande område inom många olika grenar, till exempel vetenskaplig forskning, spelutveckling och specialeffekter i film. Vi fann simulering av hur fluider beter sig instressant, och målet med projektet blev därav att utveckla en interaktiv mjukvara som simulerar fluider i 3D.
+	
+	\subsection{Bakgrund}
+	Att beskriva och simulera olika fysiska fenomen har alltid varit en viktig gren inom vetenskapliga studier. Visualiseringar av fluider är ett område som är väl utforskat, men än finns många problem kring det som inte är lösta. Två välanvända metoder för att skapa visualiseringar av fluider är rutnäts -och partikelbaserade visualiseringar. I detta projekt har en partikelbaserad metod används, vilken är baserad på Navier-Stokes ekvationer.
+
+\subsection{Användningsområden}
+
+	\subsubsection{Datorspel}
+	I de senaste datorspelen är det vanligt med avancerade fluidsimuleringar av exempelvis vatten och rök. För att förbättra renderingshastigheten och den visuella kvaliteten på simuleringar, bortser man ofta från vissa fysiska parametrar. För att ytterligare pressa ut så bra upplevelse som möjligt till användaren, används grafikkortsberäkningar, vilka skulle vara alldeles för krävande att göra på datorns processor.
+	
+	\subsubsection{Effekter i film}
+	Till skillnad från simuleringar i datorspel så kräver sällan effekter till film att de kan göras i realtid. Detta gör man kan ta hänsyn till fler fysikaliska parametrar, vilket ger en mer verklighetstrogen men mer beräkningstung simulering. Simuleringar i film ser därför i regel bättre ut än simuleringar i spel och andra interaktiva applikationer.
+
+\newpage	
+\section{Metoder}
+Nedan följer en beskrivning av de metoder som har använts i projektet.
+
+	\subsection{Navier-Stokes ekvationer}
+	
+	En välanvänd metod för att beskriva fluider är Navier-Stokes ekvationer, som är framtagna av Claude-Louis Navier och George Gabriel Stokes. Navier-Stokes tillämpar Newtons andra lag för att beskriva hur stabila fluider flödar och genererar en serie av differentialekvationer. Navier-Stokes ekvationer gör det möjligt att illustrera hur storheter som kraft, densitet och viskositet påverkar fluiden.
+	
+		\begin{equation}
+	\rho\left(\frac{\partial v}{\partial t} + v \cdot\nabla v\right) = -\nabla p + \rho g	 + \mu\nabla^{2}v
+	\label{eq:ns}
+\end{equation}
+
+Ekvationen förenklas enligt Müller03:
+
+\begin{equation}
+\textbf{a}_{i} = \frac{d\textbf{v}_{i}}{dt} = \frac{-\nabla p_{i} + \rho_{i}\textbf{g}+\mu \nabla^{2}\textbf{v}_{i}}{\rho_{i}}
+\label{eq:ns2}
+\end{equation}
+
+där $-\nabla p_{i}$ är kraften från tryck, $\rho_{i}\textbf{g}$ är yttre krafter såsom gravitation och $\mu\nabla^{2}\textbf{v}_{i}$ är viskositetskraften.
+
+	\subsection{SPH, Smoothed Particle Hydrodynamics}
+	
+	Smoothed Particle Hydrodynamics (SPH) utvecklades av Lucy och Gingold och är till början en metod för att simulera astrofysiska problem, men lämpar sig även till att simulera vätskor. I en artikel skriven av Müller, Charypar and Gross (2003) så utvecklas denna metod ytterligare. Müller med andra kommer fram till att för att bestämma hur varje partikel rör sig är det nödvändigt att inkludera en "smoothing kernel"-metod, som regulerar stabiliteten, noggrannheten och hastigheten av SPH. Enligt SPH är en skalärkvantitet $\textit{A}$ interpolerad vid plats $\textit{r}$ med en vägd summa av bidrag från alla partiklar.
+
+\begin{equation}
+	A_{S}(\textbf{r}) = {\sum_{j}} m_{j} \frac{A_{j}}{\rho_{j}} W(\textbf{r}-\textbf{r}_{j},h)
+\label{eq:sph}
+\end{equation}
+
+där $m_{j}$ är massan och $\rho_{j}$ är densiteten av partikel $j$. Funktionen $W$ är en viktfunktion kallad "smooth kernel".
+
+	\subsection{Marching Cubes}
+	
+	Marching Cubes är en algoritm utveckld av Cline och Lorensen år 1987, som smälter samman partiklar för att skapa en yta, en så kallad "mesh". Marhing Cubes använder 256 kubinställningar för att representera alla möjliga kombinationer som en mesh kan korsa kuben. Genom att utnyttja symmetri är det möjligt att reducera kombinationerna till 15 unika mönster.
+
+		\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[scale=0.4]{Figures/marching_cubes.eps}
+				\caption{Marching cubes}
+		\end{center}
+			\label{MarchingCubes}
+		\end{figure}
+		
+	\subsection{C\#/.Net och XNA}
+	Den exekverbara filen för det här projektet skrevs i programmspråket C\# och ramverket Microsoft .NET. Microsoft XNA används för att underlätta det grafiska utseendet.
+
+\newpage
+\section{Systembeskrivning}
+\subsection{Densitet}
+Första steget i beräkningen utav krafterna är att räkna fram partiklarnas densitet. Genom att att ersätta $A$ i ekvation \ref{eq:sph} med partikeldensiteten $\rho$ fås:
+\begin{equation}
+	\rho_{S}(\textbf{r}) = {\sum_{j}} m_{j}W(\textbf{r}-\textbf{r}_{j},h)
+\label{eq:skd}
+\end{equation}
+Viktfunktionen $W$ som används vid den här beräkningen är $W_{poly6}$.
+
+\subsection{Tryck}
+Liksom i Müller03 används en förenkling utav den ideala gaslagen för att beräkna trycket hos en partikel enligt:
+\begin{equation}
+p = k(\rho - \rho{_0})
+\label{eq:pressure}
+\end{equation}
+Där $\rho$ är densiteten hos partikeln, $\rho_{0}$ är fluidens vilodensitet och $k$ är en gaskonstant som beror på fluidens temperatur.
+
+Sedan används nedanstående ekvation för att beräkna den resulterande kraften.
+
+\begin{equation}
+\textbf{f}^{pressure}_{i}=-\sum_{j}m_{j}\frac{p_{i}+p{j}}{2\rho_{j}}\nabla W(\textbf{r}_{i}-\textbf{r}_{j},h)
+\end{equation}
+$W$ som används för ekvationen ovan är:
+\begin{equation}
+W_{spiky}(\textbf{r},h)=\frac{15}{\pi h^{6}}\{(h-r)^{3}
+\end{equation}
+\subsection{Viskositet}
+Viskositet kan ses som fluidens interna friktion och den bidragande kraften beräknas enligt:
+\begin{equation}
+\textbf{f}^{viscosity}_{i}=\mu\sum_{j}m_{j}\frac{\textbf{v}_{j}-\textbf{v}_{i}}{\rho_{j}}\nabla^{2}W(\textbf{r}_{i}-\textbf{r}_{j}, h)
+\end{equation}
+
+Viktfunktionen $W$ som används i den här beräkningen är:
+
+\begin{equation}
+W_{viscosity}(\textbf{r}, h)=\frac{15}{2\pi h^{3}}\frac{-\frac{r^{3}}{2h^{3}}+\frac{r^{2}}{h^{2}}+\frac{h}{2r}-1}{0}
+\end{equation}
+
+\subsection{Ytspänning}
+Trots att ytspänning inte är med i Navier-Stokes ekvationer är det inkluderat i Muller03 och således även i den här simuleringen. Ytspänningen beräknas i tre steg:
+\begin{equation}
+\label{eq:Color_Field}
+c_{S}(\textbf{r})=\sum_{j}\frac{m_{j}}{\rho_{j}}W(\textbf{r}-\textbf{r}_{j},h)
+\end{equation}
+\begin{equation}
+\textbf{n}=\nabla c_{S}
+\end{equation}
+\begin{equation}
+\textbf{f}^{surface}=-\sigma\nabla^{2}c_{S}\frac{\textbf{n}}{|\textbf{n}|}
+\end{equation}
+
+$W$ som använts i ekvation \ref{eq:Color_Field} är $W_{poly6}$.
+
+\subsection{Slutliga beräknar}
+När krafterna är beräknade sätts dessa in i ekvation \ref{eq:ns2}, vilket ger partikelarnas acceleration. Partiklarnas hastighet uppdateras med accelerationen och multipliceras med en tidskonstant. Hastigheten används sedan för att uppdatera partiklarnas position.
+
+\newpage		
+\section{Implementation}
+Som redan nämnts ovan användes programmeringsspråket C\# för att skriva koden och editerarmjukvaran Microsoft Visual Studio Pro 2010.
+
+	\subsection{Grannpartiklar och krafter}
+	Mjukvarans huvudfunktion går ut på att beräkna krafterna som inverkar på partiklarna. Mängden krafter som inverkar på varje partikel beror på de omgivande partiklarna. Finnandet av varje grannpartikel blir därför en mycket viktig del av algoritmen. En partikel $\textit{i}$ anses vara en grannpartikel till en partikel $\textit{j}$ om avståndet mellan dem är mindre än ett förbestämt avstånd. Avståndet mellan funna grannpartiklar bestämmer hur de kommer inverka på varandra.
+
+	\subsection{Kollisionshantering}.
+	Kollisionshanteringen i denna simulering är förhållandevis enkel. Vätskan rör sig inom en förbestämd gräns. Efter att en partikels nya position är beräknad, kontrollerar programmet om partikeln är inom gränsen eller ej. Om partikeln är utanför gränsen inverteras hastigheten och dess nya position blir satt till positionen där den förmodligen skulle befinna sig vid före partikeln gick över gränsen, annars ändras inget.
+	
+	\subsection{Att ändra simulationsbeteende}
+	För att göra simuleringen interaktiv lades dragreglage till simuleringens användargränssnitt. Reglagen ändrar värdet på konstanter som används i uträkningen av krafterna i simuleringen.
+
+	\subsection{Rendering}
+	XNAs fördelar blir tydliga då simuleringen ska renderas. En "kamera" skapas för att fånga den visuella implementeringen av simuleringen. XNA Studio tillhandahåller "shaders" som bidrar till den visuella effekten utan att behöva codas manuellt.
+
+\newpage
+\section{Resultat}
+Slutprodukten av detta projekt är en exekverbar .NET-applikation. Detta betyder att programmet kan köras på vilken dator som helst, så länge datorn har .NET ramverk installerat, tillsammans med XNA Studio. Skärmdumpar från den resulterande applikationen av detta projekt presenteras i bilagsdelen.
+
+I \textbf{Figur 2} demonstreras programmets allmänna utseende. I mitten finns ett antal blå partiklar inneslutna i en transparent kub. I övre vänstra hornet finner användaren statistik från programmets beräkningar och anvisningar hur programmet ska styras. I övre högra hörnet finns det sex dragreglage och en knapp.
+
+\textbf{Figur 3} visar en förstorad bild av övre vänstra hörnet av användargränssnittet. Etiketten FPS står för bildrutor per sekund och är ett mått på hur många bildrutor som visas på skärmen per sekund. Ett högre FPS-värde ger simuleringen ett mer kontinuerligt utseende än vad ett lågt värde ger. Utseendet av programmet kommer att variera då olika datorer har olika specifikationer och ger ett högre eller lägre FPS då partiklarna är i rörelse. Stopwatch står för tidtagarur och visar hur lång tid uppdateringen av fluiden tar. Etiketten Particles visar antalet partiklar i simuleringen. Camera Position har tre rumsvariabler: X, Y och Z, som mäter kamerans position från kubens centrum. Användaren kan kontrollera kameran genom att använda pilarna samt <q> och <e> på tangentbordet. Användaren kan också skifta fullskärm av och på genom att trycka på <F6>, samt skifta nätet på och av genom att trycka på <tab>. Då användaren trycker på <tab> skiftas marching cubes av och på.
+
+\textbf{Figur 4} visar en förstorad bild av övre högra hörnet av användargränssnittet. Användaren kan dra i de tre översta dragreglagen för att styra fluidens parametrar. Dragreglaget nämnt Particles styr hur många partiklar som ska simuleras. Timestep styr simuleringens hastighet. Drar användaren I Rotation Speed så roteras kuben medurs eller moturs. Det finns också en Restart-knapp som återstartar simuleringen, användarens ändringar på de olika reglagen bibehålles.
+
+\newpage
+\section{Slutsats}
+
+Att skapa realistiska simuleringar är svårt. Likaså att bestämma vad som anses vara en "bra" simulering. I detta projekt har gruppen utgått från det resultat som Beaudoin, Clavet och Poulin arbetade fram år 2005, vilket vi ansåg vara en enastående simulering. Det har varit ett mål att sträva efter deras resultat och vi tycker att är en god bit på vägen.
+
+Det finns oftast saker man önskar man hade gjort annorlunda. Att använda sig av ett programmeringsmiljö med andra språk, såsom t.ex. OpenGL istället för XNA.
+
+Vid en eventuell vidareutveckling projektet skulle en naturlig övergång vara att göra alla beräkningar på grafikkortet. Detta på grund av att ett grafikkort betydligt fler kärnor en vad en processor gör, vilket resulterar i fler parallella beräkningar. Grafikkortsutvecklarna NVIDIA har tagit fram en grafikmotor vid namn Compute Unified Device Architecture (CUDA) som finns tillgänglig på större delen av deras grafikkort. Tack vare CUDA så är det alltså möjligt att kraftigt öka hastigheten på simuleringen, dvs. antalet bildrutor per sekund.
+
+En annan del av projektet som hade kunnat förbättras är kollisionshanteringen.
+
+- Producing realistic simulation of fluids is very difficult. It is also hard to define what a "good" simulation is. There are several other simulations, often published as short demonstration films that are pre-rendered and not interactive. An example of that is the result of Beaudoin, Clavet and Poulin (2005). Beaudoin et al produces stunning visuals and the clip has gotten 23 956 views on youtube.com (2011-03-09) which certainly could be rubricated as "good". With that in mind we think that our own result is good. We have succeeded in reaching the aim of our project.
+
+What could have been done differently?
+-  One could consider if the same, or better, result could be accomplished if another environment had been chosen as a platform for the project. For example if we have had chosen OpenGL instead of XNA. It was also possible to have used other methods to reach our goal. One of the most important reasons why we chose to use SPH was that there were quite a lot of resources available on the subject. At one point we were considering using point splatting (Müller at alt, 2003) instead of marching cubes. But we quickly realized that point splatting generally uses 10.000 to 100.000 particles, which would have demanded significantly more CPU-power, since we only used up to 2000 particles in our system.
+If we wanted to continue developing the software, what would we have done?
+- In an ongoing development of the project we would concentrate our efforts to implement the NVIDIA engine CUDA, Compute Unified Device Architecture, to the project. CUDA uses the inbuilt graphics card of the computer to calculate simple computations and unburden the CPU. Doing this will improve the "speed" of the simulation, i.e. the number of frames/second. We would also do more collision handling. We could for example have a static object in the glass cube that the fluid would have to interact with.
+
+Rewritten!\\
+
+	As a conclusion, producing realistic fluid simulations is difficult. It is also hard to define what is considered a correct simulation. Our refence point as to how a good fluid simulation should look like is the simulation done by Beaudoin, Clavet and Poulin in 2005. %Our expectations were not to create such a simulation
+	Moreover, we could have taken other approaches to achieve different results, better or worse. We used XNA as a platform for our project, however there are other options that we could have chosen, OpenGL for instance. 
+
+\newpage
+
+\section{References}
+
+\begin{thebibliography}{20}
+
+\bibitem{muller}
+Müller M., Charypar D., Gross M.
+\emph{Particle based fluid simulation for interactive applications}
+2003.
+
+\bibitem{lucy}
+Lucy L. B.
+\emph{A numerical approach to the testing of the fission hypothesis.}
+The Astronomical Journal, 82:1013-1024, 1977.
+\url{http://adsabs.harvard.edu/full/1977AJ.....82.1013L}
+
+\bibitem{sph}
+Gingold R. A., Monaghan J. J.
+\emph{Smoothed Particle hydrodynamics: theory and application t non-spherical stars.}
+Monthly Notices of the Royal Astronomical Society, 181:375-389, 1977.
+\url{http://adsabs.harvard.edu/full/1977MNRAS.181..375G}(2011-03-09)
+
+\bibitem{marching_cubes}
+Cline H. E., Lorensen W.E.
+\emph{Marching Cubes: A high resolution 3D surface construction algorithm.} 
+SIGGRAPH, 1987.
+\url{http://kucg.korea.ac.kr/seminar/2001/src/PA-01-16.pdf}(2011-03-09)
+
+\bibitem{visco_fluid_simulation}
+Beaudoin P., Clavet S., Poulin P.
+\emph{Particle-based Viscoelastic Fluid Simulation.}
+\url{http://www.iro.umontreal.ca/labs/infographie/papers/Clavet-2005-PVFS/pvfs.pdf}(2011-01)
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{Screen captures}
+
+\end{document}
