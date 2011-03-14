@@ -3,7 +3,7 @@
 
 
 \usepackage[T1]{fontenc}
-\usepackage[english]{babel}
+\usepackage[swedish]{babel}
 \usepackage{amssymb, graphicx}
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -20,7 +20,7 @@
 \usepackage{url}
 \usepackage{babel}
 
-\hyphenpenalty=100000
+%\hyphenpenalty=100000
 
 
 \addtolength{\textheight}{20mm}
@@ -94,7 +94,7 @@
 			
 			\begin{large}
 			Robert Novo, robno767@student.liu.se\\
-			Martin Person, marpe357@student.liu.se\\
+			Martin Persson, marpe357@student.liu.se\\
 			Mattias Persson, matpe621@student.liu.se\\
 			Johannes Ullström, johul223@student.liu.se\\
 			\end{large}
@@ -106,8 +106,8 @@
 	\end{titlepage}
 
 	\begin{abstract}
-	The aim of this project was to create a real-time interactive fluid simulation. The fluid simulation utilizes SPH, which is a computional method used to simulate fluids. The simulation application was developed using the programming language C\# and the environment Microsoft XNA for the visualization.
-Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
+	Målet för detta projekt var att skapa ett interaktivt program som simulerar en fluid. Fluidsimulationen använder beräkningsmetoden SPH. Slutprodukten, alltså programmet, utvecklades med hjälp av ramverket Microsoft XNA.
+	Nyckelord: simulering, fluider, Navier-Stokes, C\#, XNA.
 	\end{abstract}
 
 	% fixar sidfot och sidhuvud
@@ -135,19 +135,20 @@ Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
 	\pagenumbering{arabic}
 
 	% i Sverige har vi normalt inget indrag vid nytt stycke
-	\setlength{\parindent}{10pt}
+	\setlength{\parindent}{0pt}
 	% men d?remot lite mellanrum
 	\setlength{\parskip}{10pt}
 
 \newpage
 \section{Introduktion}
 
-	Simuleringar av olika naturliga fenomen är ett växande område inom många olika grenar, till exempel vetenskaplig forskning, spelutveckling och specialeffekter i film. Vi fann simulering av hur fluider beter sig instressant, och målet med projektet blev därav att utveckla en interaktiv mjukvara som simulerar fluider i 3D.
+	Simuleringar av olika naturliga fenomen är ett växande område inom många olika grenar, till exempel vetenskaplig forskning, spelutveckling och specialeffekter i film. Gruppen fann simulering av hur fluider beter sig instressant och målet med projektet blev därav att utveckla en interaktiv mjukvara som simulerar fluider i 3D.
 	
 	\subsection{Bakgrund}
 	Att beskriva och simulera olika fysiska fenomen har alltid varit en viktig gren inom vetenskapliga studier. Visualiseringar av fluider är ett område som är väl utforskat, men än finns många problem kring det som inte är lösta. Två välanvända metoder för att skapa visualiseringar av fluider är rutnäts -och partikelbaserade visualiseringar. I detta projekt har en partikelbaserad metod används, vilken är baserad på Navier-Stokes ekvationer.
 
-\subsection{Användningsområden}
+	\subsection{Användningsområden}
+	Det finns många sätt att implementera fluidsimuleringar.
 
 	\subsubsection{Datorspel}
 	I de senaste datorspelen är det vanligt med avancerade fluidsimuleringar av exempelvis vatten och rök. För att förbättra renderingshastigheten och den visuella kvaliteten på simuleringar, bortser man ofta från vissa fysiska parametrar. För att ytterligare pressa ut så bra upplevelse som möjligt till användaren, används grafikkortsberäkningar, vilka skulle vara alldeles för krävande att göra på datorns processor.
@@ -157,7 +158,7 @@ Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
 
 \newpage	
 \section{Metoder}
-Nedan följer en beskrivning av de metoder som har använts i projektet.
+Som grund till projektet ligger Mullers rapport från 2003 vilken handlar om parikelbaserad fluidsimulering. Arbetet har i stor mån gått ut på att implementera teorin som presenteras i rapporten. Nedan följer en beskrivning av de metoder som har använts i projektet.
 
 	\subsection{Navier-Stokes ekvationer}
 	
@@ -257,7 +258,7 @@ c_{S}(\textbf{r})=\sum_{j}\frac{m_{j}}{\rho_{j}}W(\textbf{r}-\textbf{r}_{j},h)
 
 $W$ som använts i ekvation \ref{eq:Color_Field} är $W_{poly6}$.
 
-\subsection{Slutliga beräknar}
+\subsection{Slutliga beräkningar}
 När krafterna är beräknade sätts dessa in i ekvation \ref{eq:ns2}, vilket ger partikelarnas acceleration. Partiklarnas hastighet uppdateras med accelerationen och multipliceras med en tidskonstant. Hastigheten används sedan för att uppdatera partiklarnas position.
 
 \newpage		
@@ -280,11 +281,11 @@ Som redan nämnts ovan användes programmeringsspråket C\# för att skriva koden oc
 \section{Resultat}
 Slutprodukten av detta projekt är en exekverbar .NET-applikation. Detta betyder att programmet kan köras på vilken dator som helst, så länge datorn har .NET ramverk installerat, tillsammans med XNA Studio. Skärmdumpar från den resulterande applikationen av detta projekt presenteras i bilagsdelen.
 
-I \textbf{Figur 2} demonstreras programmets allmänna utseende. I mitten finns ett antal blå partiklar inneslutna i en transparent kub. I övre vänstra hornet finner användaren statistik från programmets beräkningar och anvisningar hur programmet ska styras. I övre högra hörnet finns det sex dragreglage och en knapp.
+Figur 2 demonstreras programmets allmänna utseende. I mitten finns ett antal blå partiklar inneslutna i en transparent kub. I övre vänstra hornet finner användaren statistik från programmets beräkningar och anvisningar hur programmet ska styras. I övre högra hörnet finns det sex dragreglage och en knapp.
 
-\textbf{Figur 3} visar en förstorad bild av övre vänstra hörnet av användargränssnittet. Etiketten FPS står för bildrutor per sekund och är ett mått på hur många bildrutor som visas på skärmen per sekund. Ett högre FPS-värde ger simuleringen ett mer kontinuerligt utseende än vad ett lågt värde ger. Utseendet av programmet kommer att variera då olika datorer har olika specifikationer och ger ett högre eller lägre FPS då partiklarna är i rörelse. Stopwatch står för tidtagarur och visar hur lång tid uppdateringen av fluiden tar. Etiketten Particles visar antalet partiklar i simuleringen. Camera Position har tre rumsvariabler: X, Y och Z, som mäter kamerans position från kubens centrum. Användaren kan kontrollera kameran genom att använda pilarna samt <q> och <e> på tangentbordet. Användaren kan också skifta fullskärm av och på genom att trycka på <F6>, samt skifta nätet på och av genom att trycka på <tab>. Då användaren trycker på <tab> skiftas marching cubes av och på.
+Figur 3 visar en förstorad bild av övre vänstra hörnet av användargränssnittet. Etiketten FPS står för bildrutor per sekund och är ett mått på hur många bildrutor som visas på skärmen per sekund. Ett högre FPS-värde ger simuleringen ett mer kontinuerligt utseende än vad ett lågt värde ger. Utseendet av programmet kommer att variera då olika datorer har olika specifikationer och ger ett högre eller lägre FPS då partiklarna är i rörelse. Stopwatch står för tidtagarur och visar hur lång tid uppdateringen av fluiden tar. Etiketten Particles visar antalet partiklar i simuleringen. Camera Position har tre rumsvariabler: X, Y och Z, som mäter kamerans position från kubens centrum. Användaren kan kontrollera kameran genom att använda pilarna samt <q> och <e> på tangentbordet. Användaren kan också skifta fullskärm av och på genom att trycka på <F6>, samt skifta nätet på och av genom att trycka på <tab>. Då användaren trycker på <tab> skiftas marching cubes av och på.
 
-\textbf{Figur 4} visar en förstorad bild av övre högra hörnet av användargränssnittet. Användaren kan dra i de tre översta dragreglagen för att styra fluidens parametrar. Dragreglaget nämnt Particles styr hur många partiklar som ska simuleras. Timestep styr simuleringens hastighet. Drar användaren I Rotation Speed så roteras kuben medurs eller moturs. Det finns också en Restart-knapp som återstartar simuleringen, användarens ändringar på de olika reglagen bibehålles.
+Figur 4 visar en förstorad bild av övre högra hörnet av användargränssnittet. Användaren kan dra i de tre översta dragreglagen för att styra fluidens parametrar. Dragreglaget nämnt Particles styr hur många partiklar som ska simuleras. Timestep styr simuleringens hastighet. Drar användaren I Rotation Speed så roteras kuben medurs eller moturs. Det finns också en Restart-knapp som återstartar simuleringen, användarens ändringar på de olika reglagen bibehålles.
 
 \newpage
 \section{Slutsats}
@@ -293,21 +294,9 @@ Att skapa realistiska simuleringar är svårt. Likaså att bestämma vad som anses v
 
 Det finns oftast saker man önskar man hade gjort annorlunda. Att använda sig av ett programmeringsmiljö med andra språk, såsom t.ex. OpenGL istället för XNA.
 
-Vid en eventuell vidareutveckling projektet skulle en naturlig övergång vara att göra alla beräkningar på grafikkortet. Detta på grund av att ett grafikkort betydligt fler kärnor en vad en processor gör, vilket resulterar i fler parallella beräkningar. Grafikkortsutvecklarna NVIDIA har tagit fram en grafikmotor vid namn Compute Unified Device Architecture (CUDA) som finns tillgänglig på större delen av deras grafikkort. Tack vare CUDA så är det alltså möjligt att kraftigt öka hastigheten på simuleringen, dvs. antalet bildrutor per sekund.
+Vid en eventuell vidareutveckling av projektet skulle en naturlig övergång vara att göra alla beräkningar på grafikkortet. Detta på grund av att ett grafikkort betydligt fler kärnor en vad en processor gör, vilket resulterar i fler parallella beräkningar. Grafikkortsutvecklarna NVIDIA har tagit fram en grafikmotor vid namn Compute Unified Device Architecture (CUDA) som finns tillgänglig på större delen av deras grafikkort. Tack vare CUDA så är det alltså möjligt att kraftigt öka hastigheten på simuleringen, dvs. antalet bildrutor per sekund. Hade vi använt oss av CUDA så hade en metod vid namn "Point Splatting" varit möjlig istället för marching cubes. Problemet med point splatting är att den kräver 10.000 till 100.000 partiklar, vilket hade kraftigt försvårat arbetet och mer eller mindre krävt en CUDA-implementering.
 
-En annan del av projektet som hade kunnat förbättras är kollisionshanteringen.
-
-- Producing realistic simulation of fluids is very difficult. It is also hard to define what a "good" simulation is. There are several other simulations, often published as short demonstration films that are pre-rendered and not interactive. An example of that is the result of Beaudoin, Clavet and Poulin (2005). Beaudoin et al produces stunning visuals and the clip has gotten 23 956 views on youtube.com (2011-03-09) which certainly could be rubricated as "good". With that in mind we think that our own result is good. We have succeeded in reaching the aim of our project.
-
-What could have been done differently?
--  One could consider if the same, or better, result could be accomplished if another environment had been chosen as a platform for the project. For example if we have had chosen OpenGL instead of XNA. It was also possible to have used other methods to reach our goal. One of the most important reasons why we chose to use SPH was that there were quite a lot of resources available on the subject. At one point we were considering using point splatting (Müller at alt, 2003) instead of marching cubes. But we quickly realized that point splatting generally uses 10.000 to 100.000 particles, which would have demanded significantly more CPU-power, since we only used up to 2000 particles in our system.
-If we wanted to continue developing the software, what would we have done?
-- In an ongoing development of the project we would concentrate our efforts to implement the NVIDIA engine CUDA, Compute Unified Device Architecture, to the project. CUDA uses the inbuilt graphics card of the computer to calculate simple computations and unburden the CPU. Doing this will improve the "speed" of the simulation, i.e. the number of frames/second. We would also do more collision handling. We could for example have a static object in the glass cube that the fluid would have to interact with.
-
-Rewritten!\\
-
-	As a conclusion, producing realistic fluid simulations is difficult. It is also hard to define what is considered a correct simulation. Our refence point as to how a good fluid simulation should look like is the simulation done by Beaudoin, Clavet and Poulin in 2005. %Our expectations were not to create such a simulation
-	Moreover, we could have taken other approaches to achieve different results, better or worse. We used XNA as a platform for our project, however there are other options that we could have chosen, OpenGL for instance. 
+En annan del av projektet som hade kunnat förbättras är kollisionshanteringen för att låta fluiden interagera med andra objekt.
 
 \newpage
 
@@ -346,6 +335,32 @@ Beaudoin P., Clavet S., Poulin P.
 
 \newpage
 \appendix
-\section{Screen captures}
+\section{Skärmdumpar}
+		
+		\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[scale=0.3]{Figures/gui_01.eps}
+			\caption{Bild 1}	
+		\end{center}
+			\label{MarchingCubes}
+		\end{figure}
+
+\newpage
+		\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[scale=0.3]{Figures/gui_03.eps}
+			\caption{Bild 2}
+		\end{center}
+			\label{MarchingCubes}
+		\end{figure}
+		
+\newpage
+		\begin{figure}[htb]
+		\begin{center}
+			\includegraphics[scale=0.3]{Figures/gui_04.eps}
+			\caption{Marching cubes}
+		\end{center}
+			\label{MarchingCubes}
+		\end{figure}
 
 \end{document}
