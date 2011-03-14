@@ -20,6 +20,8 @@
 \usepackage{url}
 \usepackage{babel}
 
+\hyphenpenalty=100000
+
 
 \addtolength{\textheight}{20mm}
 \addtolength{\voffset}{-5mm}
@@ -104,6 +106,8 @@
 	\end{titlepage}
 
 	\begin{abstract}
+	This report discusses a project which aim was to program an interactive application that uses particle-based visualisation of fluids in real-time. The fluid simulation utilize SPH, which is based on the Navier-Stokes equations. The application is programmed in the program language C\# and uses the environment Microsoft XNA for the visualization.
+Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
 	\end{abstract}
 
 	% fixar sidfot och sidhuvud
@@ -122,24 +126,28 @@
 	
 	\addtocontents{toc}{\protect\thispagestyle{empty}}
 	\listoffigures    % chapter with the list of figures
-	\addtocontents{lof}{\protect\thispagestyle{empty}}
-	\listoftables     % chapter with the list of tables
-	\addtocontents{lot}{\protect\thispagestyle{empty}}
+%	\addtocontents{lof}{\protect\thispagestyle{empty}}
+%	\listoftables     % chapter with the list of tables
+%	\addtocontents{lot}{\protect\thispagestyle{empty}}
 	% och l?gger in en sidbrytning
 	\newpage
 
 	\pagenumbering{arabic}
 
 	% i Sverige har vi normalt inget indrag vid nytt stycke
-	\setlength{\parindent}{0pt}
+	\setlength{\parindent}{10pt}
 	% men d?remot lite mellanrum
 	\setlength{\parskip}{10pt}
 
 \section{Introduction}
-Simulation of different physical phenomena is increasingly used within several fields including such diverse areas as various scientific researches and the entertainment industry, for instance in gaming development or special effects in movies. Consequently, we find that the simulation of fluids would be an exciting and important region to explore. The aim of this project is to program an interactive application which simulates fluids in 3D.
+
+%Simulations of physical phenomenae is an ongoing battle to achieve perfection.
+
+Simulation of different physical phenomena is increasingly used within several fields including such diverse areas as various scientific researches and the entertainment industry, for instance in gaming development or special effects in movies. Consequently, we found that the simulation of fluids would be an exciting and important region to explore. The aim of this project is to program an interactive application which simulates fluids in 3D.
 
 \subsection{Background}
 This report is the result of a course in modelling and simulation taken at Linköping University, campus Norrköping, during spring 2011. When deciding what subject to model, the authors of this project quickly found that the simulation of fluids would be an exciting and important region to explore.
+
 Description and simulation of different physical phenomena has always been an important part of science studies and a fundament in physics. Fluids are not an exception and numerous approaches to visualise fluids has been presented. Two frequent approaches are grid-based and particle-based visualisation. The use of computer calculations and computer graphics has revolutionized prospects for CFD, or Computational Fluid Dynamics. This report employs the particle-based method of CFD which is based on the Navier-Stokes equations.
 
 \subsection{Usage}
@@ -212,8 +220,6 @@ This equation is then simplified, as suggested by Müller03 to:
 
 Where $-\nabla p_{i}$ is force due to pressure, $\rho_{i}\textbf{g}$ is external forces such as gravity and $\mu\nabla^{2}\textbf{v}_{i}$ is force due to visosity.
 
-	\subsection{Pressure}
-		
 	\subsection{Density}
 The first step in the simulation is computing the particle densities. By substituting $A$ in equation x with the particle density $\rho$, we get:
 \begin{equation}
@@ -226,6 +232,15 @@ The smoothing kernel used for calculating the density in this simulation was the
 	\rho_{S}(\textbf{r}) = {\sum_{j}} m_{j}W(\textbf{r}-\textbf{r}_{j},h)
 \label{eq:}
 \end{equation}
+
+	\subsection{Pressure}
+	The pressure is calculating using the forumla described below. This is a simplified version of the original SPH formula to calculate the pressure. \cite{muller} 
+	\begin{equation}
+		p = k(\rho - \rho{_0})
+	\label{eq:}
+	\end{equation}
+	
+	where $\rho$ is the density of the current particle, $\rho{_0}$ is the rest density, and $k$ is the gas constant of the current substance being simulated, which depends on the temperature. The higher the temperature, the lighter the substance.
 	
 	\subsection{Viscosity}
 	Viscosity is caused by friction which converts the particle's kinetic energy to heat.
@@ -237,7 +252,7 @@ The smoothing kernel used for calculating the density in this simulation was the
 		
 \section{Implementation}
 	
-	As mentioned in methods, code fot this simulation were written in /C# using Microsoft Visual Studion Pro 2010.	
+	As mentioned in methods, code fot this simulation were written in C\# using Microsoft Visual Studion Pro 2010.	
 
 	\subsection{Structure of the simulation software}
 	The main functions of the software for this simulation is to calculate the forces which affect the particles. The amount of forces acting on each particle depends on the surrounding particles, and therefore an important step is to find the neighbors of each particle. A particle i is considered as neighbour to a particle j if the distance betweem them is less than a preset maximum distance. The distance between found neighbours decides how they will affect eachother.
@@ -246,11 +261,20 @@ The smoothing kernel used for calculating the density in this simulation was the
 	\subsection{Collision Handling}
 	The collision handling performed in this simulation is fairly simple. A bound is defined in which the fluid can exist. After a particle's new position is calculated, the program checks if it is within the acceptable bounds or not. If the particle's position is not within the defined area, the velocity and acceleration of the particle is inverted, otherwise nothing changes.
 
+	\subsection{Changing simulation behaviour}
+ To make the simulation interactive, sliders were added to the simulation software GUI, which changes the values of constants used in the equations calculating the forces of the simulation.
+
+	
 	\subsection{Rendering}
-	The simulation is rendered using the benefits of XNA... bla bla.
+	The simulation is rendered using the benefits of XNA. A "camera" is created to capture the visual implementation of the simulation. XNA Studio already provides with shaders which really adds to the visual appearance without being coded manually.
 
 
 \section{Results}
+The result of this project is an executable .NET-application. This means it can be run on any computer as long as that computer has the .NET framework installed, along with XNA Studio. Screenshots from the resulting application of this project is presented the appendix.
+\textbf{Figure 2} demonstrates the general appearance of the program. In the middle there are a number of blue particles sealed in a transparent cube. (An orange grid is passing under the cube). In the top left the user will find statistics from the calculation of the program as well as tips on how to control the program. In the top right there are six different sliders and one button.
+Figure 3 shows a close-up of the top left of the program. The label FPS stands for frames per second and is a measurement of how many frames per second the CPU manages to calculate. A higher FPS-total will give a more fluent appearance then a low. Performance of the application may vary as different computers have different specifications and as a result get a higher or lower FPS when the particles are in motion. StopWatch. The label named Particles shows the number of particles. Camera Position has the three variables X, Y and Z, measuring the cameras position from the centre of the cube. The user can control the camera using the arrows on the keyboard. The user can also toggle to fullscreen, pressing <F6> as well as toggle grid on and off, pressing <tab>. Pressing <shift> will toggle marching cubes on and off.
+Figure 4 shows a close-up of the top right. The user can drag the three first sliders (from the top) to control the fluid parameters. Particles control the number of particles. Time step controls the speed of the simulation. Dragging the Rotation speed slider will rotate the cube clockwise or counter clockwise. There is also a Restart-button that will restart the simulation. Pressing restart will not restore the changes the user have done on any of the sliders or keyboard commands.
+
 
 \section{Conclusion}
 - Producing realistic simulation of fluids is very difficult. It is also hard to define what a "good" simulation is. There are several other simulations, often published as short demonstration films that are pre-rendered and not interactive. An example of that is the result of Beaudoin, Clavet and Poulin (2005). Beaudoin et al produces stunning visuals and the clip has gotten 23 956 views on youtube.com (2011-03-09) which certainly could be rubricated as "good". With that in mind we think that our own result is good. We have succeeded in reaching the aim of our project.
@@ -259,6 +283,11 @@ What could have been done differently?
 -  One could consider if the same, or better, result could be accomplished if another environment had been chosen as a platform for the project. For example if we have had chosen OpenGL instead of XNA. It was also possible to have used other methods to reach our goal. One of the most important reasons why we chose to use SPH was that there were quite a lot of resources available on the subject. At one point we were considering using point splatting (Müller at alt, 2003) instead of marching cubes. But we quickly realized that point splatting generally uses 10.000 to 100.000 particles, which would have demanded significantly more CPU-power, since we only used up to 2000 particles in our system.
 If we wanted to continue developing the software, what would we have done?
 - In an ongoing development of the project we would concentrate our efforts to implement the NVIDIA engine CUDA, Compute Unified Device Architecture, to the project. CUDA uses the inbuilt graphics card of the computer to calculate simple computations and unburden the CPU. Doing this will improve the "speed" of the simulation, i.e. the number of frames/second. We would also do more collision handling. We could for example have a static object in the glass cube that the fluid would have to interact with.
+
+Rewritten!\\
+
+	As a conclusion, producing realistic fluid simulations is difficult. It is also hard to define what is considered a correct simulation. Our refence point as to how a good fluid simulation should look like is the simulation done by Beaudoin, Clavet and Poulin in 2005. %Our expectations were not to create such a simulation
+	Moreover, we could have taken other approaches to achieve different results, better or worse. We used XNA as a platform for our project, however there are other options that we could have chosen, OpenGL for instance. 
 \newpage
 
 \section{References}

@@ -1,0 +1,27 @@
+\select@language {swedish}
+\thispagestyle {empty}
+\contentsline {section}{\numberline {1}Introduktion}{1}{section.1}
+\contentsline {subsection}{\numberline {1.1}Bakgrund}{1}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Anv\"andningsomr\r aden}{1}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Datorspel}{1}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}Effekter i film}{1}{subsubsection.1.2.2}
+\contentsline {section}{\numberline {2}Metoder}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Navier-Stokes ekvationer}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}SPH, Smoothed Particle Hydrodynamics}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Marching Cubes}{2}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}C\#/.Net och XNA}{3}{subsection.2.4}
+\contentsline {section}{\numberline {3}Systembeskrivning}{4}{section.3}
+\contentsline {subsection}{\numberline {3.1}Densitet}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Tryck}{4}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Viskositet}{4}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Ytsp\"anning}{4}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Slutliga ber\"akningar}{5}{subsection.3.5}
+\contentsline {section}{\numberline {4}Implementation}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}Grannpartiklar och krafter}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Kollisionshantering}{6}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Att \"andra simulationsbeteende}{6}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Rendering}{6}{subsection.4.4}
+\contentsline {section}{\numberline {5}Resultat}{7}{section.5}
+\contentsline {section}{\numberline {6}Slutsats}{8}{section.6}
+\contentsline {section}{\numberline {7}References}{9}{section.7}
+\contentsline {section}{\numberline {A}Sk\"armdumpar}{10}{appendix.A}

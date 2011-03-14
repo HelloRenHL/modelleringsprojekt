@@ -106,7 +106,6 @@
 	\end{titlepage}
 
 	\begin{abstract}
-		
 	The aim of this project was to create a real-time interactive fluid simulation. The fluid simulation utilizes SPH, which is a computional method used to simulate fluids. The simulation application was developed using the programming language C\# and the environment Microsoft XNA for the visualization.
 Keywords: simulation, fluids, Navier-Stokes, SPH, marching cubes, C\#, XNA.
 	\end{abstract}
@@ -156,39 +155,44 @@ Consequently, we found that the simulation of fluids would be an exciting area t
 	\subsubsection{Movies}
 	On the contrary to computer games, where the focus lies in rendering speed, the most important factor of fluid simulations in movies is its visual appearance. Real-time rendering is not necessary in movies, thus enabling heavier calculations, should that be required for the visual appearance.
 	
-\section{Methods}
-Below is a presentation of the methods used in the project.
+\section{Metoder}
+Nedan följer en beskrivning av de metoder som har använts i projektet.
 
-	\subsection{Navier-Stokes equations}
-	A well-used method for describing fluids are the Navier-Stokes equations, which were formulated by Claude-Louis Navier and George Gabriel Stokes. Navier-Stokes utilizes Newtons second law to describe the flows of fluids that is steady and generated a series of differential equations [1]. The Navier-Stokes equations made it possible to illustrate how magnitudes like pressure, density, viscosity relates and affect the fluid.
+	\subsection{Navier-Stokes ekvationer}
+	
+	En välanvänd metod för att beskriva fluider är Navier-Stokes ekvationer, som är framtagna av Claude-Louis Navier och George Gabriel Stokes. Navier-Stokes tillämpar Newtons andra lag för att beskriva hur stabila fluider flödar och genererar en serie av differentialekvationer. Navier-Stokes ekvationer gör det möjligt att illustrera hur storheter som kraft, densitet och viskositet påverkar fluiden.
 	
 		\begin{equation}
 	\rho\left(\frac{\partial v}{\partial t} + v \cdot\nabla v\right) = -\nabla p + \rho g	 + \mu\nabla^{2}v
 	\label{eq:ns}
 \end{equation}
 
-This equation is then simplified, as suggested by Müller03 to:
+Ekvationen förenklas enligt Müller03:
 
 \begin{equation}
 \textbf{a}_{i} = \frac{d\textbf{v}_{i}}{dt} = \frac{-\nabla p_{i} + \rho_{i}\textbf{g}+\mu \nabla^{2}\textbf{v}_{i}}{\rho_{i}}
 \label{eq:ns2}
 \end{equation}
 
-Where $-\nabla p_{i}$ is force due to pressure, $\rho_{i}\textbf{g}$ is external forces such as gravity and $\mu\nabla^{2}\textbf{v}_{i}$ is force due to visosity.
+där $-\nabla p_{i}$ är kraften från tryck, $\rho_{i}\textbf{g}$ är yttre krafter såsom gravitation och $\mu\nabla^{2}\textbf{v}_{i}$ är viskositetskraften.
 
 	\subsection{SPH, Smoothed Particle Hydrodynamics}
-	Smoothed Particle Hydrodynamics (SPH), as developed by Lucy and Gingold, is originally a method of simulating astrophysical problems, but is sufficient enough to simulate any kind of fluid. In an article by Müller, Charypar and Gross (2003), the authors present a further development of the method. Müller et al concludes that in order to determine the movement of every particle you will need to include the following forces: mass, pressure, viscosity, surface tension and gravity. Moreover, it is necessary to incorporate a smoothing kernel method, which regulates the stability, accuracy, and speed of SPH. According to SPH, a scalar quantity A is interpolated at location r by a weighted sum of contributions from all particles:	
+	
+	Smoothed Particle Hydrodynamics (SPH) utvecklades av Lucy och Gingold och är till början en metod för att simulera astrofysiska problem, men lämpar sig även till att simulera vätskor. I en artikel skriven av Müller, Charypar and Gross (2003) så utvecklas denna metod ytterligare. Müller med andra kommer fram till att för att bestämma hur varje partikel rör sig är det nödvändigt att inkludera en "smoothing kernel"-metod, som regulerar stabiliteten, noggrannheten och hastigheten av SPH. Enligt SPH är en skalärkvantitet $\textit{A}$ interpolerad vid plats $\textit{r}$ med en vägd summa av bidrag från alla partiklar.
 
 \begin{equation}
 	A_{S}(\textbf{r}) = {\sum_{j}} m_{j} \frac{A_{j}}{\rho_{j}} W(\textbf{r}-\textbf{r}_{j},h)
 \label{eq:sph}
 \end{equation}
 
-Where $m_{j}$ is the mass and $\rho_{j}$ is the density of particle $j$. The function $W$ is a weight function called a smooth kernel.
-	
+där $m_{j}$ är massan och $\rho_{j}$ är densiteten av partikel $j$. Funktionen $W$ är en viktfunktion kallad "smooth kernel".
+
 	\subsection{Particles}
 
-	\subsection{Marching cubes}
+	\subsection{Marching Cubes}
+	
+	Marching Cubes är en algoritm utveckld av Cline och Lorensen år 1987, som smälter samman partiklar för att skapa en yta, en så kallad "mesh". Marhing Cubes använder 256 kubinställningar för att representera alla möjliga kombinationer som en mesh kan korsa kuben. Genom att utnyttja symmetri är det möjligt att reducera kombinationerna till 15 unika mönster. 
+	
 	Marching cubes is an algorithm developed by Cline and Lorensen in 1987, which "melts" particles together to construct a surface, or so called "mesh". Marching cubes uses 256 cube configurations to represent all possible variations that a mesh can cross the cube. By utilizing symmetry it is possible to reduce the variations to 15 unique patterns.
 
 		\begin{figure}[htb]
@@ -199,8 +203,8 @@ Where $m_{j}$ is the mass and $\rho_{j}$ is the density of particle $j$. The fun
 			\label{MarchingCubes}
 		\end{figure}
 		
-	\subsection{C\#/.Net and XNA}
-	The executable files for this project was written in the programming language C\# and Microsoft .NET was utilized as a framework. To make graphics easier to display the environment Microsoft XNA was used. 
+	\subsection{C\#/.Net och XNA}
+	Den exekverbara filen för det här projektet skrevs i programmspråket C\# och ramverket Microsoft .NET. Microsoft XNA används för att underlätta det grafiska utseendet.
 
 \section{System description}
 \textbf{HÄR BEHÖVS TEXT}
