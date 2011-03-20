@@ -1,0 +1,587 @@
+%______________________________________________________
+%
+%   LaTeX-mall f?r nyb?rjare
+%
+%   Konstruerad av Marcus Bergner, bergner@cs.umu.se
+%
+%   Vid funderingar titta l?ngst ned i denna fil,
+%   eller skicka ett mail
+%______________________________________________________
+%
+% lite inst?llningar
+\documentclass[10pt, titlepage, twocolumn, a4paper]{article}
+%\documentclass{book}
+
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amssymb, graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+
+\addtolength{\textheight}{20mm}
+\addtolength{\voffset}{-5mm}
+
+\renewcommand{\sectionmark}[1]{\markleft{#1}}
+%\renewcommand{\chaptermark}[1]{%
+
+%\markboth{#1}{}} \renewcommand{\sectionmark}[1]{%
+%\markright{\thesection\ #1}}
+
+% \Section ger mindre spillutrymme, anv?nd dem om du vill
+\newcommand{\Section}[1]{\section{#1}\vspace{-8pt}}
+\newcommand{\Subsection}[1]{\vspace{-4pt}\subsection{#1}\vspace{-8pt}}
+\newcommand{\Subsubsection}[1]{\vspace{-4pt}\subsubsection{#1}\vspace{-8pt}}
+	
+% appendices, \appitem och \appsubitem ?r f?r bilagor
+\newcounter{appendixpage}
+
+\newenvironment{appendices}{
+	\setcounter{appendixpage}{\arabic{page}}
+	\stepcounter{appendixpage}
+}{
+}
+
+\newcommand{\appitem}[2]{
+	\stepcounter{section}
+	\addtocontents{toc}{\protect\contentsline{section}{\numberline{\Alph{section}}#1}{\arabic{appendixpage}}}
+	\addtocounter{appendixpage}{#2}
+}
+
+\newcommand{\appsubitem}[2]{
+	\stepcounter{subsection}
+	\addtocontents{toc}{\protect\contentsline{subsection}{\numberline{\Alph{section}.\arabic{subsection}}#1}{\arabic{appendixpage}}}
+	\addtocounter{appendixpage}{#2}
+}
+
+% ?ndra de rader som beh?ver ?ndras
+\def\inst{Teknik och Naturvetenskap}
+%\def\typeofdoc{Laborationsrapport}
+\def\course{Fluid Simulation }
+\def\pretitle{TNM085 Modelleringsprojekt}
+\def\title{TNM085 MODELLERINGSPROJEKT}
+\def\name{}
+\def\username{c05pan}
+\def\email{\username{c05pan}@cs.umu.se}
+\def\path{edu/java/ou4(eclipse)}
+\def\graders{Anna Lombardi, Ulf Sannemo}
+
+
+% om du vill referera till katalogen d?r dina filer ligger kan du 
+% anv?nda \fullpath som kommer att vara "~username/edu..." o.s.v.
+\def\fullpath{\raisebox{1pt}{$\scriptstyle \sim$}\username/\path}
+\begin{document}
+
+	% skapar framsidan (om den inte duger: g?r helt enkelt en egen)
+	
+	\begin{titlepage}
+
+		\thispagestyle{empty}
+		
+		\begin{large}
+			\begin{tabular}{@{}p{\textwidth}@{}}
+			
+				\textbf{LINKÖPINGS UNIVERSITET\hfill} \\
+				\textbf{Institutionen för \inst} \\
+				%\textbf{\typeofdoc} \\
+			\end{tabular}
+		\end{large}
+		\vspace{50mm}
+		\begin{center}
+			\LARGE{\pretitle} \\
+			\huge{\textbf{\course}}\\
+			\vspace{10mm}
+			
+			\vspace{15mm}
+			\normalsize\today
+			\vspace{15mm}
+			
+			\begin{large}
+			Gustav Lysell Smålänning, gusly514@student.liu.se\\
+			Markus Olsson, marol114@student.liu.se\\
+			Magnus 			Strinnholm, magst693@student.liu.se\\
+			Johan Åslund, johas103@student.liu.se\\
+			\end{large}
+			
+			\vfill
+			\large{\textbf{Handledare}}\\
+			\mbox{\large{\graders}}
+		\end{center}
+	\end{titlepage}
+
+	\begin{abstract}
+	Denna rapport beskriver skapandet och resultatet av ett simuleringsprojekt. Genom att ha tagit fram en fysikalisk modell för ett flygplan under en flygplansstart, för att därefter skapa simulerings- och animationsegenskaper utifrån fysiken, har vi i detta projekt producerat ett program för simulering av flygplansstarter.\\\\
+I rapporten ges detaljer om hur fysikaliska uträkningar utförts i MATLAB, modellskapande i 3ds Max och animeringar i Java3D.\\\\
+Resultatet kan inte ses som helt fysikaliskt korrekt, då vi från början introducerade förenklingar som motsäger ett sådant resultat. Detta för att avgränsa uppgiften och göra den möjlig för den tid som gavs. Målet var att skapa en simpel animering av en flygplansstart, som beror på fysik och av användare valda värden, vilket också uppnåddes i form av ett körbart Java3D-program.
+	\end{abstract}
+
+	% fixar sidfot och sidhuvud
+	\lfoot{\footnotesize{\name\course}}
+	\lhead{\nouppercase\sc\footnotesize\title}
+	\rhead{\nouppercase{\sc\footnotesize}}
+	\pagestyle{fancy}
+	\renewcommand{\headrulewidth}{0.2pt}
+	\renewcommand{\footrulewidth}{0.2pt}
+
+	% skapar innehållsf?rteckning.
+	% T?nk på att k?ra latex 2ggr f?r att uppdatera allt
+	\tableofcontents
+	
+	\newpage
+	
+	\addtocontents{toc}{\protect\thispagestyle{empty}}
+	\listoffigures    % chapter with the list of figures
+	\addtocontents{lof}{\protect\thispagestyle{empty}}
+	\listoftables     % chapter with the list of tables
+	\addtocontents{lot}{\protect\thispagestyle{empty}}
+	% och l?gger in en sidbrytning
+	\newpage
+
+	\pagenumbering{arabic}
+
+	% i Sverige har vi normalt inget indrag vid nytt stycke
+	\setlength{\parindent}{0pt}
+	% men d?remot lite mellanrum
+	\setlength{\parskip}{10pt}
+
+	% l?gger in rubrik (finns \section, men då får man mycket spillutrymme)
+\Section{Inledning}
+	% \emph inneb?r emphasize, d.v.s. betona eller framhåll -> kursiv stil
+\Subsection{Bakgrund}
+Denna rapport behandlar ett projekt i kursen TNM085 Modelleringsprojekt som hålls vid Linköpings Universitet. 
+	
+\Subsection{Syfte}
+Målet och uppgiften för kursen var att skapa en grafisk simulering av ett fysikaliskt system.
+
+Det system som valdes för detta projekt är en simulering av en flygplansstart. Boeing 777-300ER är det flygplan man utgått ifrån i de beräkningar, estimeringar och simuleringar som behandlats i projektet. Baserat på fysikaliska uträkningar ska flygplansstarten kunna simuleras med olika initialvärden, för att sedan visualisera hur de olika faktorerna påverkar flygplanets start och lyftning.
+	
+\Subsection{Metod och källor}
+Grunden i systemet är en fysikalisk modell som skapades för flygplansstarten, uppdelad i en del som behandlar flygplanet på marken och en annan variant för flygplanet i luften under stigningen. Dessa togs fram för att sedan verifieras av Ulf Sannemo och utvärderades i MATLAB. 
+
+Numeriska beräkningar i MATLAB, med Eulers stegmetod, gjorde det möjligt att plotta värden för flygplanets positioner i höjd i förhållande till tid under den simulerade flygplansstarten. Tester utfördes även i samma program för att kontrollera huruvida rimliga de värden hämtade för det aktuella flygplanet var.
+
+Animation av simuleringen utvecklades i Java3D, med importering av modeller som skapats i 3ds Max. De beräkningar för simuleringen man kom fram till tidigare applicerades på ett objekt som representerade det flygplan som skulle utföra flygplansstarten. Flygplansobjektet placerades i en virtuell tredimensionell värld, men de beräkningar som påverkar flygplanet behandlar endast två dimensioner.
+
+Kursens examinator  har varit handledare och assisterade i olika delar av projektet under dess gång.
+	
+\Subsection{Struktur}
+Rapporten inleds med att beskriva problemet, förutsättningar och antaganden. Därefter presenteras framtagandet av den fysikaliska modellen, hur den simulerades i MATLAB och hur den implementerades med grafik och animation i Java3D. Rapporten avslutas med en presentation av resultatet följt av en kort diskussion.  
+	
+\Subsection{Avgränsningar och förenklingar}
+För att uppnå ett bra resultat bör man göra simuleringen så realistisk som möjligt, men med tanke på projektets storlek, tillgång till information och projektmedlemmarnas kunskaper inom området gjordes en del avgränsningar och förenklingar.
+
+Flygplanets lyftkoefficient och aerodynamiska motstånd beror på dess form. Information om detta finns inte tillgängligt för allmänheten och för att räkna ut dem krävs tester i lufttunnel. Detta var förstås inte möjligt att genomföra i projektet, därför sattes dessa till godtyckliga värden med upphov till rimliga resultat.
+
+Flygplanet påverkas av vind och friktion mellan mark och hjul under sin uppstart. I detta projekt simuleras flygplansstarten med vindstillhet och utan påverkan av friktion. Vinden skulle förstås kunna göra stor påverkan, men togs bort för att förenkla simuleringen. Friktionen anses påverka minimalt, därav den förenklingen.
+
+Vid en verklig flygplansstart påverkar flygplanets klaffar dess stigning. Eftersom fluider och aerodynamik inte 	beräknas i detta projekt gör inte klaffarna någon påverkan i simuleringen, istället ändras flygplanets vinkel automatiskt. Flygplanets vinkel påverkar förstås ändå de aktuella krafterna och stigningen.
+	
+\Section{Fysik}
+\Subsection{Fysikalisk modell}
+
+\Subsubsection{Formler}
+Ett flygplan som rör sig genom luften påverkas i huvudsak av fyra krafter \cite{nasa1}, \cite{nasa2}. Dessa är drivkraft $T$, aerodynamisk motståndskraft $D$ \cite{nasa4}, lyftkraft $L$ \cite{nasa3} och tyngd $W$.  
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{ohh.png} 
+\end{center}
+\caption{Figur på flygplannmodellen med utritade krafter.}
+\label{bild4}
+\end{figure}
+
+
+\begin{equation}
+D=\frac{{\rho}{V^2}{ACd}}{2} 
+\label{e1}
+\end{equation}
+
+\begin{equation}
+L=\frac{{\rho}{V^2}{ACl}}{2}
+\label{e2}
+\end{equation}
+
+\begin{equation}
+W={mg}
+\label{e3}
+\end{equation}
+
+
+Där $Cl$ är flygplansvingarnas lyftkraftskoefficient, $Cd$ är flygplanskroppens aerodynamiska motståndskoefficient (som beror på flygplanets form och aerodynamik), $A$ är vingarnas totala area, $\rho$ är luftens densitet, $m$ är massan och $g$ är gravitationskraften.
+
+\Subsubsection{Boeing 777-300ER data}
+Den flygplansmodell som valdes för simuleringen är Boeing 777-300ER. De data som behövdes om flygplanet i vår fysikaliska modell och som vi använt oss av presenteras i tabellen nedan.
+%Massa, m: 167 000-300 000kg
+%Thrust, T: 2st General Electric GE90-115B motorer, total maximal kraft på 1020kN.
+%Vingarea, A: De båda vingarnas area, totalt 428m2.
+%Hastighet vid lyft: 270-345km/h.
+%Anfallsvinkel: Upp till 14grader
+
+
+\begin{table}[htbp]
+  \caption{Boeing 777-300ER specifikationer}
+  \label{table_example}
+  \begin{tabular*}{\hsize}{lllll}
+\hline
+Massa ($kg$)& Vingarea (${m^2}$) & Lyfthastighet ($km/h$)& Anfallsvinkel ($\,^{\circ}$)\\
+%      &		&      &       &  \\
+\hline
+167000-300000     &428      & 270-345     & 14 &       \\
+
+\hline
+  \end{tabular*}
+\end{table}
+
+\cite{boeing1}, \cite{airline1}, \cite{zap}, \cite{angles}
+
+\Subsubsection{Övrig data}
+Luftdensitet vid 20$\,^{\circ}$C, \ $\rho$ = 1.2 \cite{densitet}\\
+Lyftkoefficient, $Cl$ = 1.6\\
+Koefficient för aerodynamiskt motstånd, $Cd$ = 1.6
+
+%\newpage
+
+\Subsection{Fysikaliska uträkningar}
+Målet var att beräkna alla verkande krafter i varje tidssampel för att kunna bestämma flygplanets momentana acceleration, hastighet och position i såväl x- som y-led. Detta gjordes i olika steg. Först beräknades de resulterande krafterna i x- och y-led vid varje tidpunkt. Dessa gav med hjälp av Newtons andra lag $(4)$ och känd massa de motsvarande accelerationerna. 
+
+\begin{equation}
+F_{res}={ma}
+\label{e4}
+\end{equation}
+Newtons kraftekvation där $F_{res}$ är resulterande kraften, $m$ är massan och $a$ är accelerationen.
+
+\Subsubsection{Eulers stegmetod}
+Den matematiska och fysikaliska modellen består av differentialekvationer. För att kunna beräkna hastigheter och positioner regelbundet under simuleringen måste därför en numerisk metod användas. I detta fall valdes Eulers enklaste stegmetod \cite{euler} eftersom den är lätt att implementera, är snabb att beräkna och ger ett tillräckligt bra resultat. Med accelerationerna som parametrar gav Eulers stegmetod hastigheter i x- och y-led i varje punkt. Dessa användes sedan i sin tur som parametrar i samma stegmetod för att ta fram positionerna uttryckta i x- och y-koordinater.
+
+\Subsubsection{Simulering i MATLAB}
+För att verifiera modellen och undersöka rimligheten i resultaten användes MATLAB. Fysiken och Eulers stegmetod implementerades och simuleringsresultatet plottades i form av sträckan i y-led (som tydligt visar när planet lyft). Figur 1 nedan visar ett resultat av denna simulering (med, förutom standardvärden, massan 270 $ton$, 1020 $kN$ maximal drivkraft och en hastighet på 290 $km/h$ vid inledning av stigningen):
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{simulering.png} 
+\end{center}
+\caption{Plot av simuleringens resultat}
+\label{bild5}
+\end{figure}
+
+Simuleringen visar att flygplanet inleder sin lyftning strax under 30 sekunder efter start. På figuren kan också tydas att flyplanets hastighet blir konstant 6.5 sekunder efter lyftning, eftersom att flygplanet då har roterat 14 grader och därefter är inställt på att behålla den då uppnådda stigningshastigheten. 
+
+\Section{Visualisering}
+	
+\Subsection{3ds Max}
+För att gå från 2D till 3D användes först 3ds Max för att skapa 3D-modeller. Modellen av flygplanet utformades efter referensbilder på den faktiska flygplansmodellen. Förutom flygplanet skapades även en bakgrundsmodell, främst för att en bakgrund med varierande objekt förstärker uppfattningen av att planet rör sig, men också för att göra visualiseringen mer tilltalande. Modellerna exporterades i OBJ-format för att sedan kunna laddas in i Java3D för animering. 
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=11cm]{print_bubben.png} 
+\end{center}
+\caption{3D-Modell som representerar ett flygplan av typen Boeing 777-300ER}
+\label{bild1}
+\end{figure}
+
+
+
+
+\Subsection{Java3D}
+Java3D är ett scengraf-baserat 3D-programmeringsgränssnitt för Java-plattformen som använder sig av OpenGL eller Direct3D.
+För att ladda in 3D-objekt från 3ds Max till Java3D krävdes användande av en så kallad ``loader''. Den gör det möjligt att importera OBJ-filer direkt från 3ds Max och göra dessa till fungerande 3D-objekt i Java3D. De fysikaliska uträkningarna i MATLAB behövde också överföras till körbar Javakod samt integreras tillsammans med animeringen av objekten i scenen. Ett grafiskt gränssnitt behövde även kopplas till de fysikaliska värdena som flygplanet berörs av för att man enkelt skulle kunna ändra på dessa.  I Java3D används en trädstruktur av noder, så kallade ``Transformgroups'' som sköter translation, rotation och skalning i 3D-scenen. Dessa egenskaper ärvs uppåt i trädet. 
+
+\Subsection{Implementering av fysik}
+De fysikaliska formler, data och uträkningar som gjordes för MATLAB i kapitel 2 behövde implementeras i Java. 
+
+Alla värden som behandlades i uträkningarna skapades som variabler, i form av flyttal- och heltalstyp. De värden som beror på användarens inställningar eller andra värden sattes till 0 eller lämnades odefinierade för att inte påverka de fysikaliska uträkningarna från start. 
+
+De fysikaliska uträkningarna utfördes som i kapitel 2, koden översattes direkt från MATLAB-kod till Java-språk. Värdena som uträkningarna resulterar i, d.v.s. flygplanobjektets koordinatpositioner och hastighet i x- respektive y-led, läggs för varje tidssteg till i varsin vektor. Dessa kan sedan nås av den del i programkoden som utför animeringen. Fysiken sker alltså inte i realtid med visualiseringen, det är resultatet av de fysikaliska uträkningarna som animeras.
+
+
+\Subsection{Animation}
+I Java3D användes klassen `PositionInterpolator'' för att animera flygplanets rörelse i x- och y-led. ``PositionInterpolator'' utför en translation av det valda objektet från en startposition till en slutposition. I detta projekt utfördes denna typ av translation mellan varje värde ur vektorerna med data för koordinatpositioner (med lämplig skalning för att göra det visuellt realistiskt), som skapades i fysikdelen av programmet. Man använder sig även av en alphaklass, som anger tid före och tid för utförandet av animationen. I detta fall är tiden för utförandet av animationen anpassat till ett värde som passar det valda tidssteget i fysikuträkningarna, dock aningen avrundat.
+
+Det normala vore att utföra positionsändringen i x-led på flygplansobjektet för att få det att åka framåt, detta innebär även att man behöver ha en kamera som rör sig tillsammans med flygplanet. För att göra denna uppgift lättare användes ett knep som ger samma resultat, fast med mindre behov av kod. Istället utfördes positionsändringen på bakgrunden, fast i motsatt riktning. Kameran behöver då inte röras, utan kan vara placerad statiskt med flygplanet centrerat i vyn. På detta sätt använder man sig alltså av en illusion av att flygplanet rör sig i sidled, men det är ändå resultaten av de ursprungliga fysikuträkningarna som man utgår ifrån. Det är alltså inga egentliga fel med resultatet som visas upp. Positionsändringen i y-led behandlade dock flygplanet, då det endast var själva flygplansstarten som skulle animeras och det inte ansågs finnas något behov av att följa flygplanet på väg upp i luften.
+
+För rotation av flygplanet används en liknande läsning som nämnts ovan, en annan interpolatorklass kallad ``RotationInterpolator''. Denna klass fungerar i princip på samma sätt, med start- och slutposition samt en alphaklass för tidsinformationen för animationen. Värden för ändringen av vinkeln på flygplansobjektet hämtas dock inte ur någon av de vektorer som de fysikaliska uträkningarna resulterar i, istället sker den som en interpolation mellan två redan kända vinklar. Eftersom man i detta projekt utgår ifrån att flygplanet ska ändra sig från 0.0 till 9.0 grader på fyra sekunder, därefter från 9.0 till 14.0 grader under följande 2.5 sekunder, utför man denna animation så enkelt som möjligt. Vid det tillfälle då flygplanet försöker lyfta sätts helt enkelt animationen igång. Detta gör att animationen av rotationen ej är fysikalisk korrekt vid de tillfällen då flygplanet misslyckas att lyfta, men anses ändå vara en bra animation för att visa just misslyckade försök till lyftningar. Anledningen till att denna animation inte är närmare kopplad till fysiken grundar sig på de avgränsningar och mål man från början satte för projektet.
+
+
+\Section{Resultat}
+\label{markör}
+Resultatet av programmet i Java3D blev ett simpelt grafiskt användargränssnitt, samt en animation som utförs då användaren väljer att starta den samma. Samtliga figurer nedan finns även i större versioner i Bilaga A.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{print_initial_buttons_enabled.png} 
+\end{center}
+\caption{Gränssnittet innan användaren sätter igång simuleringen}
+\label{bild2}
+\end{figure}
+
+Användaren kan här ange massa och den maximala drivkraft flygplanet når upp till, samt den hastighet vid vilken flygplanet ska försöka inleda stigningen. Genom att trycka på knappen ``Take Off'' startas sedan animationen, med fysikaliska uträkningar beroende på de värden användaren angivit. 
+
+Följande figurer är exempelbilder ur programmet vid körning, dels precis vid start samt då flygplanet precis inlett sin stigning. Här kan användaren inte längre påverka flygplanets startvärden, därför är dessa fält ej visade som aktiva.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{print_initial.png} 
+\end{center}
+\caption{Visualisering igång}
+\label{bild3}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{print_takeoff.png} 
+\end{center}
+\caption{Flygplanet lyfter}
+\label{bild4}
+\end{figure}
+
+Flygplanet är vid detta tillfälle i rörelse uppåt samt i rotation och bakgrunden är i rörelse åt höger, medan kameran står helt stilla.\\
+
+%För mer info om detta så titta i avsnitt\ref{markör} på sidan \pageref{markör}
+
+\newpage
+
+\Section{Diskussion}
+
+Arbetet har, överlag, fortgått effektivt, men en hel del problem dök också upp längs vägen. Vi var familjära med den grundläggande fysiken som gäller för flygplan i rörelse. Däremot var det svårt att komma fram till hur den skulle kunna beräknas i realtid och vilka storheter (acceleration, hastighet o.s.v.) som skulle vara viktigast att beräkna för att genomföra simuleringen på bästa sätt. Modellen gick trots detta ändå väldigt smidigt att ta fram. När den sedan skulle implementeras i MATLAB för evaluering så märkte vi att värdena till en början inte blev speciellt rimliga. Detta berodde främst på de osäkra konstanterna ($Cl$ och $Cd$) som används i formlerna för lyft- och motståndskraft, eftersom dessa varit omöjliga att bestämma exakt. Efter en del experimentering med dessa så fick vi till slut ett någorlunda rimligt resultat på hastighet, sträcka innan lyft, lyfthastighet och stigningsgrad. \\\\
+Nästa steg var då att skapa visualiseringen i Java, och detta gav oss många problem. Väldigt mycket tid har krävts just till Java3D-programmeringen. 
+Det vi skulle vilja förbättra programmeringsmässigt, och även försökte med, är möjligheten att starta om simuleringen med en knapp för att slippa köra om hela programmet vid varje körning, att visa värden på skärmen för exempelvis hastighet och sträcka under simuleringens gång och att skapa en körbar jar-fil för att kunna köra programmet på vilken PC som helst.\\\\
+På det stora hela är vi nöjda med slutresultatet. Modellen är tillräckligt fysikaliskt korrekt för projektets mål och visualiseringen behandlar det vi hade planerat från början, nämligen en enkel flygplansstart för en Boeing 777-300ER.
+
+\newpage
+
+\Section{Referenser}
+\begin{thebibliography}{50}
+
+%\bibitem{FluidMech}
+% Frank M. White,
+% \emph{Fluid mechanics}.
+% McGraw-Hill,
+% Fjärde Upplagan,
+% 2001,
+% Kapitel 4.
+ 
+\bibitem{nasa1}
+\emph{}
+http://www.grc.nasa.gov/WWW/K-12/airplane/climb.html (2010-03-14)
+
+\bibitem{nasa2}
+\emph{}
+http://www.grc.nasa.gov/WWW/K-12/airplane/forces.html (2010-03-14)
+
+\bibitem{nasa3}
+\emph{}
+http://www.grc.nasa.gov/WWW/K-12/airplane/lifteq.html (2010-03-14)
+
+\bibitem{nasa4}
+\emph{}
+http://www.grc.nasa.gov/WWW/K-12/airplane/drageq.html (2010-03-14)
+ 
+\bibitem{boeing1}
+\emph{}
+http://www.boeing.com/commercial/airports/acaps/777rsec2.pdf (2010-03-14)
+
+\bibitem{airline1}
+\emph{}
+http://www.airliners.net/aircraft-data/stats.main?id=107 (2010-03-14)
+
+\bibitem{zap}
+\emph{}
+http://www.zap16.com/civ\%20fact/civ\%20Boeing\%20777-300.htm (2010-03-14)
+
+\bibitem{angles}
+\emph{}
+http://www.bangaloreaviation.com/2009/05/typical-takeoff-and-climb-angles-of-all.html (2010-03-14)
+
+\bibitem{densitet}
+\emph{}
+http://sv.wikipedia.org/wiki/Ljudhastighet (2010-03-14)
+
+\bibitem{euler}
+\emph{}
+http://www.sosmath.com/diffeq/first/numerical/numerical.html (2010-03-14)
+
+\end{thebibliography}{}
+
+\newpage
+
+\thispagestyle{empty}
+\Section{Bilaga A: Förstorade bilder}
+
+\thispagestyle{empty}
+\includegraphics[width=15cm]{print_initial_buttons_enabled_r.png} 
+\label{bild1}
+
+\newpage
+\thispagestyle{empty}
+\includegraphics[width=15cm]{print_initial_r.png} 
+\label{bild2}
+\newpage
+
+\thispagestyle{empty}
+\begin{center}
+\includegraphics[width=15cm]{print_takeoff_r.png} 
+\label{bild3}
+\end{center}
+\newpage
+
+\end{document}
+
+
+% Lite information om hur man arbetar med LaTeX
+%-----------------------------------------------
+%
+% LaTeX-koden kan skrivas med en godtycklig editor.
+% F?r att "kompilera" dokumentet anv	§§nds kommandot latex:
+%    bergner@peppar:~/edu/sysprog/lab1> latex rapportmall.tex
+% Resultatet blir ett antal filer, bl.a. en som heter rapportmall.dvi.
+% Denna fil kan anv?ndas f?r att titta hur dokumentet egentligen ser
+% ut med hj?lp av programmet xdvi:
+%    bergner@peppar:~/edu/sysprog/lab1> xdvi rapportmall.dvi &
+% Du får då upp ett f?nster som visar ditt dokument. Detta f?nster
+% kommer automatiskt att uppdateras då du ?ndrar och kompilerar om din
+% LaTeX-kod. 
+% N?r du anser att din rapport ?r f?rdig att skrivas ut anv?nder man
+% l?mpligtvis kommandona dvips och lpr:
+%    bergner@peppar:~/edu/sysprog/lab1> dvips -P ma436ps rapportmall.dvi
+% Om man vill ha kvar PostScript-filen som dvips genererar kan man g?ra:
+%    bergner@peppar:~/edu/sysprog/lab1> dvips -o rapport.ps rapportmall.dvi
+%    bergner@peppar:~/edu/sysprog/lab1> lpr -P ma436ps rapport.ps
+% OBS!!! F?r att innehållsf?rteckningen och eventuella referenser till
+% tabeller och figurer garanterat ska st?mma måste man k?ra latex 2ggr
+% på sitt dokument efter att man har ?ndrat något.
+%
+%
+% Lite information om saker man kan t?nkas beh?va i sitt arbete med LaTeX
+%-------------------------------------------------------------------------
+%
+% FORMATTERA TEXT
+%
+% F?r att formattera text på lite olika s?tt kan man anv?nda f?ljande LaTeX-
+% kommandon:
+%    \textbf{denna text kommer att vara i fetstil}
+%    \emph{denna text ?r viktig (kursiv stil)}
+%    \texttt{i denna text blir alla tecken lika breda, som med en skrivmaskin}
+%    \textsf{denna text visas med ett typsnitt utan serifer}
+%
+%
+% MATEMATISKA FORMLER
+%
+% F?r att typs?tta matematiska formler kan man anv?nda:
+%    $f(x) = x^2 - 3$, vilket l?gger in formeln i texten, eller
+%    \begin{displaymath}
+%        g(x) = \frac{\sin x}{x}
+%    \end{displaymath}, vilket låter formeln visas centrerat på en egen rad
+% Om du vill att en formel ska numreras byter du ut displaymath mot equation.
+% Det finns massor med matematiska symboler, vilket g?r att man beh?ver
+% någon liten manual att titta i om man ska konstruera avancerade formler.
+% Se slutet på filen f?r lite råd om var du kan hitta sådana.
+%
+%
+% INFOGA FIGURER
+%
+% F?r att infoga en figur kan man g?ra på f?ljande s?tt:
+%    \begin{figure}[htb]
+%        \includegraphics[scale=0.5, angle=90]{exec_flow.eps}
+%        \caption{Detta ?r bildtexten}
+%        \label{EXECFLOW}
+%    \end{figure}
+% Om man vill referera till denna bild i texten skulle man då skriva enligt:
+%    ...i figur \ref{EXECFLOW} kan man se att...
+% Några små f?rklaringar till figurer:
+%    [htb] = talar om hur latex ska f?rs?ka placera bilden (Here, Top, Bottom)
+%            Om du anv?nder [!h], inneb?r det Here!!!
+%    scale = kan skala om bilden, om den ?r skalbar
+%    angle = kan rotera bilden
+%    exec_flow.eps = filnamnet på bilden. Notera att formatet .EPS anv?nds
+% F?r att skapa figurer anv?nds l?mpligtvis programmet xfig:
+%    bergner@peppar:~/edu/sysprog/lab1> xfig &
+% Rita (och spara ofta) tills du ?r klar. V?lj sedan "Export" och exportera
+% din figur till EPS-format.
+% Om man vill kan man anv?nda endast \includegraphics, men det ?r inte ofta
+% man g?r det.
+%
+%
+% INFOGA TABELLER
+%
+% Om man vill skapa en tabell g?r man på f?ljande s?tt:
+%    \begin{table}[htb]
+%        \begin{tabular}{|rlp{10cm}|}
+%            \hline
+%            13 & $17.26$ & En kommentar som kan str?cka sig ?ver flera rader \\
+%            \hline
+%        \end{tabular}
+%        \caption{Tabelltexten...}
+%        \label{TBL:MINTABELL}
+%    \end{table}
+% Om man vill kan man endast anv?nda raderna 2-6, dvs få en tabell utan text
+% och nummer. Om man g?r på detta vis kommer tabellen alltid att l?ggas på
+% det st?lle den skrivs i koden, dvs ungef?r samma sak som [!h] -> Here!!!
+% Några f?rklaringar:
+%    l, r, c = v?nsterjustera, h?gerjustera eller centrera kolumn
+%    p{bredd} = skapa en v?nsterjusterad kolumn med en viss bredd
+%               kan innehålla flera rader text
+%    | = en vertikal linje i tabellen
+%    \hline = en horisontell linje i tabellen
+%    & = kolumnseparator
+%    \\ = radseparator
+% T?nk på att tabeller oftast ser b?ttre ut med ganska få linjer.
+%
+%
+% INFOGA K?LLKOD ELLER UTDATA FR?N TESTK?RNINGAR
+%
+% Om man vill infoga k?llkod eller något annat liknande, t.ex. utdata från
+% en testk?rning ?r det bra om LaTeX återger utdatan korrekt, dvs en radbrytning
+% betyder en radbrytning och 8 mellanslag på rad betyder 8 mellanslag på rad.
+% F?r att åstadkomma detta anv?nds:
+%    \begin{verbatim}
+%        allt som skrivs h?r återges exakt, med skrivmaskinstypsnitt
+%    \end{verbatim}
+% Oftast finns det dock b?ttre verktyg f?r att skriva ut k?llkod. Exempel på
+% sådana ?r a2ps, enscript och atp.
+%
+%
+% ?NDRA STORLEK P? TEXT
+%
+% Om du vill ?ndra storleken på ett stycke, t.ex. på din nyss infogade
+% testk?rning omger du stycket med \begin{STORLEK} \end{STORLEK}, d?r
+% STORLEK ?r någon av:
+%    tiny, scriptsize, footnotesize, small, normalsize, large, Large,
+%    LARGE, huge, Huge
+% T?nk på att inte mixtra f?r mycket med storlekar bara.
+%
+%
+% SKAPA LISTOR AV OLIKA SLAG
+%
+% Det ?r ganska vanligt att man vill rada upp saker på något s?tt. F?r att
+% skapa punktlistor anv?nds:
+%    \begin{itemize}
+%        \item Detta ?r f?rsta punkten
+%        \item Detta ?r andra punkten
+%    \end{itemize}
+% Om man ist?llet vill ha en numrerad lista kan man anv?nda enumerate ist?llet
+% f?r itemize. Listor kan anv?ndas i flera nivåer
+%
+%
+% MER INFORMATION OM LaTeX
+%
+% Lite blandad information om LaTeX, l?nkar och annat hittar du på
+% http://www.cs.umu.se/~bergner/latex.htm
+% En del information om rapportskrivning hittar du på
+% http://www.cs.umu.se/~bergner/rapport/
+% Det finns massor med information om LaTeX på Internet. Ett litet urval:
+% http://www.giss.nasa.gov/latex/
+%     ?r en mycket v?lfylld sida om LaTeX
+% http://wwwinfo.cern.ch/asdoc/WWW/essential/essential.html
+%     ?r en manual som genererats utifrån ett LaTeX-dokument mha latex2html
+% http://tex.loria.fr/english/
+%     ?r ett fylligt arkiv av l?nkar till LaTeX-dokument på Internet
+%
+% Min personliga favorit ?r dock manualen "The Not So Short Introduction to
+% LaTeX2e", som finns i DVI-format på ~bergner/LaTeX/lshort2e.dvi
+% D?r står i princip allt man beh?ver veta. Det ?r bara att anv?nda xdvi och
+% titta efter det du s?ker, vilket oftast finns d?r.
+% Om du, precis som jag, vill kunna leka med många kommandon i LaTeX finns en
+% "LaTeX Command Summary" på ~bergner/LaTeX/latexcmds.ps

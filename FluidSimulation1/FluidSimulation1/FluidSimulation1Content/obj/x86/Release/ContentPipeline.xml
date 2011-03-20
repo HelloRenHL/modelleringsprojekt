@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>ploj.png</Source>
+      <Name>ploj</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\ploj.xnb</Output>
+      <Time>2011-01-31T03:06:56.9366065+01:00</Time>
+    </Item>
+    <Item>
+      <Source>arrow.png</Source>
+      <Name>arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\arrow.xnb</Output>
+      <Time>2011-01-31T03:06:56.9056047+01:00</Time>
+    </Item>
+    <Item>
+      <Source>slider_background.png</Source>
+      <Name>slider_background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\slider_background.xnb</Output>
+      <Time>2011-02-21T20:13:12.9010567+01:00</Time>
+    </Item>
+    <Item>
+      <Source>slider_handle.png</Source>
+      <Name>slider_handle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\slider_handle.xnb</Output>
+      <Time>2011-02-21T20:13:12.9020568+01:00</Time>
+    </Item>
+    <Item>
+      <Source>button.png</Source>
+      <Name>button</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\button.xnb</Output>
+      <Time>2011-01-31T03:06:56.9086049+01:00</Time>
+    </Item>
+    <Item>
+      <Source>verdana.spritefont</Source>
+      <Name>verdana</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\verdana.xnb</Output>
+      <Time>2011-02-21T20:13:12.9040569+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\sphere.FBX</Source>
+      <Name>models\sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\sphere.xnb</Output>
+      <Time>2011-01-31T03:06:56.9126051+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\sphere_0.xml</Key>
+        <Value>2011-03-14T11:49:59.5482988+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\teapot.FBX</Source>
+      <Name>models\teapot</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\teapot.xnb</Output>
+      <Time>2011-01-31T03:06:56.9146052+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\teapot_0.xml</Key>
+        <Value>2011-03-14T11:49:59.7733116+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\small_sphere.FBX</Source>
+      <Name>models\small_sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\small_sphere.xnb</Output>
+      <Time>2011-01-31T03:06:56.9096049+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\small_sphere_0.xml</Key>
+        <Value>2011-03-14T11:49:59.866317+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\smaller_sphere.FBX</Source>
+      <Name>models\smaller_sphere</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\smaller_sphere.xnb</Output>
+      <Time>2011-01-31T03:06:56.911605+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\smaller_sphere_0.xml</Key>
+        <Value>2011-03-14T11:49:59.9613224+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\teapot_small.FBX</Source>
+      <Name>models\teapot_small</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\teapot_small.xnb</Output>
+      <Time>2011-02-09T02:28:05.9972332+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\teapot_small_0.xml</Key>
+        <Value>2011-03-14T11:50:00.0753289+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\glass_box1.FBX</Source>
+      <Name>models\glass_box1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\glass_box1.xnb</Output>
+      <Time>2011-02-14T17:22:30.7073866+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\glass_box1_0.xml</Key>
+        <Value>2011-03-14T11:50:00.163334+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>models\box.FBX</Source>
+      <Name>models\box</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\models\box.xnb</Output>
+      <Time>2011-02-17T23:57:33.5992801+01:00</Time>
+      <Dependency>
+        <Key>obj\x86\Release\models\box_0.xml</Key>
+        <Value>2011-03-14T11:50:00.2503389+01:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>Shaders\distort.fx</Source>
+      <Name>Shaders\distort</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\Shaders\distort.xnb</Output>
+      <Time>2011-02-14T17:00:45.3577249+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\sphere_0.xml</Output>
+      <Time>2011-01-31T03:06:56.9126051+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\teapot.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\teapot_0.xml</Output>
+      <Time>2011-01-31T03:06:56.9146052+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\small_sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\small_sphere_0.xml</Output>
+      <Time>2011-01-31T03:06:56.9096049+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\smaller_sphere.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\smaller_sphere_0.xml</Output>
+      <Time>2011-01-31T03:06:56.911605+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\teapot_small.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\teapot_small_0.xml</Output>
+      <Time>2011-02-09T02:28:05.9972332+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\glass_box1.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\glass_box1_0.xml</Output>
+      <Time>2011-02-14T17:22:30.7073866+01:00</Time>
+    </Item>
+    <Item>
+      <Source>models\box.FBX</Source>
+      <Importer>FbxImporter</Importer>
+      <Options>IntermediateFile, DontCacheImportedData</Options>
+      <Output>obj\x86\Release\models\box_0.xml</Output>
+      <Time>2011-02-17T23:57:33.5992801+01:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Release</BuildConfiguration>
+      <CompressContent>true</CompressContent>
+      <RootDirectory>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\</RootDirectory>
+      <LoggerRootDirectory>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\</LoggerRootDirectory>
+      <IntermediateDirectory>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1Content\obj\x86\Release\</IntermediateDirectory>
+      <OutputDirectory>D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\FluidSimulation1\FluidSimulation1\FluidSimulation1\bin\x86\Release\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T13:41:18+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2011-01-24T14:42:39.0699332+01:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>
