@@ -1,0 +1,590 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (MiKTeX 2.8) (preloaded format=pdflatex 2011.2.18)  12 MAR 2011 22:16
+entering extended mode
+**D:/Skola-*Linköpings*universitet,*Campus*Norrköping/År*III/TNM085/Projekt/Frå
+n*Markus*Olsson/Rapport.tex
+
+("D:/Skola- Linköpings universitet, Campus Norrköping/År III/TNM085/Projekt/Frå
+n Markus Olsson/Rapport.tex"
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman, ngerman, german-x-2009-06-19, ngerman-x-2009-06-19, french, loaded.
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\fontenc.sty"
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\t1enc.def"
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\babel.sty"
+Package: babel 2008/07/06 v3.8l The Babel package
+
+*************************************
+* Local config file bblopts.cfg used
+*
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\00miktex\bblopts.cfg"
+File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\english.ldf"
+Language: english 2005/03/30 v3.3o English support from the babel system
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\generic\babel\babel.def"
+File: babel.def 2008/07/06 v3.8l Babel common definitions
+\babel@savecnt=\count87
+\U@D=\dimen103
+)
+\l@canadian = a dialect from \language\l@american 
+\l@australian = a dialect from \language\l@british 
+\l@newzealand = a dialect from \language\l@british 
+))
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2009/06/22 v3.00
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\@emptytoks=\toks14
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2010/02/14 v0.04n Graphics/color for pdfTeX
+\Gread@gobject=\count88
+))
+\Gin@req@height=\dimen104
+\Gin@req@width=\dimen105
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\fancyhdr\fancyhdr.sty"
+\fancy@headwidth=\skip43
+\f@ncyO@elh=\skip44
+\f@ncyO@erh=\skip45
+\f@ncyO@olh=\skip46
+\f@ncyO@orh=\skip47
+\f@ncyO@elf=\skip48
+\f@ncyO@erf=\skip49
+\f@ncyO@olf=\skip50
+\f@ncyO@orf=\skip51
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\listings\listings.sty"
+\lst@mode=\count89
+\lst@gtempboxa=\box26
+\lst@token=\toks16
+\lst@length=\count90
+\lst@currlwidth=\dimen106
+\lst@column=\count91
+\lst@pos=\count92
+\lst@lostspace=\dimen107
+\lst@width=\dimen108
+\lst@newlines=\count93
+\lst@lineno=\count94
+\lst@maxwidth=\dimen109
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\listings\lstmisc.sty"
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count95
+\lst@skipnumbers=\count96
+\lst@framebox=\box27
+)
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\listings\listings.cfg"
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+\c@appendixpage=\count97
+
+("D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Frå
+n Markus Olsson\Rapport.aux"
+
+LaTeX Warning: Label `bild4' multiply defined.
+
+
+LaTeX Warning: Label `bild1' multiply defined.
+
+
+LaTeX Warning: Label `bild2' multiply defined.
+
+
+LaTeX Warning: Label `bild3' multiply defined.
+
+)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+ ("C:\Program Files (x86)\MiKTeX 2.8\tex\context\base\supp-pdf.tex"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count98
+\scratchdimen=\dimen110
+\scratchbox=\box28
+\nofMPsegments=\count99
+\nofMParguments=\count100
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count101
+\MPscratchDim=\dimen111
+\MPnumerator=\count102
+\everyMPtoPDFconversion=\toks18
+)
+\c@lstlisting=\count103
+LaTeX Font Info:    Try loading font information for U+msa on input line 82.
+ ("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 82.
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 82--90
+[][]
+ []
+
+[1
+
+
+{C:/ProgramData/MiKTeX/2.8/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 113--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--116
+
+ []
+
+[1
+
+
+]
+("D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Frå
+n Markus Olsson\Rapport.toc")
+\tf@toc=\write3
+
+("D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Frå
+n Markus Olsson\Rapport.lof"
+Underfull \hbox (badness 2941) in paragraph at lines 3--3
+ [][] []\T1/cmr/m/n/10 Figur på fly-g-plan-n-mod-ellen med 
+ []
+
+)
+\tf@lof=\write4
+
+("D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Frå
+n Markus Olsson\Rapport.lot")
+\tf@lot=\write5
+ [1
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
+\T1/cmr/m/n/10 TNM085 Mod-el-ler-ingspro-jekt som hålls vid
+ []
+
+
+Underfull \hbox (badness 1194) in paragraph at lines 168--169
+\T1/cmr/m/n/10 Rapporten in-leds med att beskriva prob-lemet,
+ []
+
+
+Underfull \vbox (badness 5431) has occurred while \output is active []
+
+
+
+LaTeX Warning: File `ohh.png' not found on input line 187.
+
+
+! Package pdftex.def Error: File `ohh.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.187 \includegraphics[width=9cm]{ohh.png}
+                                          
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 187.
+
+("C:\Program Files (x86)\MiKTeX 2.8\tex\latex\base\t1cmtt.fd"
+File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+Overfull \hbox (35.0748pt too wide) in paragraph at lines 187--188
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[1]
+Overfull \hbox (134.36485pt too wide) in alignment at lines 224--232
+[][][][][]
+ []
+
+
+LaTeX Warning: File `simulering.png' not found on input line 261.
+
+
+! Package pdftex.def Error: File `simulering.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.261 \includegraphics[width=9cm]{simulering.png}
+                                                 
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (35.0748pt too wide) in paragraph at lines 261--262
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[2]
+
+LaTeX Warning: File `print_bubben.png' not found on input line 277.
+
+
+! Package pdftex.def Error: File `print_bubben.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.277 ...udegraphics[width=11cm]{print_bubben.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (91.9803pt too wide) in paragraph at lines 277--278
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 287--289
+\T1/cmr/m/n/10 Java3D är ett scengraf-baserat 3D-
+ []
+
+
+Underfull \hbox (badness 7256) in paragraph at lines 287--289
+\T1/cmr/m/n/10 programmeringsgränssnitt för Java-plattformen
+ []
+
+
+Underfull \hbox (badness 1024) in paragraph at lines 287--289
+\T1/cmr/m/n/10 trans-la-tion, ro-ta-tion och skalning i 3D-scenen.
+ []
+
+
+Underfull \vbox (badness 1701) has occurred while \output is active []
+
+ [3]
+
+LaTeX Warning: File `print_initial_buttons_enabled.png' not found on input line
+ 312.
+
+
+! Package pdftex.def Error: File `print_initial_buttons_enabled.png' not found.
+
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.312 ...h=9cm]{print_initial_buttons_enabled.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (35.0748pt too wide) in paragraph at lines 312--313
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+LaTeX Warning: File `print_initial.png' not found on input line 324.
+
+
+! Package pdftex.def Error: File `print_initial.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.324 ...udegraphics[width=9cm]{print_initial.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (35.0748pt too wide) in paragraph at lines 324--325
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4]
+
+LaTeX Warning: File `print_takeoff.png' not found on input line 334.
+
+
+! Package pdftex.def Error: File `print_takeoff.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.334 ...udegraphics[width=9cm]{print_takeoff.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (35.0748pt too wide) in paragraph at lines 334--335
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 340--341
+
+ []
+
+
+Underfull \hbox (badness 1194) in paragraph at lines 348--352
+\T1/cmr/m/n/10 vi till slut ett nå-gor-lunda rim-ligt re-sul-tat på
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 348--352
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 348--352
+
+ []
+
+
+Underfull \hbox (badness 1057) in paragraph at lines 348--352
+\T1/cmr/m/n/10 På det stora hela är vi nöjda med slutre-sul-
+ []
+
+
+Underfull \vbox (badness 4156) has occurred while \output is active []
+
+ [5]
+Underfull \hbox (badness 10000) in paragraph at lines 367--369
+[] \T1/cmr/m/n/10 http://www.grc.nasa.gov/WWW/K-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 371--373
+[] \T1/cmr/m/n/10 http://www.grc.nasa.gov/WWW/K-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 375--377
+[] \T1/cmr/m/n/10 http://www.grc.nasa.gov/WWW/K-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 379--381
+[] \T1/cmr/m/n/10 http://www.grc.nasa.gov/WWW/K-
+ []
+
+
+Overfull \hbox (88.64783pt too wide) in paragraph at lines 383--385
+[] \T1/cmr/m/n/10 http://www.boeing.com/commercial/airports/acaps/777rsec2.pdf
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 387--389
+[] \T1/cmr/m/n/10 http://www.airliners.net/aircraft-
+ []
+
+
+Overfull \hbox (57.96088pt too wide) in paragraph at lines 391--393
+[] \T1/cmr/m/n/10 http://www.zap16.com/civ%20fact/civ%20Boeing%20777-
+ []
+
+
+Overfull \hbox (33.1336pt too wide) in paragraph at lines 395--397
+[] \T1/cmr/m/n/10 http://www.bangaloreaviation.com/2009/05/typical-
+ []
+
+
+Underfull \hbox (badness 7047) in paragraph at lines 399--401
+[] \T1/cmr/m/n/10 http://sv.wikipedia.org/wiki/Ljudhastighet
+ []
+
+
+Overfull \hbox (83.06586pt too wide) in paragraph at lines 403--405
+[] \T1/cmr/m/n/10 http://www.sosmath.com/diffeq/first/numerical/numerical.html
+ []
+
+[6]
+
+LaTeX Warning: File `print_initial_buttons_enabled_r.png' not found on input li
+ne 414.
+
+
+! Package pdftex.def Error: File `print_initial_buttons_enabled_r.png' not foun
+d.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.414 ...5cm]{print_initial_buttons_enabled_r.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (205.79134pt too wide) in paragraph at lines 414--416
+[]
+ []
+
+
+LaTeX Warning: File `print_initial_r.png' not found on input line 419.
+
+
+! Package pdftex.def Error: File `print_initial_r.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.419 ...graphics[width=15cm]{print_initial_r.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (205.79134pt too wide) in paragraph at lines 419--421
+[][]
+ []
+
+[7]
+
+LaTeX Warning: File `print_takeoff_r.png' not found on input line 425.
+
+
+! Package pdftex.def Error: File `print_takeoff_r.png' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.425 ...graphics[width=15cm]{print_takeoff_r.png}
+                                                  
+Using draft setting for this image.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (205.79134pt too wide) in paragraph at lines 425--427
+ [] 
+ []
+
+[8
+
+]
+("D:\Skola- Linköpings universitet, Campus Norrköping\År III\TNM085\Projekt\Frå
+n Markus Olsson\Rapport.aux")
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 3131 strings out of 495285
+ 41445 string characters out of 3179818
+ 98172 words of memory out of 3000000
+ 6293 multiletter control sequences out of 15000+200000
+ 20035 words of font info for 54 fonts, out of 3000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 30i,11n,43p,1254b,290s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files (x86)/MiKTeX 2.8/fonts/enc/dvips/cm-super/cm-super-t1.enc}<
+C:/Program Files (x86)/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:
+/Program Files (x86)/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program F
+iles (x86)/MiKTeX 2.8/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program File
+s (x86)/MiKTeX 2.8/fonts/type1/public/cm-super/sfbx1000.pfb><C:/Program Files (
+x86)/MiKTeX 2.8/fonts/type1/public/cm-super/sfbx1200.pfb><C:/Program Files (x86
+)/MiKTeX 2.8/fonts/type1/public/cm-super/sfbx1440.pfb><C:/Program Files (x86)/M
+iKTeX 2.8/fonts/type1/public/cm-super/sfbx2074.pfb><C:/Program Files (x86)/MiKT
+eX 2.8/fonts/type1/public/cm-super/sfrm0800.pfb><C:/Program Files (x86)/MiKTeX 
+2.8/fonts/type1/public/cm-super/sfrm1000.pfb><C:/Program Files (x86)/MiKTeX 2.8
+/fonts/type1/public/cm-super/sfrm1200.pfb><C:/Program Files (x86)/MiKTeX 2.8/fo
+nts/type1/public/cm-super/sfrm1728.pfb><C:/Program Files (x86)/MiKTeX 2.8/fonts
+/type1/public/cm-super/sftt1000.pfb>
+Output written on Rapport.pdf (11 pages, 252854 bytes).
+PDF statistics:
+ 95 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

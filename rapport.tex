@@ -1,0 +1,22 @@
+\documentclass[a4paper,11pt,twoside,swedish]{report}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\begin{document}
+
+\section{Introduction}
+
+Simulation of different physical phenomena is increasingly used within several fields including such diverse areas as various scientific researches and the entertainment industry, for instance in gaming development or special effects in movies. Consequently, we find that the simulation of fluids would be an exciting and important region to explore. The aim of this project is to program an interactive application which simulates fluids in 3D.
+
+\section{Method}
+
+	\subsection {C\#/.NET and XNA}
+The executable files for this project was written the programming language C# and Microsoft .NET was utilized as a framework. To make graphics easier to display the environment Microsoft XNA was used. 
+	
+	\subsubsection{SPH}
+	SPH, or Smoothed Particles Hydrodynamics, is a method to simulate for example fluids or fire using particles. In an article by Müller, Charypar and Gross (2003), the authors present a further development of the method, initially constituted by Lucy (1977) and Gingold and Monaghan (1977). Müller et al concludes that in order to determine the movement of every particle you will need to include the following forces: mass, pressure, viscosity, surface tension and gravity. You will also need to incorporate a smoothing kernels method, which regulates the SPH's stability, accuracy and speed.
+	
+	\subsection{Marching cubes}
+	Marching cubes is an algorithm for making particles "melt" together and construct a surface or so called "mesh". Developed by Cline and Lorensen in 1987, at the time working for General Electric Company, marching cubes uses 256 cube configurations to represent every way the mesh could cross the cube. Utilizing symmetries can reduce the configurations to 15 unique patterns.
+
+\end{document}
